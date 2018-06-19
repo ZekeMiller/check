@@ -14,15 +14,31 @@ import java.util.List;
 public class Habit {
 
     @NonNull
-    @PrimaryKey
+    @PrimaryKey (autoGenerate = true)
+    private int id;
+
     private String title;
+    private int info;
 
 
     public Habit( String title ) {
 
         this.title = title;
+        this.info = Integer.parseInt( title );
     }
 
+
+
+    @NonNull
+    public int getId() {
+
+        return id;
+    }
+
+    public void setId( @NonNull int id ) {
+
+        this.id = id;
+    }
 
 
     public String getTitle() {
@@ -30,6 +46,30 @@ public class Habit {
         return title;
     }
 
+    public void setTitle( String title ) {
+
+        this.title = title;
+    }
+
+
+    public int getInfo() {
+
+        return info;
+    }
+
+    public void setInfo( int info ) {
+
+        this.info = info;
+    }
+
+
+    public void increment() {
+        info++;
+    }
+
+    public void decrement() {
+        info--;
+    }
 
 
     public static class HabitDummy {
@@ -44,6 +84,19 @@ public class Habit {
         }
 
 
+    }
+
+    public boolean sameContents( Habit habit ) {
+        return this.equals( habit ) && this.title.equals( habit.title ) && this.info == habit.info;
+    }
+
+    @Override
+    public boolean equals( Object other ) {
+        if ( other instanceof Habit ) {
+            Habit otherHabit = (Habit) other;
+            return this.id == otherHabit.id;
+        }
+        return false;
     }
 
 }

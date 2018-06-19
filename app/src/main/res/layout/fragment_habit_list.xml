@@ -8,6 +8,7 @@
     android:layout_height="match_parent"
     android:layout_marginLeft="16dp"
     android:layout_marginRight="16dp"
-    app:layoutManager="LinearLayoutManager"
+    app:layoutManager="android.support.v7.widget.LinearLayoutManager"
     tools:context=".habits.HabitPageFragment"
-    tools:listitem="@layout/fragment_habit" />
+    tools:listitem="@layout/fragment_habit"
+    />

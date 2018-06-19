@@ -1,5 +1,6 @@
 package zekem.check.habits;
 
+import android.arch.lifecycle.LiveData;
 import android.arch.persistence.room.Dao;
 import android.arch.persistence.room.Delete;
 import android.arch.persistence.room.Insert;
@@ -15,18 +16,22 @@ import java.util.List;
 public interface HabitDao {
 
     @Insert
-    void insert(Habit... habit);
+    void insert( Habit... habit );
 
     @Insert
     void insert( List< Habit > habits );
 
     @Update
-    void update(Habit habit);
+    void update( Habit... habit );
 
     @Delete
-    void delete(Habit habit);
+    void delete( Habit...  habit );
+
+    @Delete
+    void delete( List< Habit >  habit );
 
     @Query( "SELECT * from habit" )
     List< Habit > getAll();
+    // LiveData< List< Habit > > getAll();
 
 }

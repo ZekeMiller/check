@@ -5,6 +5,8 @@ import android.arch.persistence.room.Room;
 import android.arch.persistence.room.RoomDatabase;
 import android.content.Context;
 
+import java.util.List;
+
 /**
  * @author Zeke Miller
  */
@@ -17,7 +19,7 @@ public abstract class HabitDatabase extends RoomDatabase {
     public abstract HabitDao habitDao();
 
     public static HabitDatabase getHabitDatabase(Context context) {
-        if (INSTANCE == null) {
+        if ( INSTANCE == null ) {
             INSTANCE = Room.databaseBuilder(context.getApplicationContext(), HabitDatabase.class, DB_NAME ).build();
         }
         return INSTANCE;

@@ -3,4 +3,8 @@
     <dimen name="activity_horizontal_margin">16dp</dimen>
     <dimen name="activity_vertical_margin">16dp</dimen>
     <dimen name="text_margin">16dp</dimen>
+    <dimen name="habit_button_padding">16dp</dimen>
+    <dimen name="habit_plus_button_padding">@dimen/habit_button_padding</dimen>
+    <dimen name="habit_minus_button_padding">@dimen/habit_button_padding</dimen>
+
 </resources>

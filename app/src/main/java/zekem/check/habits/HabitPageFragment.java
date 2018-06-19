@@ -1,6 +1,6 @@
 package zekem.check.habits;
 
-import android.arch.persistence.room.Room;
+import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -26,6 +26,7 @@ public class HabitPageFragment extends Fragment {
     // TODO: Customize parameters
     private int mColumnCount = 1;
     private OnListFragmentInteractionListener mListener;
+    private HabitViewModel mViewModel;
 
 
 
@@ -38,7 +39,6 @@ public class HabitPageFragment extends Fragment {
     }
 
     // TODO: Customize parameter initialization
-    @SuppressWarnings( "unused" )
     public static HabitPageFragment newInstance( int columnCount ) {
 
         HabitPageFragment fragment = new HabitPageFragment();
@@ -59,6 +59,7 @@ public class HabitPageFragment extends Fragment {
             throw new RuntimeException( context.toString()
                     + " must implement OnListFragmentInteractionListener" );
         }
+        
     }
 
     @Override
@@ -69,6 +70,7 @@ public class HabitPageFragment extends Fragment {
         if ( getArguments() != null ) {
             mColumnCount = getArguments().getInt( ARG_COLUMN_COUNT );
         }
+        mViewModel = ViewModelProviders.of( this ).get( HabitViewModel.class );
     }
 
     @Override
@@ -77,25 +79,23 @@ public class HabitPageFragment extends Fragment {
 
         View view = inflater.inflate( R.layout.fragment_habit_list, container, false );
 
+
         // Set the adapter
         if ( view instanceof RecyclerView ) {
             Context context = view.getContext();
-            RecyclerView recyclerView = (RecyclerView) view;
+            final RecyclerView recyclerView = (RecyclerView) view;
             if ( mColumnCount <= 1 ) {
                 recyclerView.setLayoutManager( new LinearLayoutManager( context ) );
             }
             else {
                 recyclerView.setLayoutManager( new GridLayoutManager( context, mColumnCount ) );
             }
-            final RecyclerView recyclerView1 = recyclerView;
-            new Thread( new Runnable() {
-                @Override
-                public void run() {
-                    recyclerView1.setAdapter( new HabitRecyclerViewAdapter(
-                            HabitDatabase.getHabitDatabase( getContext() ).habitDao().getAll()
-                            , mListener ) );
-                }
-            } ).start();
+
+            final HabitRecyclerViewAdapter adapter = new HabitRecyclerViewAdapter(
+                    mViewModel.getHabits().getValue(), mListener );
+            recyclerView.setAdapter( adapter );
+            mViewModel.getHabits().observe( this, adapter::setData );
+
         }
         return view;
     }
@@ -119,7 +119,10 @@ public class HabitPageFragment extends Fragment {
      */
     public interface OnListFragmentInteractionListener {
 
-        // TODO: Update argument type and name
-        void onListFragmentInteraction( Habit item );
+        void onContentLongPress( Habit habit );
+
+        void onPlusPress( Habit habit );
+
+        void onMinusPress( Habit habit );
     }
 }

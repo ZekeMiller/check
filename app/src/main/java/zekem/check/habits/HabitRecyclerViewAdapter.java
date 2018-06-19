@@ -109,8 +109,8 @@ public class HabitRecyclerViewAdapter extends RecyclerView.Adapter< HabitRecycle
 
             mContentView.setOnLongClickListener( v -> {
 
-                final Habit habit = mValues.get( getAdapterPosition() );
-                mListener.onContentLongPress( habit );
+                mListener.onContentLongPress( mValues.get( getAdapterPosition() ) );
+                notifyItemRemoved( getAdapterPosition() );
                 return true;
 
             } );

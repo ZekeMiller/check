@@ -1,10 +1,8 @@
 package zekem.check;
 
 import android.annotation.SuppressLint;
-import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
 import android.net.Uri;
-import android.support.annotation.Nullable;
 import android.support.design.internal.BottomNavigationItemView;
 import android.support.design.internal.BottomNavigationMenuView;
 import android.support.v4.app.Fragment;
@@ -17,24 +15,20 @@ import android.util.Log;
 import android.view.MenuItem;
 
 import java.lang.reflect.Field;
-import java.util.List;
 
 import zekem.check.dailies.DailyPageFragment;
 import zekem.check.dailies.Daily;
 import zekem.check.datas.Data;
 import zekem.check.datas.DataPageFragment;
 import zekem.check.habits.Habit;
-import zekem.check.habits.HabitDatabase;
 import zekem.check.habits.HabitPageFragment;
 import zekem.check.habits.HabitViewModel;
 
 public class Main extends AppCompatActivity implements
-                HabitPageFragment.OnListFragmentInteractionListener,
                 DailyPageFragment.OnListFragmentInteractionListener,
                 DataPageFragment.OnListFragmentInteractionListener,
                 AnalyticsFragment.OnFragmentInteractionListener {
 
-    private HabitViewModel viewModel;
     private Fragment habitsFragment;
     private Fragment dailiesFragment;
     private Fragment datasFragment;
@@ -81,9 +75,7 @@ public class Main extends AppCompatActivity implements
         removeShiftMode( navigation );
         navigation.setOnNavigationItemSelectedListener( mOnNavigationItemSelectedListener );
 
-        viewModel = ViewModelProviders.of( this ).get( HabitViewModel.class );
-
-        habitsFragment = HabitPageFragment.newInstance( 1 );
+        habitsFragment = HabitPageFragment.newInstance();
         dailiesFragment = DailyPageFragment.newInstance( 1 );
         datasFragment = DataPageFragment.newInstance( 1 );
         analyticsFragment = AnalyticsFragment.newInstance();
@@ -105,21 +97,6 @@ public class Main extends AppCompatActivity implements
     @Override
     public void onListFragmentInteraction( Data data ) {
 
-    }
-
-    @Override
-    public void onContentLongPress( Habit habit ) {
-        viewModel.deleteHabit( habit );
-    }
-
-    @Override
-    public void onPlusPress( Habit habit ) {
-        viewModel.incrementHabit( habit );
-    }
-
-    @Override
-    public void onMinusPress( Habit habit ) {
-        viewModel.decrementHabit( habit );
     }
 
     @SuppressLint("RestrictedApi")

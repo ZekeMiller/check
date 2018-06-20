@@ -1,4 +1,4 @@
-package zekem.check.habits;
+package zekem.check.habits.database.dao;
 
 import android.arch.persistence.room.Dao;
 import android.arch.persistence.room.Delete;
@@ -7,6 +7,8 @@ import android.arch.persistence.room.Query;
 import android.arch.persistence.room.Update;
 
 import org.joda.time.LocalDate;
+
+import zekem.check.habits.HabitDay;
 
 /**
  * @author Zeke Miller

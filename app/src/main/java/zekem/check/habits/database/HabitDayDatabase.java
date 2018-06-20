@@ -1,9 +1,12 @@
-package zekem.check.habits;
+package zekem.check.habits.database;
 
 import android.arch.persistence.room.Database;
 import android.arch.persistence.room.Room;
 import android.arch.persistence.room.RoomDatabase;
 import android.content.Context;
+
+import zekem.check.habits.HabitDay;
+import zekem.check.habits.database.dao.HabitDayDAO;
 
 /**
  * @author Zeke Miller

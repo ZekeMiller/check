@@ -54,7 +54,7 @@ public class DailyPageFragment extends Fragment {
         }
         else {
             throw new RuntimeException( context.toString()
-                    + " must implement OnListFragmentInteractionListener" );
+                    + " must implement HabitFragmentListener" );
         }
     }
 

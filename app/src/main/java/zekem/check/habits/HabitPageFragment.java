@@ -63,10 +63,10 @@ public class HabitPageFragment extends Fragment {
             final RecyclerView recyclerView = (RecyclerView) view;
             recyclerView.setLayoutManager( new LinearLayoutManager( context ) );
 
-            final HabitRecyclerViewAdapter adapter = new HabitRecyclerViewAdapter(
-                    mViewModel.getHabits(), mViewModel );
+            final HabitRecyclerViewAdapter adapter = new HabitRecyclerViewAdapter( mViewModel );
 
             recyclerView.setAdapter( adapter );
+            mViewModel.getHabits().observe( this, adapter::setData );
 
         }
         return view;
@@ -89,7 +89,7 @@ public class HabitPageFragment extends Fragment {
      * "http://developer.android.com/training/basics/fragments/communicating.html"
      * >Communicating with Other Fragments</a> for more information.
      */
-    public interface OnListFragmentInteractionListener {
+    public interface HabitFragmentListener {
 
         void onContentLongPress( Habit habit );
 

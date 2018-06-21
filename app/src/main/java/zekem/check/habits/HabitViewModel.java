@@ -3,9 +3,8 @@ package zekem.check.habits;
 import android.app.Application;
 import android.arch.lifecycle.AndroidViewModel;
 import android.arch.lifecycle.LiveData;
-import android.arch.lifecycle.MutableLiveData;
-import android.support.annotation.NonNull;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -18,13 +17,13 @@ import zekem.check.habits.database.dao.HabitDao;
  * @author Zeke Miller
  */
 public class HabitViewModel extends AndroidViewModel
-                implements HabitPageFragment.OnListFragmentInteractionListener {
+                implements HabitPageFragment.HabitFragmentListener {
 
 
     // Fields
 
     private final HabitDao habitDao;
-    private List< Habit > habits = null;
+    private LiveData< List< Habit > > habits;
     private ExecutorService executorService;
 
 
@@ -35,18 +34,22 @@ public class HabitViewModel extends AndroidViewModel
         super( application );
         habitDao = HabitDatabase.getHabitDatabase( getApplication() ).habitDao();
         executorService = Executors.newSingleThreadExecutor();
-        // executorService.execute( () -> habits.postValue( habitDao.getAll() ) );
+
         executorService.execute( () -> {
             habits = habitDao.getAll();
+            if ( habits.getValue() == null || habits.getValue().size() == 0 ) {
+                habitDao.nukeTable();
+                habitDao.insert( new Habit( "-3" ) );
+                try {
+                    TimeUnit.SECONDS.sleep( 10 );
+                }
+                catch ( InterruptedException e ) {
+                    e.printStackTrace();
+                }
+                habitDao.insert( Habit.HabitDummy.HABITS_BIG );
+            }
         } );
 
-        // only will occur when first booting, so just wait and make sure we get the information
-        try {
-            executorService.awaitTermination( 10, TimeUnit.MILLISECONDS );
-        }
-        catch ( InterruptedException e ) {
-            e.printStackTrace();
-        }
     }
 
 
@@ -54,13 +57,7 @@ public class HabitViewModel extends AndroidViewModel
     // DB Access/Update Methods
 
 
-    @NonNull
-    public List< Habit > getHabits() {
-    // public LiveData<List<Habit>> getHabits() {
-        // if ( habits.getValue() == null || habits.getValue().size() == 0 ) {
-        if ( habits == null || habits.size() == 0 ) {
-            insertHabits( Habit.HabitDummy.HABITS );
-        }
+    public LiveData<List<Habit>> getHabits() {
         return habits;
     }
 
@@ -73,25 +70,21 @@ public class HabitViewModel extends AndroidViewModel
     }
 
     public void deleteHabit( Habit habit ) {
-        executorService.execute(() -> habitDao.delete(habit));
+        executorService.execute(() -> habitDao.delete(habit) );
     }
 
     public void incrementHabit( Habit habit ) {
         habit.increment();
-        updateHabit( habit );
+        updateHabitInDB( habit );
     }
 
     public void decrementHabit( Habit habit ) {
         habit.decrement();
-        updateHabit( habit );
+        updateHabitInDB( habit );
     }
 
-    public void updateHabit( Habit habit ) {
-        executorService.execute( () -> {
-            habitDao.update( habit );
-            // habits.postValue( habitDao.getAll() );
-            habits = habitDao.getAll();
-        } );
+    public void updateHabitInDB( Habit habit ) {
+        executorService.execute( () -> habitDao.update( habit ) );
     }
 
 

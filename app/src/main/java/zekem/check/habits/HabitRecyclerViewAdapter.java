@@ -9,60 +9,29 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import zekem.check.R;
-import zekem.check.habits.HabitPageFragment.OnListFragmentInteractionListener;
-
 import java.util.List;
+
+import zekem.check.R;
+import zekem.check.habits.HabitPageFragment.HabitFragmentListener;
 
 /**
  * {@link RecyclerView.Adapter} that can display a {@link Habit} and makes a call to the
- * specified {@link OnListFragmentInteractionListener}.
+ * specified {@link HabitFragmentListener}.
  */
 public class HabitRecyclerViewAdapter extends RecyclerView.Adapter< HabitRecyclerViewAdapter.ViewHolder > {
 
-    public List< Habit > mValues;
-    public final OnListFragmentInteractionListener mListener;
+    public final HabitViewModel mViewModel;
+    private List< Habit > habits;
 
-    public HabitRecyclerViewAdapter( List< Habit > items,
-                                     OnListFragmentInteractionListener listener ) {
+    public HabitRecyclerViewAdapter( HabitViewModel viewModel ) {
 
-        mValues = items;
-        mListener = listener;
+        mViewModel = viewModel;
     }
 
-    public void setData( final List<Habit> newData ) {
-        DiffUtil.DiffResult result = DiffUtil.calculateDiff( new DiffUtil.Callback() {
-            @Override
-            public int getOldListSize() {
+    public void setData( List< Habit > habits ) {
 
-                return getItemCount();
-            }
-
-            @Override
-            public int getNewListSize() {
-
-                if ( newData == null ) {
-                    Log.d( "Check", "setData DiffUtil on null newData" );
-                    return 0;
-                }
-                return newData.size();
-            }
-
-            @Override
-            public boolean areItemsTheSame( int oldItemPosition, int newItemPosition ) {
-
-                return mValues.get( oldItemPosition ).equals( newData.get(
-                        newItemPosition ) );
-            }
-
-            @Override
-            public boolean areContentsTheSame( int oldItemPosition, int newItemPosition ) {
-
-                return mValues.get( oldItemPosition ).sameContents( newData.get( newItemPosition ) );
-            }
-        } );
-        result.dispatchUpdatesTo( this );
-        this.mValues = newData;
+        this.habits = habits;
+        notifyDataSetChanged();
     }
 
     @Override
@@ -76,19 +45,18 @@ public class HabitRecyclerViewAdapter extends RecyclerView.Adapter< HabitRecycle
     @Override
     public void onBindViewHolder( final ViewHolder holder, final int position ) {
 
-        holder.mItem = mValues.get( position );
-        holder.mContentView.setText( String.valueOf( mValues.get( position ).getInfo() ) );
+        holder.mItem = habits.get( position );
+        holder.mContentView.setText( String.valueOf( holder.mItem.getInfo() ) );
 
     }
 
     @Override
     public int getItemCount() {
 
-        if ( mValues == null ) {
-            Log.d( "Check", "getItemCount on null" );
+        if ( habits == null ) {
             return 0;
         }
-        return mValues.size();
+        return habits.size();
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder  {
@@ -109,19 +77,19 @@ public class HabitRecyclerViewAdapter extends RecyclerView.Adapter< HabitRecycle
 
             mContentView.setOnLongClickListener( v -> {
 
-                mListener.onContentLongPress( mValues.get( getAdapterPosition() ) );
+                mViewModel.onContentLongPress( mItem );
                 notifyItemRemoved( getAdapterPosition() );
                 return true;
 
             } );
 
             mPlus.setOnClickListener( v -> {
-                    mListener.onPlusPress( mValues.get( getAdapterPosition() ) );
+                    mViewModel.onPlusPress( mItem );
                     notifyItemChanged( getAdapterPosition() );
             } );
 
             mMinus.setOnClickListener( v -> {
-                    mListener.onMinusPress( mValues.get( getAdapterPosition() ) );
+                    mViewModel.onMinusPress( mItem );
                     notifyItemChanged( getAdapterPosition() );
             } );
         }

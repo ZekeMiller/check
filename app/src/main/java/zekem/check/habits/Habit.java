@@ -75,11 +75,15 @@ public class Habit {
     public static class HabitDummy {
 
         public static final List< Habit > HABITS = new ArrayList<>();
+        public static final List< Habit > HABITS_BIG = new ArrayList<>();
         public static final int AMOUNT = 20;
 
         static {
             for ( int i = 0 ; i <= AMOUNT ; i++ ) {
                 HABITS.add( new Habit( Integer.toString( i ) ) );
+            }
+            for ( int i = 0 ; i <= AMOUNT * AMOUNT * AMOUNT ; i++ ) {
+                HABITS_BIG.add( new Habit( Integer.toString( i ) ) );
             }
         }
 

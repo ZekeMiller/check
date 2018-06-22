@@ -2,13 +2,14 @@ package zekem.check.habits;
 
 import android.app.Application;
 import android.arch.lifecycle.AndroidViewModel;
+import android.arch.lifecycle.LifecycleOwner;
 import android.arch.lifecycle.LiveData;
+import android.arch.lifecycle.Observer;
+import android.support.annotation.NonNull;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.concurrent.TimeUnit;
 
 import zekem.check.habits.database.HabitDatabase;
 import zekem.check.habits.database.dao.HabitDao;
@@ -24,6 +25,7 @@ public class HabitViewModel extends AndroidViewModel
 
     private final HabitDao habitDao;
     private LiveData< List< Habit > > habits;
+    private final Object habitInstantiationLock = new Object();
     private ExecutorService executorService;
 
 
@@ -37,16 +39,8 @@ public class HabitViewModel extends AndroidViewModel
 
         executorService.execute( () -> {
             habits = habitDao.getAll();
-            if ( habits.getValue() == null || habits.getValue().size() == 0 ) {
-                habitDao.nukeTable();
-                habitDao.insert( new Habit( "-3" ) );
-                try {
-                    TimeUnit.SECONDS.sleep( 10 );
-                }
-                catch ( InterruptedException e ) {
-                    e.printStackTrace();
-                }
-                habitDao.insert( Habit.HabitDummy.HABITS_BIG );
+            synchronized ( habitInstantiationLock ) {
+                habitInstantiationLock.notify();
             }
         } );
 
@@ -57,8 +51,30 @@ public class HabitViewModel extends AndroidViewModel
     // DB Access/Update Methods
 
 
-    public LiveData<List<Habit>> getHabits() {
-        return habits;
+//    public LiveData<List<Habit>> getHabits() {
+//        return habits;
+//    }
+    public void register( LifecycleOwner lifecycleOwner,
+                          @NonNull Observer< List< Habit > > observer ) {
+
+        executorService.execute( () -> {
+            try {
+                if ( habits == null ) {
+                    habitInstantiationLock.wait();
+                }
+            }
+            catch ( InterruptedException e ) {
+                e.printStackTrace();
+            }
+            habits.observe( lifecycleOwner, observer );
+            synchronized ( habitInstantiationLock ) {
+                habitInstantiationLock.notify();
+            }
+        } );
+    }
+
+    public void addHabit() {
+        insertHabit( new Habit( "0" ) );
     }
 
     public void insertHabit( Habit habit ) {

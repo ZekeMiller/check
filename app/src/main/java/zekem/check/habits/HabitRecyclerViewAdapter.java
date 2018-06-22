@@ -32,6 +32,7 @@ public class HabitRecyclerViewAdapter extends RecyclerView.Adapter< HabitRecycle
 
         this.habits = habits;
         notifyDataSetChanged();
+        // TODO DiffUtil
     }
 
     @Override

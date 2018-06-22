@@ -12,16 +12,16 @@ import android.view.ViewGroup;
 /**
  * A simple {@link Fragment} subclass.
  * Activities that contain this fragment must implement the
- * {@link AnalyticsFragment.OnFragmentInteractionListener} interface
+ * {@link AnalyticsPageFragment.OnFragmentInteractionListener} interface
  * to handle interaction events.
- * Use the {@link AnalyticsFragment#newInstance} factory method to
+ * Use the {@link AnalyticsPageFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class AnalyticsFragment extends Fragment {
+public class AnalyticsPageFragment extends Fragment {
 
     private OnFragmentInteractionListener mListener;
 
-    public AnalyticsFragment() {
+    public AnalyticsPageFragment() {
         // Required empty public constructor
     }
 
@@ -32,9 +32,9 @@ public class AnalyticsFragment extends Fragment {
      * @return A new instance of fragment Analytics.
      */
     // TODO: Rename and change types and number of parameters
-    public static AnalyticsFragment newInstance() {
+    public static AnalyticsPageFragment newInstance() {
 
-        AnalyticsFragment fragment = new AnalyticsFragment();
+        AnalyticsPageFragment fragment = new AnalyticsPageFragment();
         return fragment;
     }
 

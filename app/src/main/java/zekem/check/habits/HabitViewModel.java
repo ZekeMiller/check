@@ -18,7 +18,7 @@ import zekem.check.habits.database.dao.HabitDao;
  * @author Zeke Miller
  */
 public class HabitViewModel extends AndroidViewModel
-                implements HabitPageFragment.HabitFragmentListener {
+                implements HabitFragmentListener {
 
 
     // Fields
@@ -72,6 +72,7 @@ public class HabitViewModel extends AndroidViewModel
             }
         } );
     }
+
 
     public void addHabit() {
         insertHabit( new Habit( "0" ) );

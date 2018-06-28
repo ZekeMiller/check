@@ -1,11 +1,14 @@
 <resources>
     <string name="app_name">Check</string>
+
     <string name="title_habits">Habits</string>
+    <string name="habit_plus_button">Plus Button</string>
+    <string name="habit_minus_button">Minus Button</string>
+    <string name="habit_toolbar_add_button">Add Habit</string>
+
     <string name="title_dailies">Dailies</string>
     <string name="title_datas">Datas</string>
     <string name="title_analytics">Analytics</string>
-    <string name="plus_button_description">Plus Button</string>
-    <string name="minus_button_description">Minus Button</string>
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>

@@ -5,7 +5,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginTop="8dp"
+    android:layout_marginTop="@dimen/habit_list_item_top_margin"
     >
 
     <android.support.constraint.ConstraintLayout
@@ -18,13 +18,13 @@
             android:id="@+id/plusButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:contentDescription="@string/plus_button_description"
+            android:contentDescription="@string/habit_plus_button"
             app:srcCompat="@drawable/ic_add_circle_accent_24dp"
             app:layout_constraintEnd_toStartOf="@id/content"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
-            android:padding="16dp"
+            android:padding="@dimen/habit_plus_button_padding"
             />
 
         <TextView
@@ -44,13 +44,13 @@
             android:id="@+id/minusButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:contentDescription="@string/minus_button_description"
+            android:contentDescription="@string/habit_minus_button"
             app:srcCompat="@drawable/ic_minus_circle_accent_24dp"
             app:layout_constraintStart_toEndOf="@id/content"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
-            android:padding="16dp"
+            android:padding="@dimen/habit_minus_button_padding"
             />
 
     </android.support.constraint.ConstraintLayout>

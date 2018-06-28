@@ -1,8 +1,6 @@
 package zekem.check.habits;
 
-import android.support.v7.util.DiffUtil;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,7 +10,6 @@ import android.widget.TextView;
 import java.util.List;
 
 import zekem.check.R;
-import zekem.check.habits.HabitPageFragment.HabitFragmentListener;
 
 /**
  * {@link RecyclerView.Adapter} that can display a {@link Habit} and makes a call to the

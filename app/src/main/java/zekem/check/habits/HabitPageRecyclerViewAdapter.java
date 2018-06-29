@@ -15,12 +15,12 @@ import zekem.check.R;
  * {@link RecyclerView.Adapter} that can display a {@link Habit} and makes a call to the
  * specified {@link HabitFragmentListener}.
  */
-public class HabitRecyclerViewAdapter extends RecyclerView.Adapter< HabitRecyclerViewAdapter.ViewHolder > {
+public class HabitPageRecyclerViewAdapter extends RecyclerView.Adapter< HabitPageRecyclerViewAdapter.ViewHolder > {
 
     public final HabitViewModel mViewModel;
     private List< Habit > habits;
 
-    public HabitRecyclerViewAdapter( HabitViewModel viewModel ) {
+    public HabitPageRecyclerViewAdapter( HabitViewModel viewModel ) {
 
         mViewModel = viewModel;
     }
@@ -72,6 +72,10 @@ public class HabitRecyclerViewAdapter extends RecyclerView.Adapter< HabitRecycle
             mContentView = view.findViewById( R.id.content );
             mPlus = view.findViewById( R.id.plusButton );
             mMinus = view.findViewById( R.id.minusButton );
+
+            mContentView.setOnClickListener( v -> {
+                mViewModel.viewHabitDetail( habits.get( getAdapterPosition() ) );
+            });
 
             mContentView.setOnLongClickListener( v -> {
 

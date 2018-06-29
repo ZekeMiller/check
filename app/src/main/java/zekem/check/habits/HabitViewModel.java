@@ -4,15 +4,19 @@ import android.app.Application;
 import android.arch.lifecycle.AndroidViewModel;
 import android.arch.lifecycle.LifecycleOwner;
 import android.arch.lifecycle.LiveData;
+import android.arch.lifecycle.MutableLiveData;
 import android.arch.lifecycle.Observer;
 import android.support.annotation.NonNull;
+
+import org.joda.time.LocalDate;
 
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 import zekem.check.habits.database.HabitDatabase;
-import zekem.check.habits.database.dao.HabitDao;
+import zekem.check.habits.database.HabitDao;
+import zekem.check.habits.database.HabitDayDao;
 
 /**
  * @author Zeke Miller
@@ -24,9 +28,12 @@ public class HabitViewModel extends AndroidViewModel
     // Fields
 
     private final HabitDao habitDao;
+    private final HabitDayDao habitDayDao;
     private LiveData< List< Habit > > habits;
     private final Object habitInstantiationLock = new Object();
     private ExecutorService executorService;
+
+    private MutableLiveData< Habit > habitDetail = new MutableLiveData<>();
 
 
 
@@ -35,6 +42,7 @@ public class HabitViewModel extends AndroidViewModel
     public HabitViewModel( Application application ) {
         super( application );
         habitDao = HabitDatabase.getHabitDatabase( getApplication() ).habitDao();
+        habitDayDao = HabitDatabase.getHabitDatabase( getApplication() ).habitDayDao();
         executorService = Executors.newSingleThreadExecutor();
 
         executorService.execute( () -> {
@@ -102,6 +110,24 @@ public class HabitViewModel extends AndroidViewModel
 
     public void updateHabitInDB( Habit habit ) {
         executorService.execute( () -> habitDao.update( habit ) );
+    }
+
+    public LiveData< List<HabitDay> > getDaysForHabit( Habit habit ) {
+        return habitDayDao.getDaysForHabit( habit.getId() );
+    }
+
+
+    public void viewHabitDetail( Habit habit ) {
+//        getApplication().startActivity( new Intent( getApplication(), HabitDetailFragment.class ) );
+        habitDetail.postValue( habit );
+    }
+
+    public LiveData< Habit > getDetail() {
+        return habitDetail;
+    }
+
+    public void addDay( Habit habit ) {
+        habitDayDao.insert( new HabitDay( habit.getId(), LocalDate.now() ) );
     }
 
 

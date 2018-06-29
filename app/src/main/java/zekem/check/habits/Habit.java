@@ -1,7 +1,9 @@
 package zekem.check.habits;
 
 import android.arch.persistence.room.Entity;
+import android.arch.persistence.room.Index;
 import android.arch.persistence.room.PrimaryKey;
+import android.arch.persistence.room.Relation;
 import android.support.annotation.NonNull;
 
 import java.util.ArrayList;
@@ -16,6 +18,9 @@ public class Habit {
     @NonNull
     @PrimaryKey (autoGenerate = true)
     private int id;
+
+//    @Relation( parentColumn = "id", entityColumn = "habitID" )
+//    private List< HabitDay > habitDays;
 
     private String title;
     private int info;
@@ -40,6 +45,13 @@ public class Habit {
         this.id = id;
     }
 
+//    public List<HabitDay> getHabitDays() {
+//        return habitDays;
+//    }
+//
+//    public void setHabitDays(List<HabitDay> habitDays) {
+//        this.habitDays = habitDays;
+//    }
 
     public String getTitle() {
 
@@ -72,23 +84,23 @@ public class Habit {
     }
 
 
-    public static class HabitDummy {
-
-        public static final List< Habit > HABITS = new ArrayList<>();
-        public static final List< Habit > HABITS_BIG = new ArrayList<>();
-        public static final int AMOUNT = 20;
-
-        static {
-            for ( int i = 0 ; i <= AMOUNT ; i++ ) {
-                HABITS.add( new Habit( Integer.toString( i ) ) );
-            }
-            for ( int i = 0 ; i <= AMOUNT * AMOUNT * AMOUNT ; i++ ) {
-                HABITS_BIG.add( new Habit( Integer.toString( i ) ) );
-            }
-        }
-
-
-    }
+//    public static class HabitDummy {
+//
+//        public static final List< Habit > HABITS = new ArrayList<>();
+//        public static final List< Habit > HABITS_BIG = new ArrayList<>();
+//        public static final int AMOUNT = 20;
+//
+//        static {
+//            for ( int i = 0 ; i <= AMOUNT ; i++ ) {
+//                HABITS.add( new Habit( Integer.toString( i ) ) );
+//            }
+//            for ( int i = 0 ; i <= AMOUNT * AMOUNT * AMOUNT ; i++ ) {
+//                HABITS_BIG.add( new Habit( Integer.toString( i ) ) );
+//            }
+//        }
+//
+//
+//    }
 
     public boolean sameContents( Habit habit ) {
         return this.equals( habit ) && this.title.equals( habit.title ) && this.info == habit.info;

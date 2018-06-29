@@ -1,6 +1,7 @@
 package zekem.check;
 
 import android.annotation.SuppressLint;
+import android.arch.lifecycle.ViewModelProviders;
 import android.net.Uri;
 import android.support.design.internal.BottomNavigationItemView;
 import android.support.design.internal.BottomNavigationMenuView;
@@ -20,7 +21,9 @@ import zekem.check.dailies.DailyPageFragment;
 import zekem.check.dailies.Daily;
 import zekem.check.datas.Data;
 import zekem.check.datas.DataPageFragment;
+import zekem.check.habits.HabitDetailFragment;
 import zekem.check.habits.HabitPageFragment;
+import zekem.check.habits.HabitViewModel;
 
 /**
  * The main Activity, has a bottom navigation and holds other Fragments
@@ -30,9 +33,10 @@ public class Main extends AppCompatActivity implements
                 DataPageFragment.OnListFragmentInteractionListener,
                 AnalyticsPageFragment.OnFragmentInteractionListener {
 
+    private HabitViewModel habitViewModel;
     private HabitPageFragment habitsFragment;
     private DailyPageFragment dailiesFragment;
-    private DataPageFragment datasFragment;
+    private DataPageFragment dataFragment;
     private AnalyticsPageFragment analyticsPageFragment;
 
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
@@ -53,6 +57,7 @@ public class Main extends AppCompatActivity implements
             switch ( item.getItemId() ) {
                 case R.id.navigation_habits:
                     fragment = habitsFragment;
+                    habitsFragment.setViewModel( habitViewModel );
                     title = getString( R.string.title_habits );
                     break;
                 case R.id.navigation_dailies:
@@ -60,7 +65,7 @@ public class Main extends AppCompatActivity implements
                     title = getString( R.string.title_dailies );
                     break;
                 case R.id.navigation_datas:
-                    fragment = datasFragment;
+                    fragment = dataFragment;
                     title = getString( R.string.title_datas );
                     break;
                 case R.id.navigation_analytics:
@@ -71,6 +76,8 @@ public class Main extends AppCompatActivity implements
                     return false;
             }
             transaction.replace( R.id.main_fragment_container, fragment );
+            transaction.addToBackStack( null );
+            // TODO fix bottom nav appearing wrong on back press
             transaction.commit();
             Toolbar toolbar = findViewById( R.id.toolbar );
             toolbar.setTitle( title );
@@ -92,10 +99,21 @@ public class Main extends AppCompatActivity implements
         removeShiftMode( navigation );
         navigation.setOnNavigationItemSelectedListener( mOnNavigationItemSelectedListener );
 
-        habitsFragment = HabitPageFragment.newInstance();
+        habitViewModel = ViewModelProviders.of( this ).get( HabitViewModel.class );
+        habitViewModel.getDetail().observe( this, habit -> {
 
+            HabitDetailFragment habitDetailFragment =
+                    HabitDetailFragment.newInstance( habitViewModel, habit );
+            getSupportFragmentManager().beginTransaction()
+                    .replace( R.id.main_fragment_container, habitDetailFragment )
+                    .addToBackStack( null )
+                    .commit();
+
+        });
+
+        habitsFragment = HabitPageFragment.newInstance();
         dailiesFragment = DailyPageFragment.newInstance( 1 );
-        datasFragment = DataPageFragment.newInstance( 1 );
+        dataFragment = DataPageFragment.newInstance( 1 );
         analyticsPageFragment = AnalyticsPageFragment.newInstance();
 
         Toolbar toolbar = findViewById( R.id.toolbar );

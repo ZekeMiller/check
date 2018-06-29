@@ -1,6 +1,5 @@
 package zekem.check.habits;
 
-import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -40,7 +39,9 @@ public class HabitPageFragment extends Fragment {
      */
     public static HabitPageFragment newInstance() {
 
-        return new HabitPageFragment();
+        HabitPageFragment habitPageFragment;
+        habitPageFragment = new HabitPageFragment();
+        return habitPageFragment;
     }
 
     /**
@@ -63,8 +64,7 @@ public class HabitPageFragment extends Fragment {
     public void onAttach( Context context ) {
 
         super.onAttach( context );
-        mViewModel = ViewModelProviders.of( this ).get( HabitViewModel.class );
-        
+//        mViewModel = ViewModelProviders.of( this ).get( HabitViewModel.class );
     }
 
     /**
@@ -105,7 +105,7 @@ public class HabitPageFragment extends Fragment {
             final RecyclerView recyclerView = (RecyclerView) view;
             recyclerView.setLayoutManager( new LinearLayoutManager( context ) );
 
-            final HabitRecyclerViewAdapter adapter = new HabitRecyclerViewAdapter( mViewModel );
+            final HabitPageRecyclerViewAdapter adapter = new HabitPageRecyclerViewAdapter( mViewModel );
 
             recyclerView.setAdapter( adapter );
             mViewModel.register( this, adapter::setData );
@@ -141,5 +141,9 @@ public class HabitPageFragment extends Fragment {
             default:
                 return false;
         }
+    }
+
+    public void setViewModel( HabitViewModel habitViewModel ) {
+        mViewModel = habitViewModel;
     }
 }

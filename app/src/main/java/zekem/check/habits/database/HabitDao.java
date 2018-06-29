@@ -1,4 +1,4 @@
-package zekem.check.habits.database.dao;
+package zekem.check.habits.database;
 
 import android.arch.lifecycle.LiveData;
 import android.arch.persistence.room.Dao;

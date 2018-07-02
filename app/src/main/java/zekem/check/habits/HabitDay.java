@@ -2,9 +2,11 @@ package zekem.check.habits;
 
 import android.arch.persistence.room.Entity;
 import android.arch.persistence.room.ForeignKey;
+import android.arch.persistence.room.Ignore;
 import android.arch.persistence.room.Index;
 import android.arch.persistence.room.PrimaryKey;
 import android.arch.persistence.room.TypeConverter;
+import android.support.annotation.Nullable;
 
 import org.joda.time.LocalDate;
 
@@ -20,21 +22,27 @@ import static android.arch.persistence.room.ForeignKey.CASCADE;
             indices = { @Index( "habitID" ) } )
 public class HabitDay {
 
-    @PrimaryKey ( autoGenerate = true )
+    @PrimaryKey(autoGenerate = true)
     private int id;
-
     private int habitID;
-    private String date = LocalDate.now().toString();
 
-    private int plusCount = 0;
-    private int minusCount = 0;
+    private String date;
+    private int plusCount;
+    private int minusCount;
 
-    public HabitDay() {
-    }
+    @Ignore
+    private Habit habit;
 
-    public HabitDay( int habitID, LocalDate date ) {
-        this.habitID = habitID;
+
+    public HabitDay() {}
+
+    public HabitDay( Habit habit, LocalDate date ) {
+        this.habit = habit;
+        this.habitID = habit.getId();
+//        this.habitID = habit.getId();
         this.date = date.toString();
+        plusCount = 0;
+        minusCount = 0;
     }
 
 
@@ -48,34 +56,16 @@ public class HabitDay {
     }
 
 
-    public void setId( int id) {
-        this.id = id;
-    }
-
-    public void setDate( String date ) {
-
-        this.date = date;
-    }
-
-    public void setHabitID(int habitID) {
-        this.habitID = habitID;
-    }
-
-    public void setPlusCount( int plusCount ) {
-        this.plusCount = plusCount;
-    }
-
-    public void setMinusCount( int minusCount ) {
-        this.minusCount = minusCount;
-    }
-
-
     public int getId() {
         return id;
     }
 
     public int getHabitID() {
         return habitID;
+    }
+
+    public Habit getHabit() {
+        return habit;
     }
 
     public int getMinusCount() {
@@ -92,6 +82,42 @@ public class HabitDay {
 
         return date;
     }
+
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public void setDate( String date ) {
+
+        this.date = date;
+    }
+
+    public void setHabitID(int habitID) {
+        this.habitID = habitID;
+    }
+
+    public void setHabit(Habit habit) {
+        this.habit = habit;
+    }
+
+    public void setPlusCount(int plusCount ) {
+        this.plusCount = plusCount;
+    }
+
+    public void setMinusCount( int minusCount ) {
+        this.minusCount = minusCount;
+    }
+
+    public String getTitle() {
+        if ( habit == null ) {
+            return "placeholder text";
+        }
+        else {
+            return habit.getTitle();
+        }
+    }
+
 
 
     @TypeConverter

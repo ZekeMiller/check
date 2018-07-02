@@ -1,5 +1,6 @@
 package zekem.check.habits;
 
+import android.arch.persistence.room.ColumnInfo;
 import android.arch.persistence.room.Entity;
 import android.arch.persistence.room.Index;
 import android.arch.persistence.room.PrimaryKey;
@@ -9,38 +10,38 @@ import android.support.annotation.NonNull;
 import java.util.ArrayList;
 import java.util.List;
 
+import static android.arch.persistence.room.ColumnInfo.INTEGER;
+
 /**
  * @author Zeke Miller
  */
 @Entity
 public class Habit {
 
-    @NonNull
-    @PrimaryKey (autoGenerate = true)
+    @PrimaryKey(autoGenerate = true)
     private int id;
 
-//    @Relation( parentColumn = "id", entityColumn = "habitID" )
-//    private List< HabitDay > habitDays;
-
     private String title;
-    private int info;
+
+    private int totalPlus;
+    private int totalMinus;
 
 
     public Habit( String title ) {
 
         this.title = title;
-        this.info = Integer.parseInt( title );
+        totalMinus = 0;
+        totalPlus = 0;
     }
 
 
 
-    @NonNull
     public int getId() {
 
         return id;
     }
 
-    public void setId( @NonNull int id ) {
+    public void setId( int id ) {
 
         this.id = id;
     }
@@ -54,56 +55,45 @@ public class Habit {
 //    }
 
     public String getTitle() {
-
         return title;
     }
 
-    public void setTitle( String title ) {
+    public int getTotalMinus() {
+        return totalMinus;
+    }
 
+    public int getTotalPlus() {
+        return totalPlus;
+    }
+
+
+    public void setTitle(String title ) {
         this.title = title;
     }
 
-
-    public int getInfo() {
-
-        return info;
+    public void setTotalMinus(int totalMinus) {
+        this.totalMinus = totalMinus;
     }
 
-    public void setInfo( int info ) {
-
-        this.info = info;
+    public void setTotalPlus(int totalPlus) {
+        this.totalPlus = totalPlus;
     }
 
 
     public void increment() {
-        info++;
+        totalPlus++;
     }
 
     public void decrement() {
-        info--;
+        totalMinus++;
     }
 
 
-//    public static class HabitDummy {
-//
-//        public static final List< Habit > HABITS = new ArrayList<>();
-//        public static final List< Habit > HABITS_BIG = new ArrayList<>();
-//        public static final int AMOUNT = 20;
-//
-//        static {
-//            for ( int i = 0 ; i <= AMOUNT ; i++ ) {
-//                HABITS.add( new Habit( Integer.toString( i ) ) );
-//            }
-//            for ( int i = 0 ; i <= AMOUNT * AMOUNT * AMOUNT ; i++ ) {
-//                HABITS_BIG.add( new Habit( Integer.toString( i ) ) );
-//            }
-//        }
-//
-//
-//    }
 
     public boolean sameContents( Habit habit ) {
-        return this.equals( habit ) && this.title.equals( habit.title ) && this.info == habit.info;
+        return this.equals( habit ) && this.title.equals( habit.title ) &&
+                this.totalMinus == habit.totalMinus &&
+                this.totalPlus == habit.totalPlus;
     }
 
     @Override

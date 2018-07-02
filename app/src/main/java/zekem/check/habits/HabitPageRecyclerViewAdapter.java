@@ -1,5 +1,6 @@
 package zekem.check.habits;
 
+import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -8,6 +9,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import java.util.List;
+import java.util.Locale;
 
 import zekem.check.R;
 
@@ -17,23 +19,24 @@ import zekem.check.R;
  */
 public class HabitPageRecyclerViewAdapter extends RecyclerView.Adapter< HabitPageRecyclerViewAdapter.ViewHolder > {
 
-    public final HabitViewModel mViewModel;
-    private List< Habit > habits;
+    private final HabitViewModel mViewModel;
+    private List< HabitDay > habits;
 
     public HabitPageRecyclerViewAdapter( HabitViewModel viewModel ) {
 
         mViewModel = viewModel;
     }
 
-    public void setData( List< Habit > habits ) {
+    public void setData( List< HabitDay > habits ) {
 
         this.habits = habits;
         notifyDataSetChanged();
         // TODO DiffUtil
     }
 
+    @NonNull
     @Override
-    public ViewHolder onCreateViewHolder( ViewGroup parent, int viewType ) {
+    public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType ) {
 
         View view = LayoutInflater.from( parent.getContext() )
                 .inflate( R.layout.fragment_habit, parent, false );
@@ -41,10 +44,16 @@ public class HabitPageRecyclerViewAdapter extends RecyclerView.Adapter< HabitPag
     }
 
     @Override
-    public void onBindViewHolder( final ViewHolder holder, final int position ) {
+    public void onBindViewHolder( @NonNull final ViewHolder holder, final int position ) {
 
         holder.mItem = habits.get( position );
-        holder.mContentView.setText( String.valueOf( holder.mItem.getInfo() ) );
+        holder.mContentView.setText( String.format(Locale.getDefault(),
+                "(%d) %s (%d)",
+                holder.mItem.getPlusCount(),
+                holder.mItem.getTitle(),
+//                 holder.mItem.getHabit().getTitle(),
+//                "placeholder",
+                holder.mItem.getMinusCount() ) );
 
     }
 
@@ -59,13 +68,13 @@ public class HabitPageRecyclerViewAdapter extends RecyclerView.Adapter< HabitPag
 
     public class ViewHolder extends RecyclerView.ViewHolder  {
 
-        public final View mView;
-        public final TextView mContentView;
-        public final ImageView mPlus;
-        public final ImageView mMinus;
-        public Habit mItem;
+        private final View mView;
+        private final TextView mContentView;
+        private final ImageView mPlus;
+        private final ImageView mMinus;
+        private HabitDay mItem;
 
-        public ViewHolder( final View view ) {
+        private ViewHolder( final View view ) {
 
             super( view );
             mView = view;
@@ -73,9 +82,9 @@ public class HabitPageRecyclerViewAdapter extends RecyclerView.Adapter< HabitPag
             mPlus = view.findViewById( R.id.plusButton );
             mMinus = view.findViewById( R.id.minusButton );
 
-            mContentView.setOnClickListener( v -> {
-                mViewModel.viewHabitDetail( habits.get( getAdapterPosition() ) );
-            });
+            mContentView.setOnClickListener( v ->
+                mViewModel.viewHabitDetail( habits.get( getAdapterPosition() ).getHabitID() )
+            );
 
             mContentView.setOnLongClickListener( v -> {
 

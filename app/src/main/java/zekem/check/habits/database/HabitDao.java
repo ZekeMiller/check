@@ -19,7 +19,7 @@ import zekem.check.habits.Habit;
 public interface HabitDao {
 
     @Insert
-    void insert( Habit... habit );
+    long insert( Habit habit );
 
     @Insert
     void insert( List< Habit > habits );
@@ -33,10 +33,19 @@ public interface HabitDao {
     @Delete
     void delete( List< Habit >  habit );
 
-    @Query("DELETE FROM habit")
-    void nukeTable();
+    @Query( "DELETE FROM habit WHERE id=:id" )
+    void delete( int id );
 
     @Query( "SELECT * FROM habit" )
     LiveData< List< Habit > > getAll();
+
+    @Query( "SELECT * FROM habit WHERE id=:id" )
+    Habit getHabitByID( int id );
+
+    @Query( "SELECT id FROM habit" )
+    List< Integer > getHabitIDs();
+
+    @Query( "DELETE FROM habit" )
+    void nukeTable();
 
 }

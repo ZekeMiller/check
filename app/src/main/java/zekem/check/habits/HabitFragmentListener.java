@@ -7,9 +7,9 @@ package zekem.check.habits;
  */
 public interface HabitFragmentListener {
 
-    void onContentLongPress( Habit habit );
+    void onContentLongPress( HabitDay habitDay );
 
-    void onPlusPress( Habit habit );
+    void onPlusPress( HabitDay habitDay );
 
-    void onMinusPress( Habit habit );
+    void onMinusPress( HabitDay habitDay );
 }

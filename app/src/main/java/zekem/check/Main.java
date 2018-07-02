@@ -100,10 +100,10 @@ public class Main extends AppCompatActivity implements
         navigation.setOnNavigationItemSelectedListener( mOnNavigationItemSelectedListener );
 
         habitViewModel = ViewModelProviders.of( this ).get( HabitViewModel.class );
-        habitViewModel.getDetail().observe( this, habit -> {
+        habitViewModel.getDetail().observe( this, habitID -> {
 
             HabitDetailFragment habitDetailFragment =
-                    HabitDetailFragment.newInstance( habitViewModel, habit );
+                    HabitDetailFragment.newInstance( habitViewModel, habitID );
             getSupportFragmentManager().beginTransaction()
                     .replace( R.id.main_fragment_container, habitDetailFragment )
                     .addToBackStack( null )

@@ -20,9 +20,9 @@ public abstract class HabitDatabase extends RoomDatabase {
     public abstract HabitDao habitDao();
     public abstract HabitDayDao habitDayDao();
 
-    public static HabitDatabase getHabitDatabase(Context context) {
+    public static HabitDatabase getHabitDatabase( Context context ) {
         if ( INSTANCE == null ) {
-            INSTANCE = Room.databaseBuilder(context.getApplicationContext(), HabitDatabase.class, DB_NAME ).allowMainThreadQueries().build();
+            INSTANCE = Room.databaseBuilder( context.getApplicationContext(), HabitDatabase.class, DB_NAME ).build();
         }
         return INSTANCE;
     }

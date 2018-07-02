@@ -17,7 +17,7 @@ import zekem.check.R;
 public class HabitDetailFragment extends Fragment {
 
     private HabitViewModel habitViewModel;
-    private Habit habit;
+    private int habitID;
 
     /**
      * Mandatory empty constructor for the fragment manager to instantiate the
@@ -27,10 +27,10 @@ public class HabitDetailFragment extends Fragment {
     }
 
 
-    public static HabitDetailFragment newInstance(HabitViewModel habitViewModel, Habit habit) {
+    public static HabitDetailFragment newInstance(HabitViewModel habitViewModel, int habitID) {
         HabitDetailFragment habitDetailFragment = new HabitDetailFragment();
         habitDetailFragment.habitViewModel = habitViewModel;
-        habitDetailFragment.habit = habit;
+        habitDetailFragment.habitID = habitID;
         return habitDetailFragment;
     }
 
@@ -50,7 +50,7 @@ public class HabitDetailFragment extends Fragment {
         inflater.inflate( R.menu.habit_detail_toolbar, menu );
         menu.findItem( R.id.habit_detail_toolbar_add_button )
                 .setOnMenuItemClickListener( menuItem -> {
-                    habitViewModel.addDay( habit );
+                    habitViewModel.addDay( habitID );
                     return true;
                 } );
     }
@@ -68,7 +68,7 @@ public class HabitDetailFragment extends Fragment {
 
             HabitDetailRecyclerViewAdapter adapter = new HabitDetailRecyclerViewAdapter( habitViewModel );
             recyclerView.setAdapter( adapter );
-            habitViewModel.getDaysForHabit( habit ).observe( this, adapter::setData );
+            habitViewModel.registerDetail( this, adapter::setData, habitID);
         }
         return view;
     }
@@ -78,6 +78,5 @@ public class HabitDetailFragment extends Fragment {
     public void onDetach() {
         super.onDetach();
         habitViewModel = null;
-        habit = null;
     }
 }

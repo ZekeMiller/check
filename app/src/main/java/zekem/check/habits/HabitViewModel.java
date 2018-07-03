@@ -13,7 +13,6 @@ import org.joda.time.LocalDate;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.concurrent.TimeUnit;
 
 import zekem.check.habits.database.HabitDatabase;
 import zekem.check.habits.database.HabitDao;
@@ -30,7 +29,7 @@ public class HabitViewModel extends AndroidViewModel
 
     private final HabitDao habitDao;
     private final HabitDayDao habitDayDao;
-    private LiveData< List< HabitDay > > habitsToday;
+    private LiveData< List< HabitWithDays > > habitsWithDays;
     private final Object habitInstantiationLock = new Object();
     private ExecutorService databaseExecutor;
     private ExecutorService uiExecutor;
@@ -51,9 +50,10 @@ public class HabitViewModel extends AndroidViewModel
         databaseExecutor.execute( () -> {
             synchronized ( habitInstantiationLock ) {
 
-                habitsToday = habitDayDao.getHabitsForDay(LocalDate.now().toString());
+                // habitsWithDays = habitDayDao.getHabitsForDay(LocalDate.now().toString());
+                habitsWithDays = habitDao.getAllWithDays();
                 List<Integer> habitIDs = habitDao.getHabitIDs();
-                List<HabitDay> habitDays = habitsToday.getValue();
+                List<HabitWithDays> habitDays = habitsWithDays.getValue();
 
                 // some habit IDs exist, some days exist, but they don't have the same amount
                 // which means that some habits don't have a day for today
@@ -65,12 +65,12 @@ public class HabitViewModel extends AndroidViewModel
                         ) {
 
                     // remove all the habits for which a HabitDay for today exists
-                    for ( HabitDay habitDay : habitDays ) {
-                        habitIDs.remove( habitDay.getHabitID() );
+                    for ( HabitWithDays habitDay : habitDays ) {
+                        habitIDs.remove( habitDay.getHabit().getId() );
                     }
                     // make a day for all those who don't have one today
                     for ( int habitID : habitIDs ) {
-                        addDay(habitID);
+                        addDay(habitID, null);
                     }
                 }
 
@@ -86,19 +86,19 @@ public class HabitViewModel extends AndroidViewModel
     // DB Access/Update Methods
 
     public void register( LifecycleOwner lifecycleOwner,
-                          @NonNull Observer< List< HabitDay > > observer ) {
+                          @NonNull Observer< List< HabitWithDays > > observer ) {
 
         databaseExecutor.execute( () -> {
             synchronized ( habitInstantiationLock ) {
                 try {
-                    if ( habitsToday == null ) {
+                    if ( habitsWithDays == null ) {
                         habitInstantiationLock.wait();
                     }
                 }
                 catch ( InterruptedException e ) {
                     e.printStackTrace();
                 }
-                habitsToday.observe( lifecycleOwner, observer );
+                habitsWithDays.observe( lifecycleOwner, observer );
                 habitInstantiationLock.notify();
             }
         } );
@@ -114,23 +114,35 @@ public class HabitViewModel extends AndroidViewModel
     public void insertHabit( Habit habit ) {
         databaseExecutor.execute( () -> {
             long id = habitDao.insert( habit );
-            addDay( (int) id );
+//            addDay( (int) id, null );
         } );
     }
 
-    public void addDay( int habitID ) {
+    public void addDay( int habitID, Runnable runnable ) {
+        addDay( habitID, runnable, LocalDate.now() );
+    }
+
+    public void addDay( int habitID, Runnable runnable, LocalDate date ) {
         databaseExecutor.execute( () -> {
             Habit habit = habitDao.getHabitByID( habitID );
             if ( habit != null ) {
-                addDay( habit );
+                addDay( habit, runnable, date );
             }
         });
     }
 
-    public void addDay( Habit habit ) {
+    public void addDay( Habit habit, Runnable runnable ) {
+        addDay( habit, runnable, LocalDate.now() );
+    }
+
+    public void addDay( Habit habit, Runnable runnable, LocalDate date ) {
         databaseExecutor.execute( () -> {
-            if ( habitDayDao.getDay( LocalDate.now().toString(), habit.getId() ) == null ) {
+            if ( habitDayDao.getDay( date.toString(), habit.getId() ) == null ) {
                 habitDayDao.insert( new HabitDay( habit, LocalDate.now() ) );
+
+                if ( runnable != null ) {
+                    runnable.run();
+                }
             }
         } );
     }
@@ -214,22 +226,25 @@ public class HabitViewModel extends AndroidViewModel
         return habitDetail;
     }
 
-    public void fetchHabit( HabitDay habitDay, Runnable postExecute ) {
-        databaseExecutor.execute( () ->
-            {
-                try {
-                    TimeUnit.SECONDS.sleep( 1 );
-                }
-                catch ( InterruptedException e ) {
-                    e.printStackTrace();
-                }
-
-                habitDay.setHabit( habitDao.getHabitByID( habitDay.getHabitID() ) );
-
-                uiExecutor.execute( postExecute );
-            }
-        );
-    }
+//    public void fetchHabit( @NonNull HabitDay habitDay, @Nullable Runnable postExecute ) {
+//        databaseExecutor.execute( () ->
+//            {
+//                try {
+//                    TimeUnit.SECONDS.sleep( 1 );
+//                }
+//                catch ( InterruptedException e ) {
+//                    e.printStackTrace();
+//                }
+//
+//                habitDay.setHabit( habitDao.getHabitByID( habitDay.getHabitID() ) );
+//
+//                if ( postExecute != null ) {
+////                    uiExecutor.execute(postExecute);
+//                    postExecute.run();
+//                }
+//            }
+//        );
+//    }
 
 
 

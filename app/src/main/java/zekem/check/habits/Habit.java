@@ -1,16 +1,7 @@
 package zekem.check.habits;
 
-import android.arch.persistence.room.ColumnInfo;
 import android.arch.persistence.room.Entity;
-import android.arch.persistence.room.Index;
 import android.arch.persistence.room.PrimaryKey;
-import android.arch.persistence.room.Relation;
-import android.support.annotation.NonNull;
-
-import java.util.ArrayList;
-import java.util.List;
-
-import static android.arch.persistence.room.ColumnInfo.INTEGER;
 
 /**
  * @author Zeke Miller
@@ -45,14 +36,6 @@ public class Habit {
 
         this.id = id;
     }
-
-//    public List<HabitDay> getHabitDays() {
-//        return habitDays;
-//    }
-//
-//    public void setHabitDays(List<HabitDay> habitDays) {
-//        this.habitDays = habitDays;
-//    }
 
     public String getTitle() {
         return title;

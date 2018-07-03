@@ -14,6 +14,8 @@ import android.support.annotation.Nullable;
 
 import org.joda.time.LocalDate;
 
+import zekem.check.habits.database.HabitDatabase;
+
 import static android.arch.persistence.room.ForeignKey.CASCADE;
 
 /**
@@ -26,22 +28,25 @@ import static android.arch.persistence.room.ForeignKey.CASCADE;
             indices = { @Index( "habitID" ) } )
 public class HabitDay {
 
+    // these fields should never change after being created
     @PrimaryKey(autoGenerate = true)
     private int dayID;
     private int habitID;
-
     private String date;
+
+    // these fields can change
     private int plusCount;
     private int minusCount;
 
-    @Ignore
-    private Habit habit;
+    // this field needs repopulated every time
+//    @Ignore
+//    private Habit habit;
 
 
     public HabitDay() {}
 
     public HabitDay( Habit habit, LocalDate date ) {
-        this.habit = habit;
+//        this.habit = habit;
         this.habitID = habit.getId();
         this.date = date.toString();
         plusCount = 0;
@@ -67,10 +72,10 @@ public class HabitDay {
         return habitID;
     }
 
-    @Nullable
-    public Habit getHabit() {
-        return habit;
-    }
+//    @Nullable
+//    public Habit getHabit() {
+//        return habit;
+//    }
 
     public int getMinusCount() {
 
@@ -101,9 +106,9 @@ public class HabitDay {
         this.habitID = habitID;
     }
 
-    public void setHabit(Habit habit) {
-        this.habit = habit;
-    }
+//    public void setHabit(Habit habit) {
+//        this.habit = habit;
+//    }
 
     public void setPlusCount(int plusCount ) {
         this.plusCount = plusCount;
@@ -113,20 +118,32 @@ public class HabitDay {
         this.minusCount = minusCount;
     }
 
-    public String getTitle() {
-        if ( habit == null ) {
-            return "loading";
-        }
-        else {
-            return habit.getTitle();
-        }
-    }
+//    public String getTitle() {
+//        if ( habit == null ) {
+//            return "loading";
+//        }
+//        else {
+//            return habit.getTitle();
+//        }
+//    }
 
 
 
     @TypeConverter
     public String dateToString(LocalDate localDate) {
          return localDate.toString();
+    }
+
+    public boolean sameContents( HabitDay other ) {
+        return this.equals( other ) &&
+                this.habitID == other.habitID &&
+                this.plusCount == other.plusCount &&
+                this.minusCount == other.minusCount;
+    }
+
+    @Override
+    public boolean equals( Object other ) {
+        return other instanceof HabitDay && this.dayID == ((HabitDay) other).dayID;
     }
 
 

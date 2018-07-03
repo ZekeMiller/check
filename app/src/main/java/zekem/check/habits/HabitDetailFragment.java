@@ -50,7 +50,7 @@ public class HabitDetailFragment extends Fragment {
         inflater.inflate( R.menu.habit_detail_toolbar, menu );
         menu.findItem( R.id.habit_detail_toolbar_add_button )
                 .setOnMenuItemClickListener( menuItem -> {
-                    habitViewModel.addDay( habitID );
+                    habitViewModel.addDay( habitID, null );
                     return true;
                 } );
     }

@@ -27,7 +27,7 @@ public class HabitDetailRecyclerViewAdapter extends RecyclerView.Adapter<HabitDe
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext())
-                .inflate( R.layout.fragment_habitdetail, parent, false);
+                .inflate( R.layout.fragment_habit_detail, parent, false);
         return new ViewHolder(view);
     }
 

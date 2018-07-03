@@ -32,7 +32,8 @@ public class HabitViewModel extends AndroidViewModel
     private final HabitDayDao habitDayDao;
     private LiveData< List< HabitDay > > habitsToday;
     private final Object habitInstantiationLock = new Object();
-    private ExecutorService executorService;
+    private ExecutorService databaseExecutor;
+    private ExecutorService uiExecutor;
 
     private MutableLiveData< Integer > habitDetail = new MutableLiveData<>();
 
@@ -45,17 +46,10 @@ public class HabitViewModel extends AndroidViewModel
 
         habitDao = HabitDatabase.getHabitDatabase( getApplication() ).habitDao();
         habitDayDao = HabitDatabase.getHabitDatabase( getApplication() ).habitDayDao();
-        executorService = Executors.newSingleThreadExecutor();
+        databaseExecutor = Executors.newSingleThreadExecutor();
 
-        executorService.execute( () -> {
+        databaseExecutor.execute( () -> {
             synchronized ( habitInstantiationLock ) {
-
-                for (HabitDay habitDay : habitDayDao.getAll()) {
-                    // repopulate Habit field ( ignored by Room )
-                    if (habitDay.getHabit() == null) {
-                        habitDay.setHabit(habitDao.getHabitByID(habitDay.getHabitID()));
-                    }
-                }
 
                 habitsToday = habitDayDao.getHabitsForDay(LocalDate.now().toString());
                 List<Integer> habitIDs = habitDao.getHabitIDs();
@@ -63,16 +57,19 @@ public class HabitViewModel extends AndroidViewModel
 
                 // some habit IDs exist, some days exist, but they don't have the same amount
                 // which means that some habits don't have a day for today
-                if (!(habitDays == null ||
+                if ( !(habitDays == null ||
                         habitIDs == null ||
                         habitDays.size() == 0 ||
                         habitIDs.size() == 0 ||
-                        habitDays.size() == habitIDs.size()
-                )) {
-                    for (HabitDay habitDay : habitDays) {
-                        habitIDs.remove(habitDay.getHabitID());
+                        habitDays.size() == habitIDs.size() )
+                        ) {
+
+                    // remove all the habits for which a HabitDay for today exists
+                    for ( HabitDay habitDay : habitDays ) {
+                        habitIDs.remove( habitDay.getHabitID() );
                     }
-                    for (int habitID : habitIDs) {
+                    // make a day for all those who don't have one today
+                    for ( int habitID : habitIDs ) {
                         addDay(habitID);
                     }
                 }
@@ -91,7 +88,7 @@ public class HabitViewModel extends AndroidViewModel
     public void register( LifecycleOwner lifecycleOwner,
                           @NonNull Observer< List< HabitDay > > observer ) {
 
-        executorService.execute( () -> {
+        databaseExecutor.execute( () -> {
             synchronized ( habitInstantiationLock ) {
                 try {
                     if ( habitsToday == null ) {
@@ -115,14 +112,14 @@ public class HabitViewModel extends AndroidViewModel
 
 
     public void insertHabit( Habit habit ) {
-        executorService.execute( () -> {
+        databaseExecutor.execute( () -> {
             long id = habitDao.insert( habit );
             addDay( (int) id );
         } );
     }
 
     public void addDay( int habitID ) {
-        executorService.execute( () -> {
+        databaseExecutor.execute( () -> {
             Habit habit = habitDao.getHabitByID( habitID );
             if ( habit != null ) {
                 addDay( habit );
@@ -131,7 +128,7 @@ public class HabitViewModel extends AndroidViewModel
     }
 
     public void addDay( Habit habit ) {
-        executorService.execute( () -> {
+        databaseExecutor.execute( () -> {
             if ( habitDayDao.getDay( LocalDate.now().toString(), habit.getId() ) == null ) {
                 habitDayDao.insert( new HabitDay( habit, LocalDate.now() ) );
             }
@@ -139,15 +136,15 @@ public class HabitViewModel extends AndroidViewModel
     }
 
     public void insertHabits( List< Habit > habits ) {
-        executorService.execute( () -> habitDao.insert( habits ) );
+        databaseExecutor.execute( () -> habitDao.insert( habits ) );
     }
 
     public void deleteHabit( int habitID ) {
-        executorService.execute( () -> habitDao.delete( habitID ) );
+        databaseExecutor.execute( () -> habitDao.delete( habitID ) );
     }
 
     public void deleteHabit( Habit habit ) {
-        executorService.execute(() -> habitDao.delete( habit ) );
+        databaseExecutor.execute(() -> habitDao.delete( habit ) );
     }
 
     public void plusHabitDay( HabitDay habitDay ) {
@@ -163,7 +160,7 @@ public class HabitViewModel extends AndroidViewModel
     }
 
     public void incrementHabit( int id ) {
-        executorService.execute( () -> {
+        databaseExecutor.execute( () -> {
             Habit habit = habitDao.getHabitByID( id );
             if ( habit != null ) {
                 incrementHabit( habit );
@@ -177,7 +174,7 @@ public class HabitViewModel extends AndroidViewModel
     }
 
     public void decrementHabit( int id ) {
-        executorService.execute( () -> {
+        databaseExecutor.execute( () -> {
             Habit habit = habitDao.getHabitByID( id );
             if ( habit != null ) {
                 decrementHabit( habit );
@@ -192,18 +189,18 @@ public class HabitViewModel extends AndroidViewModel
 
 
     public void updateHabitInDB( Habit habit ) {
-        executorService.execute( () -> habitDao.update( habit ) );
+        databaseExecutor.execute( () -> habitDao.update( habit ) );
     }
 
     public void updateHabitDayInDB( HabitDay habitDay ) {
-        executorService.execute( () -> habitDayDao.update( habitDay ) );
+        databaseExecutor.execute( () -> habitDayDao.update( habitDay ) );
     }
 
 
 
     public void registerDetail( LifecycleOwner lifecycleOwner,
                           @NonNull Observer< List< HabitDay > > observer, int habitID ) {
-        executorService.execute( () ->
+        databaseExecutor.execute( () ->
             habitDayDao.getDaysForHabit( habitID ).observe( lifecycleOwner, observer )
         );
     }
@@ -216,6 +213,24 @@ public class HabitViewModel extends AndroidViewModel
     public LiveData< Integer > getDetail() {
         return habitDetail;
     }
+
+    public void fetchHabit( HabitDay habitDay, Runnable postExecute ) {
+        databaseExecutor.execute( () ->
+            {
+                try {
+                    TimeUnit.SECONDS.sleep( 1 );
+                }
+                catch ( InterruptedException e ) {
+                    e.printStackTrace();
+                }
+
+                habitDay.setHabit( habitDao.getHabitByID( habitDay.getHabitID() ) );
+
+                uiExecutor.execute( postExecute );
+            }
+        );
+    }
+
 
 
 

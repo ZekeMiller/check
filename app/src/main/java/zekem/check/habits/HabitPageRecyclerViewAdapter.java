@@ -1,5 +1,7 @@
 package zekem.check.habits;
 
+import android.os.Handler;
+import android.os.Looper;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -20,6 +22,7 @@ import zekem.check.R;
 public class HabitPageRecyclerViewAdapter extends RecyclerView.Adapter< HabitPageRecyclerViewAdapter.ViewHolder > {
 
     private final HabitViewModel mViewModel;
+    private final Handler mainHandler = new Handler( Looper.getMainLooper() );
     private List< HabitDay > habits;
 
     public HabitPageRecyclerViewAdapter( HabitViewModel viewModel ) {
@@ -27,10 +30,15 @@ public class HabitPageRecyclerViewAdapter extends RecyclerView.Adapter< HabitPag
         mViewModel = viewModel;
     }
 
-    public void setData( List< HabitDay > habits ) {
+    public void setData( List< HabitDay > habitDays ) {
 
-        this.habits = habits;
-        notifyDataSetChanged();
+        this.habits = habitDays;
+        for ( int i = 0 ; i < habitDays.size() ; i++ ) {
+            final int position = i;
+            mViewModel.fetchHabit( habitDays.get( i ),
+                    () -> mainHandler.post( () -> notifyItemChanged( position ) ) );
+        }
+        mainHandler.post( this::notifyDataSetChanged );
         // TODO DiffUtil
     }
 

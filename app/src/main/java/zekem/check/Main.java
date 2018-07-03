@@ -9,6 +9,7 @@ import android.support.v4.app.Fragment;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -50,7 +51,12 @@ public class Main extends AppCompatActivity implements
         @Override
         public boolean onNavigationItemSelected( @NonNull MenuItem item ) {
 
-            FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+            FragmentManager fragmentManager = getSupportFragmentManager();
+            int count = fragmentManager.getBackStackEntryCount();
+            for ( int i = 0 ; i < count ; i++ ) {
+                fragmentManager.popBackStack();
+            }
+            FragmentTransaction transaction = fragmentManager.beginTransaction();
             Fragment fragment;
             String title;
 
@@ -76,8 +82,6 @@ public class Main extends AppCompatActivity implements
                     return false;
             }
             transaction.replace( R.id.main_fragment_container, fragment );
-            transaction.addToBackStack( null );
-            // TODO fix bottom nav appearing wrong on back press
             transaction.commit();
             Toolbar toolbar = findViewById( R.id.toolbar );
             toolbar.setTitle( title );

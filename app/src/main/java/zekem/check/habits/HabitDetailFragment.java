@@ -58,7 +58,7 @@ public class HabitDetailFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_habitdetail_list, container, false);
+        View view = inflater.inflate(R.layout.fragment_habit_detail_list, container, false);
 
         // Set the adapter
         if (view instanceof RecyclerView) {

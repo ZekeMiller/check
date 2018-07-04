@@ -1,8 +1,7 @@
 package zekem.check.habits;
 
-import android.os.Handler;
-import android.os.Looper;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v7.util.DiffUtil;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -25,20 +24,18 @@ import zekem.check.R;
 public class HabitPageRecyclerViewAdapter extends RecyclerView.Adapter< HabitPageRecyclerViewAdapter.ViewHolder > {
 
     private final HabitViewModel mViewModel;
-    private final Handler mainHandler = new Handler( Looper.getMainLooper() );
     private List< HabitWithDays > habitsWithDays;
     private LocalDate date = LocalDate.now();
 
     public HabitPageRecyclerViewAdapter( HabitViewModel viewModel ) {
-
         mViewModel = viewModel;
     }
 
-    public void setData( final List< HabitWithDays > habitDays ) {
+    public synchronized void setData( final List< HabitWithDays > habitsWithDays ) {
 
         final List< HabitWithDays > oldList = this.habitsWithDays;
 
-        this.habitsWithDays = habitDays;
+        this.habitsWithDays = habitsWithDays;
 
         DiffUtil.DiffResult result = DiffUtil.calculateDiff( new DiffUtil.Callback() {
             @Override
@@ -48,28 +45,28 @@ public class HabitPageRecyclerViewAdapter extends RecyclerView.Adapter< HabitPag
 
             @Override
             public int getNewListSize() {
-                return habitDays == null ? 0 : habitDays.size();
+                return habitsWithDays.size();
             }
 
             @Override
             public boolean areItemsTheSame(int oldItemPosition, int newItemPosition) {
-                return oldList.get( oldItemPosition ).equals( habitDays.get( newItemPosition ) );
-//                return true;
+                return oldList.get( oldItemPosition )
+                        .sameHabitId( habitsWithDays.get( newItemPosition ) );
             }
 
             @Override
-            public boolean areContentsTheSame(int oldItemPosition, int newItemPosition) {
+            public boolean areContentsTheSame( int oldItemPosition, int newItemPosition ) {
                 HabitDay oldDay = oldList.get( oldItemPosition ).getForDate( date );
                 if ( oldDay == null ) {
                     return false;
                 }
-                return oldDay.sameContents( habitDays.get( newItemPosition ).getForDate( date ) );
-//                return true;
+                return oldDay.sameContents( habitsWithDays.get( newItemPosition ).getForDate(date ) );
             }
         }, true );
 
         result.dispatchUpdatesTo( this );
     }
+
 
     @NonNull
     @Override
@@ -87,11 +84,11 @@ public class HabitPageRecyclerViewAdapter extends RecyclerView.Adapter< HabitPag
         holder.mHabit = habitWithDays.getHabit();
         holder.mHabitDay = habitWithDays.getForDate( date );
 
-        int plusCount = -2;
-        int minusCount = -3;
+        int plusCount = 0;
+        int minusCount = 0;
 
         if ( holder.mHabitDay == null ) {
-             mViewModel.addDay( holder.mHabit, () -> mainHandler.post( () -> this.notifyItemChanged( position ) ), date );
+            mViewModel.addDay( holder.mHabit, date );
         }
         else {
             plusCount = holder.mHabitDay.getPlusCount();
@@ -99,8 +96,8 @@ public class HabitPageRecyclerViewAdapter extends RecyclerView.Adapter< HabitPag
         }
         holder.mContentView.setText( String.format( Locale.getDefault(), "(%d) %s (%d)",
                 plusCount,
-                // holder.mHabit.getTitle(),
-                System.currentTimeMillis(),
+                 holder.mHabit.getTitle(),
+//                System.currentTimeMillis(),
                 minusCount ) );
 
     }
@@ -120,8 +117,9 @@ public class HabitPageRecyclerViewAdapter extends RecyclerView.Adapter< HabitPag
         private final TextView mContentView;
         private final ImageView mPlus;
         private final ImageView mMinus;
-        private HabitDay mHabitDay;
         private Habit mHabit;
+        @Nullable
+        private HabitDay mHabitDay;
 
         private ViewHolder( final View view ) {
 
@@ -136,22 +134,15 @@ public class HabitPageRecyclerViewAdapter extends RecyclerView.Adapter< HabitPag
             );
 
             mContentView.setOnLongClickListener( v -> {
-                mViewModel.onContentLongPress(mHabitDay);
-                // notifyItemRemoved( getAdapterPosition() );
+                mViewModel.onContentLongPress( mHabitDay );
                 return true;
-
             } );
 
-            mPlus.setOnClickListener( v -> {
-                mViewModel.onPlusPress(mHabitDay);
-                // notifyItemChanged( getAdapterPosition() );
-            } );
+            mPlus.setOnClickListener( v -> mViewModel.onPlusPress( mHabitDay ) );
 
-            mMinus.setOnClickListener( v -> {
-                mViewModel.onMinusPress(mHabitDay);
-                // notifyItemChanged( getAdapterPosition() );
-            } );
+            mMinus.setOnClickListener( v -> mViewModel.onMinusPress( mHabitDay ) );
         }
+
 
         @Override
         public String toString() {

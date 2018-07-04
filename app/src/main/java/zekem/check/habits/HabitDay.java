@@ -135,15 +135,24 @@ public class HabitDay {
     }
 
     public boolean sameContents( HabitDay other ) {
-        return this.equals( other ) &&
-                this.habitID == other.habitID &&
+        return
+//                this.equals( other ) &&
+//                this.habitID == other.habitID &&
                 this.plusCount == other.plusCount &&
                 this.minusCount == other.minusCount;
     }
 
+    public boolean sameId( HabitDay other ) {
+        return this.dayID == other.dayID;
+    }
+
     @Override
     public boolean equals( Object other ) {
-        return other instanceof HabitDay && this.dayID == ((HabitDay) other).dayID;
+        if ( other instanceof HabitDay ) {
+            HabitDay otherDay = (HabitDay) other;
+            return this.sameId( otherDay ) && this.sameContents( otherDay );
+        }
+        return false;
     }
 
 

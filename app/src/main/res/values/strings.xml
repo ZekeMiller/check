@@ -6,6 +6,10 @@
     <string name="habit_minus_button">Minus Button</string>
     <string name="habit_toolbar_add_button">Add Habit</string>
 
+    <string name="title_new_habit_page">New Habit</string>
+    <string name="new_habit_name_ghost_text">Enter Habit Name…</string>
+    <string name="submit_button">Submit</string>
+
     <string name="title_dailies">Dailies</string>
     <string name="title_datas">Datas</string>
     <string name="title_analytics">Analytics</string>

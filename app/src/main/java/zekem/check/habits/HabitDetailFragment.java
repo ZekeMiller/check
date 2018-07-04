@@ -68,7 +68,7 @@ public class HabitDetailFragment extends Fragment {
 
             HabitDetailRecyclerViewAdapter adapter = new HabitDetailRecyclerViewAdapter( habitViewModel );
             recyclerView.setAdapter( adapter );
-            habitViewModel.registerDetail( this, adapter::setData, habitID);
+            habitViewModel.registerDetail( this, adapter::setData, habitID );
         }
         return view;
     }

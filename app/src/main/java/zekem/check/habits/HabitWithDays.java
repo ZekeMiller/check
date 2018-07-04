@@ -50,11 +50,16 @@ public class HabitWithDays {
         return habitDaysDateMap.get( date.toString() );
     }
 
+    public boolean sameHabitId( HabitWithDays other ) {
+        return this.habit.getId() == other.habit.getId();
+    }
+
     @Override
     public boolean equals( Object other ) {
         if ( other instanceof HabitWithDays ) {
             HabitWithDays otherWithDays = (HabitWithDays) other;
-            return this.habit.equals( otherWithDays.habit );
+            return this.habit.equals( otherWithDays.habit ) &&
+                    this.habitDays.equals( otherWithDays.habitDays );
         }
         return false;
     }

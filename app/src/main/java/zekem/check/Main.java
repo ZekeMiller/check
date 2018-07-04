@@ -25,6 +25,7 @@ import zekem.check.datas.DataPageFragment;
 import zekem.check.habits.HabitDetailFragment;
 import zekem.check.habits.HabitPageFragment;
 import zekem.check.habits.HabitViewModel;
+import zekem.check.habits.NewHabitFragment;
 
 /**
  * The main Activity, has a bottom navigation and holds other Fragments
@@ -34,7 +35,7 @@ public class Main extends AppCompatActivity implements
                 DataPageFragment.OnListFragmentInteractionListener,
                 AnalyticsPageFragment.OnFragmentInteractionListener {
 
-    private HabitViewModel habitViewModel;
+    private HabitViewModel mHabitViewModel;
     private HabitPageFragment habitsFragment;
     private DailyPageFragment dailiesFragment;
     private DataPageFragment dataFragment;
@@ -63,7 +64,7 @@ public class Main extends AppCompatActivity implements
             switch ( item.getItemId() ) {
                 case R.id.navigation_habits:
                     fragment = habitsFragment;
-                    habitsFragment.setViewModel( habitViewModel );
+                    habitsFragment.setViewModel( mHabitViewModel );
                     title = getString( R.string.title_habits );
                     break;
                 case R.id.navigation_dailies:
@@ -83,11 +84,19 @@ public class Main extends AppCompatActivity implements
             }
             transaction.replace( R.id.main_fragment_container, fragment );
             transaction.commit();
-            Toolbar toolbar = findViewById( R.id.toolbar );
-            toolbar.setTitle( title );
+            setTitle( title );
             return true;
         }
     };
+
+    @Override
+    public void onBackPressed() {
+
+        super.onBackPressed();
+        BottomNavigationView bottomNavigationView = findViewById( R.id.navigation );
+        bottomNavigationView.setSelectedItemId( bottomNavigationView.getSelectedItemId() );
+    }
+
 
     /**
      * called when created
@@ -103,17 +112,17 @@ public class Main extends AppCompatActivity implements
         removeShiftMode( navigation );
         navigation.setOnNavigationItemSelectedListener( mOnNavigationItemSelectedListener );
 
-        habitViewModel = ViewModelProviders.of( this ).get( HabitViewModel.class );
-        habitViewModel.getDetail().observe( this, habitID -> {
+        mHabitViewModel = ViewModelProviders.of( this ).get( HabitViewModel.class );
 
-            HabitDetailFragment habitDetailFragment =
-                    HabitDetailFragment.newInstance( habitViewModel, habitID );
-            getSupportFragmentManager().beginTransaction()
-                    .replace( R.id.main_fragment_container, habitDetailFragment )
-                    .addToBackStack( null )
-                    .commit();
-
-        });
+        mHabitViewModel.getHabitDetailListener().observe( this, this::showDetailFragment );
+        mHabitViewModel.getNewHabitPageListener().observe( this, bool -> {
+            if ( bool ) {
+                this.showNewHabitFragment();
+            }
+            else {
+                navigation.setSelectedItemId( R.id.navigation_habits );
+            }
+        } );
 
         habitsFragment = HabitPageFragment.newInstance();
         dailiesFragment = DailyPageFragment.newInstance( 1 );
@@ -122,8 +131,53 @@ public class Main extends AppCompatActivity implements
 
         Toolbar toolbar = findViewById( R.id.toolbar );
         setSupportActionBar( toolbar );
+    }
 
+    @Override
+    protected void onResume() {
+
+        super.onResume();
+
+        BottomNavigationView navigation = findViewById( R.id.navigation );
         navigation.setSelectedItemId( R.id.navigation_habits );
+    }
+
+    private void showDetailFragment( int habitID ) {
+
+        HabitDetailFragment habitDetailFragment =
+                HabitDetailFragment.newInstance( mHabitViewModel, habitID );
+
+        getSupportFragmentManager().beginTransaction()
+            .replace( R.id.main_fragment_container, habitDetailFragment )
+            .addToBackStack( null )
+            .commit();
+
+        mHabitViewModel.getHabit( habitID ).observe( habitDetailFragment, habit -> {
+            if ( habit == null ) {
+                setTitle( getString( R.string.title_habits ) );
+            }
+            else {
+                setTitle( habit.getTitle() );
+            }
+        } );
+
+    }
+
+    private void showNewHabitFragment() {
+
+        NewHabitFragment newHabitFragment = NewHabitFragment.newInstance( mHabitViewModel );
+
+        getSupportFragmentManager().beginTransaction()
+            .replace( R.id.main_fragment_container, newHabitFragment )
+            .addToBackStack( null )
+            .commit();
+
+        setTitle( getString( R.string.title_new_habit_page ) );
+    }
+
+    public void setTitle( String title ) {
+        Toolbar toolbar = findViewById( R.id.toolbar );
+        toolbar.setTitle( title );
     }
 
 
@@ -168,5 +222,4 @@ public class Main extends AppCompatActivity implements
             Log.e("BottomNav", "Unable to change value of shift mode", e);
         }
     }
-
 }

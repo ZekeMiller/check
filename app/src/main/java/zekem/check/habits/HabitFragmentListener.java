@@ -12,4 +12,5 @@ public interface HabitFragmentListener {
     void onPlusPress( HabitDay habitDay );
 
     void onMinusPress( HabitDay habitDay );
+
 }

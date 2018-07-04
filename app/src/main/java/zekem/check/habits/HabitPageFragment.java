@@ -57,17 +57,6 @@ public class HabitPageFragment extends Fragment {
     }
 
     /**
-     * First method called for a Fragment instance, attach ViewModel
-     * @param context   the Context the Fragment is being created in
-     */
-    @Override
-    public void onAttach( Context context ) {
-
-        super.onAttach( context );
-//        mViewModel = ViewModelProviders.of( this ).get( HabitViewModel.class );
-    }
-
-    /**
      * called when Fragment created
      * @param savedInstanceState    the instance state from the creating activity
      */
@@ -95,8 +84,6 @@ public class HabitPageFragment extends Fragment {
                               Bundle savedInstanceState ) {
 
         View view = inflater.inflate( R.layout.fragment_habit_list, container, false );
-
-        view.findViewById( R.id.habit_toolbar_add_button );
 
         // Set the adapter
         if ( view instanceof RecyclerView ) {
@@ -135,7 +122,7 @@ public class HabitPageFragment extends Fragment {
 
         switch ( menuItem.getItemId() ) {
             case R.id.habit_toolbar_add_button:
-                mViewModel.addHabit();
+                mViewModel.addHabitButton();
                 return true;
 
             default:

@@ -38,6 +38,10 @@ public interface HabitDayDao {
     @Query( "SELECT * FROM habitDay WHERE date=:date AND habitID=:habitID" )
     HabitDay getDay( String date, int habitID );
 
+    @Query( "SELECT * FROM habitDay WHERE dayID=:dayID" )
+    HabitDay getDay( int dayID );
+
     @Query( "SELECT * FROM habitDay" )
     List< HabitDay > getAll();
+
 }

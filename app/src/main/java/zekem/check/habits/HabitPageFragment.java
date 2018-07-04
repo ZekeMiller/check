@@ -14,6 +14,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import zekem.check.R;
+import zekem.check.habits.listeners.HabitFragmentListener;
 
 /**
  * A fragment representing a list of Habits
@@ -22,7 +23,7 @@ public class HabitPageFragment extends Fragment {
 
     private final MenuItem.OnMenuItemClickListener mButtonListener = this::onToolbarButtonPress;
 
-    private HabitViewModel mViewModel;
+    private HabitFragmentListener mListener;
 
     /**
      * Mandatory empty constructor for the fragment manager to instantiate the
@@ -92,10 +93,15 @@ public class HabitPageFragment extends Fragment {
             final RecyclerView recyclerView = (RecyclerView) view;
             recyclerView.setLayoutManager( new LinearLayoutManager( context ) );
 
-            final HabitPageRecyclerViewAdapter adapter = new HabitPageRecyclerViewAdapter( mViewModel );
+            final HabitPageRecyclerViewAdapter adapter = new HabitPageRecyclerViewAdapter( mListener );
 
             recyclerView.setAdapter( adapter );
-            mViewModel.register( this, adapter::setData );
+//            mListener.register( this, adapter::setData );
+            mListener.getHabitsWithDaysWhenReady().observe( this, liveData -> {
+                if ( liveData != null ) {
+                    liveData.observe( this, adapter::setData );
+                }
+            } );
 
         }
         return view;
@@ -109,7 +115,7 @@ public class HabitPageFragment extends Fragment {
     public void onDetach() {
 
         super.onDetach();
-        mViewModel = null;
+        mListener = null;
     }
 
     /**
@@ -122,7 +128,7 @@ public class HabitPageFragment extends Fragment {
 
         switch ( menuItem.getItemId() ) {
             case R.id.habit_toolbar_add_button:
-                mViewModel.addHabitButton();
+                mListener.onToolbarAddButtonPress();
                 return true;
 
             default:
@@ -130,7 +136,7 @@ public class HabitPageFragment extends Fragment {
         }
     }
 
-    public void setViewModel( HabitViewModel habitViewModel ) {
-        mViewModel = habitViewModel;
+    public void setListener( HabitFragmentListener listener ) {
+        mListener = listener;
     }
 }

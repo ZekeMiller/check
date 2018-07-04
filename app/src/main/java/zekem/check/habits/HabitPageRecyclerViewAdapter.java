@@ -16,6 +16,7 @@ import java.util.List;
 import java.util.Locale;
 
 import zekem.check.R;
+import zekem.check.habits.listeners.HabitFragmentListener;
 
 /**
  * {@link RecyclerView.Adapter} that can display a {@link Habit} and makes a call to the
@@ -23,12 +24,12 @@ import zekem.check.R;
  */
 public class HabitPageRecyclerViewAdapter extends RecyclerView.Adapter< HabitPageRecyclerViewAdapter.ViewHolder > {
 
-    private final HabitViewModel mViewModel;
+    private final HabitFragmentListener mListener;
     private List< HabitWithDays > habitsWithDays;
     private LocalDate date = LocalDate.now();
 
-    public HabitPageRecyclerViewAdapter( HabitViewModel viewModel ) {
-        mViewModel = viewModel;
+    public HabitPageRecyclerViewAdapter( HabitFragmentListener listener ) {
+        mListener = listener;
     }
 
     public synchronized void setData( final List< HabitWithDays > habitsWithDays ) {
@@ -88,7 +89,8 @@ public class HabitPageRecyclerViewAdapter extends RecyclerView.Adapter< HabitPag
         int minusCount = 0;
 
         if ( holder.mHabitDay == null ) {
-            mViewModel.addDay( holder.mHabit, date );
+//            mListener.addDay( holder.mHabit, date );
+            mListener.onMissingDay( holder.mHabit, date );
         }
         else {
             plusCount = holder.mHabitDay.getPlusCount();
@@ -96,8 +98,7 @@ public class HabitPageRecyclerViewAdapter extends RecyclerView.Adapter< HabitPag
         }
         holder.mContentView.setText( String.format( Locale.getDefault(), "(%d) %s (%d)",
                 plusCount,
-                 holder.mHabit.getTitle(),
-//                System.currentTimeMillis(),
+                holder.mHabit.getTitle(),
                 minusCount ) );
 
     }
@@ -130,17 +131,18 @@ public class HabitPageRecyclerViewAdapter extends RecyclerView.Adapter< HabitPag
             mMinus = view.findViewById( R.id.minusButton );
 
             mContentView.setOnClickListener( v ->
-                mViewModel.viewHabitDetail( habitsWithDays.get( getAdapterPosition() ).getHabit().getId() )
+                mListener.onContentShortPress(
+                        habitsWithDays.get( getAdapterPosition() ).getHabit().getId() )
             );
 
             mContentView.setOnLongClickListener( v -> {
-                mViewModel.onContentLongPress( mHabitDay );
+                mListener.onContentLongPress( mHabitDay );
                 return true;
             } );
 
-            mPlus.setOnClickListener( v -> mViewModel.onPlusPress( mHabitDay ) );
+            mPlus.setOnClickListener( v -> mListener.onPlusPress( mHabitDay ) );
 
-            mMinus.setOnClickListener( v -> mViewModel.onMinusPress( mHabitDay ) );
+            mMinus.setOnClickListener( v -> mListener.onMinusPress( mHabitDay ) );
         }
 
 

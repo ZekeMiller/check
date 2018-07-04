@@ -12,12 +12,13 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import zekem.check.R;
+import zekem.check.habits.listeners.HabitDetailFragmentListener;
 
 
 public class HabitDetailFragment extends Fragment {
 
-    private HabitViewModel habitViewModel;
-    private int habitID;
+    private HabitDetailFragmentListener mListener;
+    private int mHabitId;
 
     /**
      * Mandatory empty constructor for the fragment manager to instantiate the
@@ -27,10 +28,10 @@ public class HabitDetailFragment extends Fragment {
     }
 
 
-    public static HabitDetailFragment newInstance(HabitViewModel habitViewModel, int habitID) {
+    public static HabitDetailFragment newInstance(HabitDetailFragmentListener listener, int habitID) {
         HabitDetailFragment habitDetailFragment = new HabitDetailFragment();
-        habitDetailFragment.habitViewModel = habitViewModel;
-        habitDetailFragment.habitID = habitID;
+        habitDetailFragment.mListener = listener;
+        habitDetailFragment.mHabitId = habitID;
         return habitDetailFragment;
     }
 
@@ -50,7 +51,7 @@ public class HabitDetailFragment extends Fragment {
         inflater.inflate( R.menu.habit_detail_toolbar, menu );
         menu.findItem( R.id.habit_detail_toolbar_add_button )
                 .setOnMenuItemClickListener( menuItem -> {
-                    habitViewModel.addDay( habitID, null );
+                    mListener.onDetailToolbarButton( mHabitId );
                     return true;
                 } );
     }
@@ -66,9 +67,13 @@ public class HabitDetailFragment extends Fragment {
             RecyclerView recyclerView = (RecyclerView) view;
             recyclerView.setLayoutManager(new LinearLayoutManager(context));
 
-            HabitDetailRecyclerViewAdapter adapter = new HabitDetailRecyclerViewAdapter( habitViewModel );
+            HabitDetailRecyclerViewAdapter adapter = new HabitDetailRecyclerViewAdapter();
             recyclerView.setAdapter( adapter );
-            habitViewModel.registerDetail( this, adapter::setData, habitID );
+            mListener.getDaysForDetailAsync( mHabitId ).observe( this, liveData -> {
+                if ( liveData != null ) {
+                    liveData.observe( this, adapter::setData );
+                }
+            } );
         }
         return view;
     }
@@ -77,6 +82,6 @@ public class HabitDetailFragment extends Fragment {
     @Override
     public void onDetach() {
         super.onDetach();
-        habitViewModel = null;
+        mListener = null;
     }
 }

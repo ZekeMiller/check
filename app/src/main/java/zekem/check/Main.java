@@ -22,6 +22,7 @@ import zekem.check.dailies.DailyPageFragment;
 import zekem.check.dailies.Daily;
 import zekem.check.datas.Data;
 import zekem.check.datas.DataPageFragment;
+import zekem.check.habits.DeleteHabitDialogFragment;
 import zekem.check.habits.HabitDetailFragment;
 import zekem.check.habits.HabitPageFragment;
 import zekem.check.habits.HabitViewModel;
@@ -40,6 +41,8 @@ public class Main extends AppCompatActivity implements
     private DailyPageFragment dailiesFragment;
     private DataPageFragment dataFragment;
     private AnalyticsPageFragment analyticsPageFragment;
+
+    private BottomNavigationView mBottomNavigationView;
 
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
             = new BottomNavigationView.OnNavigationItemSelectedListener() {
@@ -64,7 +67,7 @@ public class Main extends AppCompatActivity implements
             switch ( item.getItemId() ) {
                 case R.id.navigation_habits:
                     fragment = habitsFragment;
-                    habitsFragment.setViewModel( mHabitViewModel );
+                    habitsFragment.setListener( mHabitViewModel );
                     title = getString( R.string.title_habits );
                     break;
                 case R.id.navigation_dailies:
@@ -93,8 +96,7 @@ public class Main extends AppCompatActivity implements
     public void onBackPressed() {
 
         super.onBackPressed();
-        BottomNavigationView bottomNavigationView = findViewById( R.id.navigation );
-        bottomNavigationView.setSelectedItemId( bottomNavigationView.getSelectedItemId() );
+        mBottomNavigationView.setSelectedItemId( mBottomNavigationView.getSelectedItemId() );
     }
 
 
@@ -106,23 +108,19 @@ public class Main extends AppCompatActivity implements
     protected void onCreate( Bundle savedInstanceState ) {
 
         super.onCreate( savedInstanceState );
+
         setContentView( R.layout.activity_main );
 
-        BottomNavigationView navigation = findViewById( R.id.navigation );
-        removeShiftMode( navigation );
-        navigation.setOnNavigationItemSelectedListener( mOnNavigationItemSelectedListener );
+        mBottomNavigationView = findViewById( R.id.navigation );
+        removeShiftMode( mBottomNavigationView );
+        mBottomNavigationView.setOnNavigationItemSelectedListener( mOnNavigationItemSelectedListener );
 
         mHabitViewModel = ViewModelProviders.of( this ).get( HabitViewModel.class );
 
-        mHabitViewModel.getHabitDetailListener().observe( this, this::showDetailFragment );
-        mHabitViewModel.getNewHabitPageListener().observe( this, bool -> {
-            if ( bool ) {
-                this.showNewHabitFragment();
-            }
-            else {
-                navigation.setSelectedItemId( R.id.navigation_habits );
-            }
-        } );
+        mHabitViewModel.getShowHabitDetailListener().observe( this, this::showDetailFragment );
+        mHabitViewModel.getNewHabitPageListener().observe( this, v -> this.showNewHabitFragment() );
+        mHabitViewModel.getDetailDeleteListener().observe( this, this::showDeleteDialog );
+        mHabitViewModel.getShowHabitPageListener().observe( this, v -> this.showHabitPage() );
 
         habitsFragment = HabitPageFragment.newInstance();
         dailiesFragment = DailyPageFragment.newInstance( 1 );
@@ -133,14 +131,15 @@ public class Main extends AppCompatActivity implements
         setSupportActionBar( toolbar );
     }
 
+
     @Override
-    protected void onResume() {
+    public void onAttachedToWindow() {
 
-        super.onResume();
+        super.onAttachedToWindow();
+        mBottomNavigationView.setSelectedItemId( R.id.navigation_dailies );
 
-        BottomNavigationView navigation = findViewById( R.id.navigation );
-        navigation.setSelectedItemId( R.id.navigation_habits );
     }
+
 
     private void showDetailFragment( int habitID ) {
 
@@ -152,7 +151,7 @@ public class Main extends AppCompatActivity implements
             .addToBackStack( null )
             .commit();
 
-        mHabitViewModel.getHabit( habitID ).observe( habitDetailFragment, habit -> {
+        mHabitViewModel.getHabitAsync( habitID ).observe( habitDetailFragment, habit -> {
             if ( habit == null ) {
                 setTitle( getString( R.string.title_habits ) );
             }
@@ -168,14 +167,32 @@ public class Main extends AppCompatActivity implements
         NewHabitFragment newHabitFragment = NewHabitFragment.newInstance( mHabitViewModel );
 
         getSupportFragmentManager().beginTransaction()
-            .replace( R.id.main_fragment_container, newHabitFragment )
-            .addToBackStack( null )
-            .commit();
+                .replace( R.id.main_fragment_container, newHabitFragment )
+                .addToBackStack( null )
+                .commit();
 
         setTitle( getString( R.string.title_new_habit_page ) );
+
     }
 
-    public void setTitle( String title ) {
+    private void showDeleteDialog( int habitId ) {
+
+        DeleteHabitDialogFragment deleteDialog =
+                DeleteHabitDialogFragment.newInstance( mHabitViewModel, habitId );
+
+        deleteDialog.show( getSupportFragmentManager(), null );
+
+    }
+
+    private void resetBottomNavigation() {
+        mBottomNavigationView.setSelectedItemId( mBottomNavigationView.getSelectedItemId() );
+    }
+
+    private void showHabitPage() {
+        mBottomNavigationView.setSelectedItemId( R.id.navigation_habits );
+    }
+
+    private void setTitle( String title ) {
         Toolbar toolbar = findViewById( R.id.toolbar );
         toolbar.setTitle( title );
     }
@@ -217,9 +234,9 @@ public class Main extends AppCompatActivity implements
                 item.setChecked(item.getItemData().isChecked());
             }
         } catch (NoSuchFieldException e) {
-            Log.e("BottomNav", "Unable to get shift mode field", e);
+            Log.e("check", "Unable to get shift mode field", e);
         } catch (IllegalAccessException e) {
-            Log.e("BottomNav", "Unable to change value of shift mode", e);
+            Log.e("check", "Unable to change value of shift mode", e);
         }
     }
 }

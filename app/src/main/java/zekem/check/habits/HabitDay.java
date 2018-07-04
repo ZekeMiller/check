@@ -73,7 +73,7 @@ public class HabitDay {
     }
 
 //    @Nullable
-//    public Habit getHabit() {
+//    public Habit getHabitAsync() {
 //        return habit;
 //    }
 

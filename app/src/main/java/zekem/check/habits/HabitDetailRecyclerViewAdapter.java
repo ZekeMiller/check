@@ -13,11 +13,11 @@ import zekem.check.R;
 
 public class HabitDetailRecyclerViewAdapter extends RecyclerView.Adapter<HabitDetailRecyclerViewAdapter.ViewHolder> {
 
-    private final HabitViewModel mViewModel;
+//    private final HabitViewModel mViewModel;
     private List<HabitDay> mValues;
 
-    public HabitDetailRecyclerViewAdapter(HabitViewModel habitViewModel) {
-        mViewModel = habitViewModel;
+    public HabitDetailRecyclerViewAdapter() {
+//        mViewModel = habitViewModel;
     }
 
     public void setData( List< HabitDay > habitDays ) {

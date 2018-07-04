@@ -11,6 +11,7 @@ import android.widget.Button;
 import android.widget.EditText;
 
 import zekem.check.R;
+import zekem.check.habits.listeners.NewHabitPageListener;
 
 /**
  * @author Zeke Miller
@@ -18,17 +19,17 @@ import zekem.check.R;
 public class NewHabitFragment extends Fragment {
 
 
-    private HabitViewModel mViewModel;
+    private NewHabitPageListener mListener;
 
     public NewHabitFragment() {
 
     }
 
-    public static NewHabitFragment newInstance( HabitViewModel habitViewModel ) {
+    public static NewHabitFragment newInstance( NewHabitPageListener listener ) {
 
         NewHabitFragment newHabitFragment;
         newHabitFragment = new NewHabitFragment();
-        newHabitFragment.mViewModel = habitViewModel;
+        newHabitFragment.mListener = listener;
         return newHabitFragment;
 
     }
@@ -41,7 +42,7 @@ public class NewHabitFragment extends Fragment {
 
         Button button = view.findViewById( R.id.submit_new_habit );
         EditText habitName = view.findViewById( R.id.new_habit_name );
-        button.setOnClickListener( v -> mViewModel.addHabit( habitName.getText().toString() ) );
+        button.setOnClickListener( v -> mListener.onSubmitPress( habitName.getText().toString() ) );
 
         return view;
     }
@@ -50,6 +51,6 @@ public class NewHabitFragment extends Fragment {
     public void onDetach() {
 
         super.onDetach();
-        mViewModel = null;
+        mListener = null;
     }
 }

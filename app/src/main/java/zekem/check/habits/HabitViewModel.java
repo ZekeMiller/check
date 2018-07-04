@@ -2,10 +2,8 @@ package zekem.check.habits;
 
 import android.app.Application;
 import android.arch.lifecycle.AndroidViewModel;
-import android.arch.lifecycle.LifecycleOwner;
 import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.MutableLiveData;
-import android.arch.lifecycle.Observer;
 import android.support.annotation.NonNull;
 
 import org.joda.time.LocalDate;
@@ -13,33 +11,41 @@ import org.joda.time.LocalDate;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.concurrent.TimeUnit;
 
 import zekem.check.habits.database.HabitDatabase;
 import zekem.check.habits.database.HabitDao;
 import zekem.check.habits.database.HabitDayDao;
+import zekem.check.habits.listeners.HabitDeleteDialogListener;
+import zekem.check.habits.listeners.HabitDetailFragmentListener;
+import zekem.check.habits.listeners.HabitFragmentListener;
+import zekem.check.habits.listeners.NewHabitPageListener;
 
 /**
  * @author Zeke Miller
  */
 public class HabitViewModel extends AndroidViewModel
-                implements HabitFragmentListener {
+                implements  HabitFragmentListener,
+                            HabitDetailFragmentListener,
+                            NewHabitPageListener,
+                            HabitDeleteDialogListener {
 
 
     // Fields
 
-    @NonNull
-    private final HabitDao habitDao;
-    @NonNull
-    private final HabitDayDao habitDayDao;
-    private LiveData< List< HabitWithDays > > habitsWithDays;
-    private final Object habitInstantiationLock = new Object();
-    private ExecutorService databaseExecutor;
+    @NonNull private final Object mHabitInstantiationLock = new Object();
+
+    @NonNull private final HabitDao mHabitDao;
+    @NonNull private final HabitDayDao mHabitDayDao;
+    @NonNull private final ExecutorService mDatabaseExecutor;
+
+    private LiveData< List< HabitWithDays > > mHabitsWithDays;
+
 
 //    private ExecutorService uiExecutor;
 
-    private MutableLiveData< Integer > habitDetailListener;
-    private MutableLiveData< Boolean > newHabitPageListener;
+    private MutableLiveData< Integer > mShowHabitDetailListener;
+    private MutableLiveData< Boolean > mNewHabitPageListener;
+    private MutableLiveData< Integer > mDetailDeleteListener;
 
 
 
@@ -48,27 +54,28 @@ public class HabitViewModel extends AndroidViewModel
     public HabitViewModel( Application application ) {
         super( application );
 
-        habitDetailListener = new MutableLiveData<>();
-        newHabitPageListener = new MutableLiveData<>();
+        mShowHabitDetailListener = new MutableLiveData<>();
+        mNewHabitPageListener = new MutableLiveData<>();
+        mDetailDeleteListener = new MutableLiveData<>();
 
-        habitDao = HabitDatabase.getHabitDatabase( getApplication() ).habitDao();
-        habitDayDao = HabitDatabase.getHabitDatabase( getApplication() ).habitDayDao();
-        databaseExecutor = Executors.newSingleThreadExecutor();
+        mHabitDao = HabitDatabase.getHabitDatabase( getApplication() ).habitDao();
+        mHabitDayDao = HabitDatabase.getHabitDatabase( getApplication() ).habitDayDao();
+        mDatabaseExecutor = Executors.newSingleThreadExecutor();
 
-        databaseExecutor.execute( () -> {
+        mDatabaseExecutor.execute( () -> {
 
-            synchronized ( habitInstantiationLock ) {
+            synchronized ( mHabitInstantiationLock ) {
 
-                habitsWithDays = habitDao.getAllWithDays();
+                mHabitsWithDays = mHabitDao.getAllWithDays();
 
                 // we can notify and unsync now because once the value is got, anyone can register
 
-                habitInstantiationLock.notify();
+                mHabitInstantiationLock.notify();
 
             }
 
-            List<Integer> habitIDs = habitDao.getHabitIDs();
-            List<HabitWithDays> habitDays = habitsWithDays.getValue();
+            List<Integer> habitIDs = mHabitDao.getHabitIDs();
+            List<HabitWithDays> habitDays = mHabitsWithDays.getValue();
 
             // some habit IDs exist, some days exist, but they don't have the same amount
             // which means that some habits don't have a day for today
@@ -99,105 +106,69 @@ public class HabitViewModel extends AndroidViewModel
 
     // DB Access/Update Methods
 
-    @NonNull
-    public LiveData< Habit > getHabit( int id ) {
-        MutableLiveData< Habit > liveData = new MutableLiveData<>();
-        databaseExecutor.execute( () -> {
-            Habit habit = habitDao.getHabitByID( id );
-            liveData.postValue( habit );
-        } );
-        return liveData;
+    private void viewHabitDetail( int id ) {
+        mShowHabitDetailListener.postValue( id );
     }
 
-    public void register( LifecycleOwner lifecycleOwner,
-                          @NonNull Observer< List< HabitWithDays > > observer ) {
-
-        databaseExecutor.execute( () -> {
-            synchronized ( habitInstantiationLock ) {
-                try {
-                    if ( habitsWithDays == null ) {
-                        habitInstantiationLock.wait();
-                    }
-                }
-                catch ( InterruptedException e ) {
-                    e.printStackTrace();
-                }
-
-                habitsWithDays.observe( lifecycleOwner, observer );
-                habitInstantiationLock.notify();
-            }
-        } );
-    }
-
-    public void addHabitButton() {
-        newHabitPageListener.postValue( true );
-    }
-
-    @Deprecated
-    public void addHabit() {
-        addHabit( String.valueOf( Math.random() * 100 ) );
-    }
-
-    public void addHabit( String name ) {
+    private void addHabit( String name ) {
         Habit habit = new Habit( name );
         insertHabit( habit );
-        newHabitPageListener.postValue( false );
+        mNewHabitPageListener.postValue( false );
     }
 
 
     private void insertHabit( Habit habit ) {
-        databaseExecutor.execute( () -> {
-            Long id = habitDao.insert( habit );
+        mDatabaseExecutor.execute( () -> {
+            Long id = mHabitDao.insert( habit );
             addDay( id.intValue() );
         } );
     }
 
-    public void addDay( int habitID ) {
+    private void addDay( int habitID ) {
         addDay( habitID, LocalDate.now() );
     }
 
-    public void addDay( int habitID, LocalDate date ) {
-        databaseExecutor.execute( () -> {
-            Habit habit = habitDao.getHabitByID( habitID );
+    private void addDay( int habitID, LocalDate date ) {
+        mDatabaseExecutor.execute( () -> {
+            Habit habit = mHabitDao.getHabitByID( habitID );
             if ( habit != null ) {
                 addDay( habit, date );
             }
         });
     }
 
-    public void addDay( Habit habit ) {
+    private void addDay( Habit habit ) {
         addDay( habit, LocalDate.now() );
     }
 
-    public void addDay( @NonNull Habit habit, @NonNull LocalDate date ) {
-        databaseExecutor.execute( () -> {
-            if ( habitDayDao.getDay( date.toString(), habit.getId() ) == null ) {
-                habitDayDao.insert( new HabitDay( habit, LocalDate.now() ) );
-
+    private void addDay( @NonNull Habit habit, @NonNull LocalDate date ) {
+        mDatabaseExecutor.execute( () -> {
+            if ( mHabitDayDao.getDay( date.toString(), habit.getId() ) == null ) {
+                mHabitDayDao.insert( new HabitDay( habit, LocalDate.now() ) );
             }
         } );
     }
 
-    public void insertHabits( List< Habit > habits ) {
-        databaseExecutor.execute( () -> habitDao.insert( habits ) );
+    private void insertHabits( List< Habit > habits ) {
+        mDatabaseExecutor.execute( () -> mHabitDao.insert( habits ) );
     }
 
-    public void deleteHabit( int habitID ) {
-        databaseExecutor.execute( () -> habitDao.delete( habitID ) );
+    private void deleteHabit( int habitID ) {
+        mDatabaseExecutor.execute( () -> mHabitDao.delete( habitID ) );
     }
 
-    public void deleteHabit( Habit habit ) {
-//        databaseExecutor.execute(() -> habitDao.delete( habit ) );
+    private void deleteHabit( Habit habit ) {
+//        mDatabaseExecutor.execute(() -> mHabitDao.delete( habit ) );
         deleteHabit( habit.getId() );
     }
 
-    public void plusHabitDay( HabitDay habitDay ) {
+    private void plusHabitDay( HabitDay habitDay ) {
         plusHabitDay( habitDay.getDayID() );
     }
 
-    public void plusHabitDay( int habitDayId ) {
-        databaseExecutor.execute( () -> {
-            HabitDay habitDay = habitDayDao.getDay( habitDayId );
+    private void plusHabitDay( int habitDayId ) {
+        mDatabaseExecutor.execute( () -> {
+            HabitDay habitDay = mHabitDayDao.getDay( habitDayId );
             if ( habitDay != null ) {
                 incrementHabit( habitDay.getHabitID() );
                 habitDay.incrementPlus();
@@ -206,13 +177,13 @@ public class HabitViewModel extends AndroidViewModel
         } );
     }
 
-    public void minusHabitDay( HabitDay habitDay ) {
+    private void minusHabitDay( HabitDay habitDay ) {
         minusHabitDay( habitDay.getDayID() );
     }
 
-    public void minusHabitDay( int habitDayId ) {
-        databaseExecutor.execute( () -> {
-            HabitDay habitDay = habitDayDao.getDay( habitDayId );
+    private void minusHabitDay( int habitDayId ) {
+        mDatabaseExecutor.execute( () -> {
+            HabitDay habitDay = mHabitDayDao.getDay( habitDayId );
             if ( habitDay != null ) {
                 decrementHabit( habitDay.getHabitID() );
                 habitDay.incrementMinus();
@@ -221,68 +192,75 @@ public class HabitViewModel extends AndroidViewModel
         } );
     }
 
-    public void incrementHabit( int id ) {
-        databaseExecutor.execute( () -> {
-            Habit habit = habitDao.getHabitByID( id );
+    private void incrementHabit( int id ) {
+        mDatabaseExecutor.execute( () -> {
+            Habit habit = mHabitDao.getHabitByID( id );
             if ( habit != null ) {
                 incrementHabit( habit );
             }
         } );
     }
 
-    public void incrementHabit( Habit habit ) {
+    private void incrementHabit( Habit habit ) {
         habit.increment();
         updateHabitInDB( habit );
     }
 
-    public void decrementHabit( int id ) {
-        databaseExecutor.execute( () -> {
-            Habit habit = habitDao.getHabitByID( id );
+    private void decrementHabit( int id ) {
+        mDatabaseExecutor.execute( () -> {
+            Habit habit = mHabitDao.getHabitByID( id );
             if ( habit != null ) {
                 decrementHabit( habit );
             }
         } );
     }
 
-    public void decrementHabit( Habit habit ) {
+    private void decrementHabit( Habit habit ) {
         habit.decrement();
         updateHabitInDB( habit );
     }
 
-
-    public void updateHabitInDB( Habit habit ) {
-        databaseExecutor.execute( () -> habitDao.update( habit ) );
+    private void updateHabitInDB( Habit habit ) {
+        mDatabaseExecutor.execute( () -> mHabitDao.update( habit ) );
     }
 
-    public void updateHabitDayInDB( HabitDay habitDay ) {
-        databaseExecutor.execute( () -> habitDayDao.update( habitDay ) );
-    }
-
-
-
-    public void registerDetail( LifecycleOwner lifecycleOwner,
-                          @NonNull Observer< List< HabitDay > > observer, int habitID ) {
-        databaseExecutor.execute( () ->
-            habitDayDao.getDaysForHabit( habitID ).observe( lifecycleOwner, observer )
-        );
+    private void updateHabitDayInDB( HabitDay habitDay ) {
+        mDatabaseExecutor.execute( () -> mHabitDayDao.update( habitDay ) );
     }
 
 
-    public void viewHabitDetail( int id ) {
-        habitDetailListener.postValue( id );
+
+
+    @NonNull
+    public LiveData< Habit > getHabitAsync( int id ) {
+        MutableLiveData< Habit > liveData = new MutableLiveData<>();
+        mDatabaseExecutor.execute( () -> {
+            Habit habit = mHabitDao.getHabitByID( id );
+            liveData.postValue( habit );
+        } );
+        return liveData;
     }
 
-    public LiveData< Integer > getHabitDetailListener() {
-        return habitDetailListener;
+    public LiveData< Integer > getShowHabitDetailListener() {
+        return mShowHabitDetailListener;
     }
 
-    public MutableLiveData< Boolean > getNewHabitPageListener() {
-        return newHabitPageListener;
+    public LiveData< Boolean > getNewHabitPageListener() {
+        return mNewHabitPageListener;
+    }
+
+    public LiveData< Integer > getDetailDeleteListener() {
+        return mDetailDeleteListener;
     }
 
 
 
     // Habit Listener Methods
+
+    @Override
+    public void onToolbarAddButtonPress() {
+        mNewHabitPageListener.postValue( true );
+    }
 
 
     @Override
@@ -291,6 +269,11 @@ public class HabitViewModel extends AndroidViewModel
             return;
         }
         deleteHabit( habitDay.getHabitID() );
+    }
+
+    @Override
+    public void onContentShortPress( int habitId ) {
+        viewHabitDetail( habitId );
     }
 
     @Override
@@ -309,13 +292,77 @@ public class HabitViewModel extends AndroidViewModel
         minusHabitDay( habitDay );
     }
 
-    private void sleep( int seconds ) {
-        try {
-            TimeUnit.SECONDS.sleep( seconds );
-        }
-        catch ( InterruptedException e ) {
-            e.printStackTrace();
-        }
+    @Override
+    public void onMissingDay( Habit habit, LocalDate date ) {
+        addDay( habit, date );
+    }
+
+    @Override
+    public LiveData< LiveData< List< HabitWithDays > > > getHabitsWithDaysWhenReady() {
+
+        MutableLiveData< LiveData< List< HabitWithDays > > > liveData = new MutableLiveData<>();
+
+        mDatabaseExecutor.execute( () -> {
+            synchronized ( mHabitInstantiationLock ) {
+                try {
+                    if ( mHabitsWithDays == null ) {
+                        mHabitInstantiationLock.wait();
+                    }
+                }
+                catch ( InterruptedException e ) {
+                    e.printStackTrace();
+                }
+
+                liveData.postValue( mHabitsWithDays );
+                mHabitInstantiationLock.notify();
+            }
+        } );
+
+        return liveData;
+    }
+
+
+    // Habit Detail Listener Methods
+
+    @Override
+    public void onDetailToolbarButton( int habitId ) {
+        mDetailDeleteListener.postValue( habitId );
+    }
+
+    @NonNull
+    @Override
+    public LiveData< LiveData< List< HabitDay > > > getDaysForDetailAsync( int habitId ) {
+        MutableLiveData< LiveData< List< HabitDay > > > liveData = new MutableLiveData<>();
+        mDatabaseExecutor.execute( () -> {
+            LiveData< List< HabitDay > > habitDays;
+            habitDays = mHabitDayDao.getDaysForHabit( habitId );
+            liveData.postValue( habitDays );
+        } );
+
+        return liveData;
+    }
+
+
+
+    // New Habit Page Listener Methods
+
+    @Override
+    public void onSubmitPress( String name ) {
+        addHabit( name );
+    }
+
+
+    // Delete Habit Dialog Listener Methods
+
+    @Override
+    public void delete( int habitId ) {
+        deleteHabit( habitId );
+        mDetailDeleteListener.postValue( null );
+    }
+
+    @Override
+    public void cancel() {
+
     }
 
 }

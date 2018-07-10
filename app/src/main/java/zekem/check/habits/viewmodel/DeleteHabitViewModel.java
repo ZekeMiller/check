@@ -2,12 +2,10 @@ package zekem.check.habits.viewmodel;
 
 import android.app.Application;
 import android.arch.lifecycle.AndroidViewModel;
-import android.arch.lifecycle.ViewModel;
 
-import zekem.check.habits.DeleteHabitDialogFragment;
 import zekem.check.habits.HabitObservables;
 import zekem.check.habits.database.HabitDatabase;
-import zekem.check.habits.listeners.HabitDeleteDialogListener;
+import zekem.check.habits.listener.HabitDeleteDialogListener;
 
 /**
  * @author Zeke Miller
@@ -26,9 +24,6 @@ public class DeleteHabitViewModel extends AndroidViewModel implements HabitDelet
 
     @Override
     public void delete( int habitId ) {
-
-//        deleteHabit( habitId );
-//        showHabitPage();
         mHabitDatabase.deleteHabit( habitId );
         mHabitObservables.showHabitPage();
     }

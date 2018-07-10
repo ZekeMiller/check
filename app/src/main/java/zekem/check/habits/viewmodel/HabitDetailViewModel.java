@@ -11,7 +11,7 @@ import zekem.check.habits.HabitDay;
 import zekem.check.habits.HabitObservables;
 import zekem.check.habits.database.HabitDatabase;
 import zekem.check.habits.database.HabitDayDao;
-import zekem.check.habits.listeners.HabitDetailListener;
+import zekem.check.habits.listener.HabitDetailListener;
 
 /**
  * @author Zeke Miller
@@ -26,7 +26,7 @@ public class HabitDetailViewModel extends AndroidViewModel implements HabitDetai
     public HabitDetailViewModel( Application application ) {
         super( application );
         mHabitObservables = HabitObservables.getInstance();
-        mHabitDayDao = HabitDatabase.getHabitDatabase( getApplication() ).habitDayDao();
+        mHabitDayDao = HabitDatabase.getHabitDatabase( getApplication() ).getHabitDayDao();
     }
 
 

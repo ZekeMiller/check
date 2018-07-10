@@ -1,4 +1,4 @@
-package zekem.check.habits.listeners;
+package zekem.check.habits.listener;
 
 import android.arch.lifecycle.LiveData;
 

@@ -15,6 +15,8 @@ import zekem.check.habits.database.DateConverters;
 @TypeConverters( DateConverters.class )
 public class Habit {
 
+    private static final int NUM_RANKS = 5;
+
     @PrimaryKey(autoGenerate = true)
     private int id;
 
@@ -83,6 +85,15 @@ public class Habit {
 
     public void decrement() {
         totalMinus++;
+    }
+
+    public int getRank() {
+//        return NUM_RANKS * ( totalPlus / ( totalPlus + totalMinus ) ) + 1;
+        double total = totalMinus + totalPlus;
+        double ratio = totalPlus / total;
+        int scaledRounded = (int) ( ratio * NUM_RANKS );
+        int adjust = scaledRounded + 1;
+        return adjust;
     }
 
 

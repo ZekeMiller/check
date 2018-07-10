@@ -50,10 +50,6 @@ public class HabitWithDays {
         return habitDaysDateMap.get( date );
     }
 
-    public void addDate( LocalDate date, HabitDay habitDay ) {
-        habitDaysDateMap.put( date, habitDay );
-    }
-
     public boolean sameHabitId( HabitWithDays other ) {
         return this.habit.getId() == other.habit.getId();
     }

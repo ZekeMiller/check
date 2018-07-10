@@ -22,12 +22,11 @@ import zekem.check.dailies.DailyPageFragment;
 import zekem.check.dailies.Daily;
 import zekem.check.datas.Data;
 import zekem.check.datas.DataPageFragment;
-import zekem.check.habits.DeleteHabitDialogFragment;
-import zekem.check.habits.HabitDetailFragment;
+import zekem.check.habits.ui.DeleteHabitDialogFragment;
+import zekem.check.habits.ui.HabitDetailFragment;
 import zekem.check.habits.HabitObservables;
-import zekem.check.habits.HabitPageFragment;
-import zekem.check.habits.viewmodel.HabitViewModel;
-import zekem.check.habits.NewHabitFragment;
+import zekem.check.habits.ui.HabitPageFragment;
+import zekem.check.habits.ui.NewHabitFragment;
 
 /**
  * The main Activity, has a bottom navigation and holds other Fragments
@@ -41,10 +40,10 @@ public class Main extends AppCompatActivity implements
     private MainViewModel mMainViewModel;
 
     private HabitObservables mHabitObservables;
-    private HabitPageFragment mHabitFragment;
-    private DailyPageFragment mDailiesFragment;
-    private DataPageFragment mDataFragment;
-    private AnalyticsPageFragment mAnalyticPageFragment;
+//    private HabitPageFragment mHabitFragment;
+//    private DailyPageFragment mDailiesFragment;
+//    private DataPageFragment mDataFragment;
+//    private AnalyticsPageFragment mAnalyticPageFragment;
 
     private BottomNavigationView mBottomNavigationView;
 
@@ -72,19 +71,23 @@ public class Main extends AppCompatActivity implements
 
             switch ( item.getItemId() ) {
                 case R.id.navigation_habits:
-                    fragment = mHabitFragment;
+//                    fragment = mHabitFragment;
+                    fragment = HabitPageFragment.newInstance();
                     title = getString( R.string.title_habits );
                     break;
                 case R.id.navigation_dailies:
-                    fragment = mDailiesFragment;
+//                    fragment = mDailiesFragment;
+                    fragment = DailyPageFragment.newInstance();
                     title = getString( R.string.title_dailies );
                     break;
                 case R.id.navigation_datas:
-                    fragment = mDataFragment;
+//                    fragment = mDataFragment;
+                    fragment = DataPageFragment.newInstance();
                     title = getString( R.string.title_datas );
                     break;
                 case R.id.navigation_analytics:
-                    fragment = mAnalyticPageFragment;
+//                    fragment = mAnalyticPageFragment;
+                    fragment = AnalyticsPageFragment.newInstance();
                     title = getString( R.string.title_analytics );
                     break;
                 default:
@@ -138,10 +141,10 @@ public class Main extends AppCompatActivity implements
 
 
 
-        mHabitFragment = HabitPageFragment.newInstance();
-        mDailiesFragment = DailyPageFragment.newInstance( 1 );
-        mDataFragment = DataPageFragment.newInstance( 1 );
-        mAnalyticPageFragment = AnalyticsPageFragment.newInstance();
+//        mHabitFragment = HabitPageFragment.newInstance();
+//        mDailiesFragment = DailyPageFragment.newInstance();
+//        mDataFragment = DataPageFragment.newInstance();
+//        mAnalyticPageFragment = AnalyticsPageFragment.newInstance();
 
         Toolbar toolbar = findViewById( R.id.toolbar );
         setSupportActionBar( toolbar );
@@ -171,15 +174,15 @@ public class Main extends AppCompatActivity implements
             .commit();
 
 
-        // TODO
-//        mHabitViewModel.getHabitAsync( habitID ).observe( mHabitDetailFragment, habit -> {
-//            if ( habit == null ) {
-//                setTitle( getString( R.string.title_habits ) );
-//            }
-//            else {
-//                setTitle( habit.getTitle() );
-//            }
-//        } );
+        mMainViewModel.getHabit( habitID ).observe( habitDetailFragment, habit -> {
+            if ( habit == null ) {
+                setTitle( getString( R.string.title_habits ) );
+            }
+            else {
+                setTitle( habit.getTitle() );
+            }
+        });
+
 
     }
 

@@ -14,6 +14,7 @@ import java.util.concurrent.Executors;
 
 import zekem.check.habits.Habit;
 import zekem.check.habits.HabitDay;
+import zekem.check.habits.HabitWithDays;
 
 /**
  * @author Zeke Miller
@@ -21,26 +22,83 @@ import zekem.check.habits.HabitDay;
 @Database( entities = { Habit.class, HabitDay.class }, version = 1, exportSchema = false )
 public abstract class HabitDatabase extends RoomDatabase {
 
+    // Singleton class variables
+
     private static HabitDatabase INSTANCE;
     private static final String DB_NAME = "habit_db";
+
+    // Singleton methods
 
     public static HabitDatabase getHabitDatabase( Context context ) {
         if ( INSTANCE == null ) {
             INSTANCE = Room.databaseBuilder( context.getApplicationContext(), HabitDatabase.class, DB_NAME ).build();
             INSTANCE.mDatabaseExecutor = Executors.newSingleThreadExecutor();
+            INSTANCE.mHabitDao = INSTANCE.habitDao();
+            INSTANCE.mHabitDayDao = INSTANCE.habitDayDao();
+            INSTANCE.fillAllMissing();
         }
         return INSTANCE;
     }
 
-    public abstract HabitDao habitDao();
-    public abstract HabitDayDao habitDayDao();
-
     public static void destroyInstance() {
+        INSTANCE.mHabitDayDao = null;
+        INSTANCE.mHabitDao = null;
+        INSTANCE.mDatabaseExecutor = null;
         INSTANCE = null;
     }
 
-    private ExecutorService mDatabaseExecutor;
 
+    // DAO Accessors
+
+    protected abstract HabitDao habitDao();
+    protected abstract HabitDayDao habitDayDao();
+
+
+    // Instance fields
+
+    private ExecutorService mDatabaseExecutor;
+    private HabitDao mHabitDao;
+    private HabitDayDao mHabitDayDao;
+
+
+    public HabitDao getHabitDao() {
+        return mHabitDao;
+    }
+
+    public HabitDayDao getHabitDayDao() {
+        return mHabitDayDao;
+    }
+
+    // Instance methods
+
+    private void fillAllMissing() {
+        mDatabaseExecutor.execute( () -> {
+
+            List<HabitWithDays> habitsWithDays = mHabitDao.getAllWithDaysSync();
+
+            if ( habitsWithDays != null ) {
+                for ( HabitWithDays habitWithDays : habitsWithDays ) {
+                    fillMissingDates( habitWithDays );
+                }
+            }
+        } );
+    }
+
+    private void fillMissingDates( HabitWithDays habitWithDays ) {
+
+        Habit habit = habitWithDays.getHabit();
+        LocalDate startDate = habitWithDays.getHabit().getCreatedDate();
+        LocalDate endDate = LocalDate.now().plusWeeks( 1 );
+
+        for ( LocalDate date = startDate ; !date.equals( endDate ) ; date = date.plusDays( 1 ) ) {
+            if ( habitWithDays.getForDate( date ) == null ) {
+//                habitWithDays.addDate( date, new HabitDay( habit, date ) );
+                addDay( habit, new LocalDate( date ) );
+            }
+        }
+//        mDatabaseExecutor.execute( () -> mHabitDayDao.update( habitWithDays.getHabitDays() ) );
+//        mDatabaseExecutor.execute( () -> mHabitDatabase.habitDayDao().update( habitWithDays.getHabitDays() ) );
+    }
 
 
     public void addHabit( String name ) {
@@ -51,7 +109,7 @@ public abstract class HabitDatabase extends RoomDatabase {
 
     public void insertHabit( Habit habit ) {
         mDatabaseExecutor.execute( () -> {
-            Long id = habitDao().insert( habit );
+            Long id = mHabitDao.insert( habit );
             addDay( id.intValue() );
         } );
     }
@@ -62,7 +120,7 @@ public abstract class HabitDatabase extends RoomDatabase {
 
     public void addDay( int habitID, LocalDate date ) {
         mDatabaseExecutor.execute( () -> {
-            Habit habit = habitDao().getHabitSync( habitID );
+            Habit habit = mHabitDao.getHabitSync( habitID );
             if ( habit != null ) {
                 addDay( habit, date );
             }
@@ -75,18 +133,18 @@ public abstract class HabitDatabase extends RoomDatabase {
 
     public void addDay( @NonNull Habit habit, @NonNull LocalDate date ) {
         mDatabaseExecutor.execute( () -> {
-            if ( habitDayDao().getDay( date.toString(), habit.getId() ) == null ) {
-                habitDayDao().insert( new HabitDay( habit, date ) );
+            if ( mHabitDayDao.getDay( date.toString(), habit.getId() ) == null ) {
+                mHabitDayDao.insert( new HabitDay( habit, date ) );
             }
         } );
     }
 
     public void insertHabits( List< Habit > habits ) {
-        mDatabaseExecutor.execute( () -> habitDao().insert( habits ) );
+        mDatabaseExecutor.execute( () -> mHabitDao.insert( habits ) );
     }
 
     public void deleteHabit( int habitID ) {
-        mDatabaseExecutor.execute( () -> habitDao().delete( habitID ) );
+        mDatabaseExecutor.execute( () -> mHabitDao.delete( habitID ) );
     }
 
     public void deleteHabit( Habit habit ) {
@@ -100,7 +158,7 @@ public abstract class HabitDatabase extends RoomDatabase {
 
     public void plusHabitDay( int habitDayId ) {
         mDatabaseExecutor.execute( () -> {
-            HabitDay habitDay = habitDayDao().getDay( habitDayId );
+            HabitDay habitDay = mHabitDayDao.getDay( habitDayId );
             if ( habitDay != null ) {
                 incrementHabit( habitDay.getHabitID() );
                 habitDay.incrementPlus();
@@ -115,7 +173,7 @@ public abstract class HabitDatabase extends RoomDatabase {
 
     public void minusHabitDay( int habitDayId ) {
         mDatabaseExecutor.execute( () -> {
-            HabitDay habitDay = habitDayDao().getDay( habitDayId );
+            HabitDay habitDay = mHabitDayDao.getDay( habitDayId );
             if ( habitDay != null ) {
                 decrementHabit( habitDay.getHabitID() );
                 habitDay.incrementMinus();
@@ -126,7 +184,7 @@ public abstract class HabitDatabase extends RoomDatabase {
 
     public void incrementHabit( int id ) {
         mDatabaseExecutor.execute( () -> {
-            Habit habit = habitDao().getHabitSync( id );
+            Habit habit = mHabitDao.getHabitSync( id );
             if ( habit != null ) {
                 incrementHabit( habit );
             }
@@ -140,7 +198,7 @@ public abstract class HabitDatabase extends RoomDatabase {
 
     public void decrementHabit( int id ) {
         mDatabaseExecutor.execute( () -> {
-            Habit habit = habitDao().getHabitSync( id );
+            Habit habit = mHabitDao.getHabitSync( id );
             if ( habit != null ) {
                 decrementHabit( habit );
             }
@@ -153,15 +211,15 @@ public abstract class HabitDatabase extends RoomDatabase {
     }
 
     public void updateHabitInDB( Habit habit ) {
-        mDatabaseExecutor.execute( () -> habitDao().update( habit ) );
+        mDatabaseExecutor.execute( () -> mHabitDao.update( habit ) );
     }
 
     public void updateHabitDayInDB( HabitDay habitDay ) {
-        mDatabaseExecutor.execute( () -> habitDayDao().update( habitDay ) );
+        mDatabaseExecutor.execute( () -> mHabitDayDao.update( habitDay ) );
     }
 
     public void update( List< HabitDay > habitDays ) {
-        mDatabaseExecutor.execute( () -> habitDayDao().update( habitDays ) );
+        mDatabaseExecutor.execute( () -> mHabitDayDao.update( habitDays ) );
     }
 
 }

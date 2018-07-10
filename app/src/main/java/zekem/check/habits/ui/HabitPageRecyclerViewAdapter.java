@@ -1,7 +1,12 @@
-package zekem.check.habits;
+package zekem.check.habits.ui;
 
+import android.content.res.Resources;
+import android.graphics.Color;
+import android.graphics.drawable.Drawable;
+import android.graphics.drawable.GradientDrawable;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.util.DiffUtil;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -16,7 +21,10 @@ import java.util.List;
 import java.util.Locale;
 
 import zekem.check.R;
-import zekem.check.habits.listeners.HabitFragmentListener;
+import zekem.check.habits.Habit;
+import zekem.check.habits.HabitDay;
+import zekem.check.habits.HabitWithDays;
+import zekem.check.habits.listener.HabitFragmentListener;
 
 /**
  * {@link RecyclerView.Adapter} that can display a {@link Habit} and makes a call to the
@@ -25,10 +33,11 @@ import zekem.check.habits.listeners.HabitFragmentListener;
 public class HabitPageRecyclerViewAdapter extends RecyclerView.Adapter< HabitPageRecyclerViewAdapter.ViewHolder > {
 
     private final HabitFragmentListener mListener;
-    private List< HabitWithDays > habitsWithDays;
+    private List<HabitWithDays> habitsWithDays;
     private LocalDate date = LocalDate.now();
 
-    public HabitPageRecyclerViewAdapter( HabitFragmentListener listener ) {
+
+    public HabitPageRecyclerViewAdapter(HabitFragmentListener listener ) {
         mListener = listener;
     }
 
@@ -57,11 +66,8 @@ public class HabitPageRecyclerViewAdapter extends RecyclerView.Adapter< HabitPag
 
             @Override
             public boolean areContentsTheSame( int oldItemPosition, int newItemPosition ) {
-                HabitDay oldDay = oldList.get( oldItemPosition ).getForDate( date );
-                if ( oldDay == null ) {
-                    return false;
-                }
-                return oldDay.sameContents( habitsWithDays.get( newItemPosition ).getForDate(date ) );
+                HabitDay oldDay = oldList.get(oldItemPosition).getForDate(date);
+                return oldDay != null && oldDay.sameContents(habitsWithDays.get(newItemPosition).getForDate(date));
             }
         }, true );
 
@@ -89,7 +95,6 @@ public class HabitPageRecyclerViewAdapter extends RecyclerView.Adapter< HabitPag
         int minusCount = 0;
 
         if ( holder.mHabitDay == null ) {
-//            mListener.addDay( holder.mHabit, date );
             mListener.onMissingDay( holder.mHabit, date );
         }
         else {
@@ -100,6 +105,41 @@ public class HabitPageRecyclerViewAdapter extends RecyclerView.Adapter< HabitPag
                 plusCount,
                 holder.mHabit.getTitle(),
                 minusCount ) );
+
+        int colorId = 0;
+        // TODO change to if-chain with static thresholds
+        switch ( holder.mHabit.getRank() ) {
+            case 1:
+                colorId = R.color.colorHabitOne;
+                break;
+            case 2:
+                colorId = R.color.colorHabitTwo;
+                break;
+            case 3:
+                colorId = R.color.colorHabitThree;
+                break;
+            case 4:
+                colorId = R.color.colorHabitFour;
+                break;
+            case 5:
+                colorId = R.color.colorHabitFive;
+                break;
+        }
+        if ( colorId != 0 ) {
+
+            int color = ContextCompat.getColor( holder.mView.getContext(), colorId );
+
+            View view = holder.mView.findViewById( R.id.habitLayout );
+
+            GradientDrawable gradientDrawable = new GradientDrawable();
+            gradientDrawable.setColor( Color.BLACK );
+            gradientDrawable.setCornerRadius( 0 );
+            gradientDrawable.setStroke( R.dimen.habit_card_stroke_width, R.color.colorAccent );
+
+            Drawable drawable = ContextCompat.getDrawable( holder.mView.getContext(), R.drawable.habit_list_card_border );
+//            Drawable drawable = gradientDrawable;
+            view.setBackgroundDrawable( drawable );
+        }
 
     }
 

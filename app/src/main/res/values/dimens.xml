@@ -7,5 +7,7 @@
     <dimen name="habit_plus_button_padding">@dimen/habit_button_padding</dimen>
     <dimen name="habit_minus_button_padding">@dimen/habit_button_padding</dimen>
     <dimen name="habit_list_item_top_margin">8dp</dimen>
+    
+    <dimen name="habit_card_stroke_width">5dp</dimen>
 
 </resources>

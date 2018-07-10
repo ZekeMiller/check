@@ -1,4 +1,4 @@
-package zekem.check.habits;
+package zekem.check.habits.ui;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -8,7 +8,7 @@ import android.support.annotation.NonNull;
 import android.support.v4.app.DialogFragment;
 
 import zekem.check.R;
-import zekem.check.habits.listeners.HabitDeleteDialogListener;
+import zekem.check.habits.listener.HabitDeleteDialogListener;
 import zekem.check.habits.viewmodel.DeleteHabitViewModel;
 
 /**

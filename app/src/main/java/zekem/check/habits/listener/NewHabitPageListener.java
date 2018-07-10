@@ -1,4 +1,4 @@
-package zekem.check.habits.listeners;
+package zekem.check.habits.listener;
 
 /**
  * @author Zeke Miller

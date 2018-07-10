@@ -1,4 +1,4 @@
-package zekem.check.habits;
+package zekem.check.habits.ui;
 
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
@@ -10,10 +10,11 @@ import android.widget.TextView;
 import java.util.List;
 
 import zekem.check.R;
+import zekem.check.habits.HabitDay;
 
 public class HabitDetailRecyclerViewAdapter extends RecyclerView.Adapter<HabitDetailRecyclerViewAdapter.ViewHolder> {
 
-    private List< HabitDay > mValues;
+    private List<HabitDay> mValues;
 
     public HabitDetailRecyclerViewAdapter() {
     }

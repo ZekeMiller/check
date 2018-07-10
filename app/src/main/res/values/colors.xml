@@ -2,7 +2,25 @@
 <resources>
     <color name="colorPrimary">#3F51B5</color>
     <color name="colorPrimaryDark">#303F9F</color>
-    <color name="colorAccent">#ff1c6a</color>
+    <color name="colorAccent">#FF1C6A</color>
     <color name="colorAccentOld">#FF4081</color>
-    <color name="colorBlack">#F000</color>
+    <color name="colorBlack">#000</color>
+
+    <color name="colorTransparent">#0000</color>
+
+    <color name="colorRed">#F00</color>
+    <color name="colorOrange">#F80</color>
+    <color name="colorYellow">#FF0</color>
+    <color name="colorLightGreen">#8F0</color>
+    <color name="colorGreen">#0F0</color>
+
+    <color name="colorHabitPlus">@color/colorGreen</color>
+    <color name="colorHabitMinus">@color/colorRed</color>
+    
+    <color name="colorHabitOne">@color/colorRed</color>
+    <color name="colorHabitTwo">@color/colorOrange</color>
+    <color name="colorHabitThree">@color/colorYellow</color>
+    <color name="colorHabitFour">@color/colorLightGreen</color>
+    <color name="colorHabitFive">@color/colorGreen</color>
+    
 </resources>

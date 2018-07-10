@@ -5,7 +5,7 @@ import android.arch.lifecycle.AndroidViewModel;
 
 import zekem.check.habits.HabitObservables;
 import zekem.check.habits.database.HabitDatabase;
-import zekem.check.habits.listeners.NewHabitPageListener;
+import zekem.check.habits.listener.NewHabitPageListener;
 
 /**
  * @author Zeke Miller
@@ -24,7 +24,6 @@ public class NewHabitViewModel extends AndroidViewModel implements NewHabitPageL
     @Override
     public void onSubmitPress( String name ) {
         mHabitDatabase.addHabit( name );
-//        addHabit( name );
         mHabitObservables.showHabitPage();
     }
 }

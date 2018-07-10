@@ -9,5 +9,5 @@
     android:layout_marginLeft="16dp"
     android:layout_marginRight="16dp"
     app:layoutManager="android.support.v7.widget.LinearLayoutManager"
-    tools:context=".habits.HabitDetailFragment"
+    tools:context=".habits.ui.HabitDetailFragment"
     tools:listitem="@layout/fragment_habit_detail" />

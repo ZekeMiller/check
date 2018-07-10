@@ -1,4 +1,4 @@
-package zekem.check.habits;
+package zekem.check.habits.ui;
 
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
@@ -15,7 +15,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import zekem.check.R;
-import zekem.check.habits.listeners.HabitFragmentListener;
+import zekem.check.habits.listener.HabitFragmentListener;
 import zekem.check.habits.viewmodel.HabitViewModel;
 
 /**
@@ -107,7 +107,7 @@ public class HabitPageFragment extends Fragment {
     }
 
     /**
-     * Last method called before fragment destruction, nulls ViewModel reference (unregistering
+     * Last method called before fragment destruction, nulls ViewModel reference ( un-registering
      * unnecessary since LiveData takes care of it)
      */
     @Override

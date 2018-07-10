@@ -9,10 +9,10 @@ import zekem.check.habits.HabitDay;
 /**
  * @author Zeke Miller
  */
-public interface HabitDetailFragmentListener {
+public interface HabitDetailListener {
 
     void onDetailToolbarButton( int habitId );
 
-    LiveData< LiveData< List< HabitDay > > > getDaysForDetailAsync( int habitId );
+    LiveData< List< HabitDay > > getDaysForDetail( int habitId );
 
 }

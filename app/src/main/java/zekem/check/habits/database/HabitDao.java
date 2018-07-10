@@ -42,7 +42,10 @@ public interface HabitDao {
     LiveData< List< Habit > > getAll();
 
     @Query( "SELECT * FROM habit WHERE id=:id" )
-    Habit getHabitByID( int id );
+    Habit getHabitSync( int id );
+
+    @Query( "SELECT * FROM habit WHERE id=:id" )
+    LiveData< Habit > getHabit( int id );
 
     @Query( "SELECT id FROM habit" )
     List< Integer > getHabitIDs();
@@ -53,6 +56,10 @@ public interface HabitDao {
     @Transaction
     @Query( "SELECT * FROM habit" )
     LiveData< List< HabitWithDays > > getAllWithDays();
+
+    @Transaction
+    @Query( "SELECT * FROM habit" )
+    List< HabitWithDays > getAllWithDaysSync();
 
     @Transaction
     @Query( "SELECT * FROM habit WHERE id=:id" )

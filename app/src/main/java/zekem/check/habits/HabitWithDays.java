@@ -19,7 +19,7 @@ public class HabitWithDays {
     private List< HabitDay > habitDays;
 
     @Ignore
-    private HashMap< String, HabitDay > habitDaysDateMap = null;
+    private HashMap< LocalDate, HabitDay > habitDaysDateMap = null;
 
 
     public Habit getHabit() {
@@ -44,10 +44,14 @@ public class HabitWithDays {
 
     @Nullable
     public HabitDay getForDate( LocalDate date ) {
-        if (habitDaysDateMap == null || (habitDaysDateMap.size() < habitDays.size())) {
+        if ( habitDaysDateMap == null || ( habitDaysDateMap.size() < habitDays.size() ) ) {
             setHabitDays( habitDays );
         }
-        return habitDaysDateMap.get( date.toString() );
+        return habitDaysDateMap.get( date );
+    }
+
+    public void addDate( LocalDate date, HabitDay habitDay ) {
+        habitDaysDateMap.put( date, habitDay );
     }
 
     public boolean sameHabitId( HabitWithDays other ) {

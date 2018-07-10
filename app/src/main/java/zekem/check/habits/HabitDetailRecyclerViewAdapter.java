@@ -13,11 +13,9 @@ import zekem.check.R;
 
 public class HabitDetailRecyclerViewAdapter extends RecyclerView.Adapter<HabitDetailRecyclerViewAdapter.ViewHolder> {
 
-//    private final HabitViewModel mViewModel;
-    private List<HabitDay> mValues;
+    private List< HabitDay > mValues;
 
     public HabitDetailRecyclerViewAdapter() {
-//        mViewModel = habitViewModel;
     }
 
     public void setData( List< HabitDay > habitDays ) {
@@ -43,7 +41,7 @@ public class HabitDetailRecyclerViewAdapter extends RecyclerView.Adapter<HabitDe
         holder.mHabitDay = mValues.get(position);
         holder.mPlusCount.setText( String.valueOf( mValues.get(position).getPlusCount()) );
         holder.mMinusCount.setText( String.valueOf( mValues.get(position).getMinusCount()) );
-        holder.mDate.setText(mValues.get(position).getDate());
+        holder.mDate.setText( mValues.get( position ).getDate().toString() );
 
         holder.mView.setOnClickListener(v -> {
 

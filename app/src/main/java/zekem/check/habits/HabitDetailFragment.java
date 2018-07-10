@@ -1,5 +1,6 @@
 package zekem.check.habits;
 
+import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -12,12 +13,13 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import zekem.check.R;
-import zekem.check.habits.listeners.HabitDetailFragmentListener;
+import zekem.check.habits.listeners.HabitDetailListener;
+import zekem.check.habits.viewmodel.HabitDetailViewModel;
 
 
 public class HabitDetailFragment extends Fragment {
 
-    private HabitDetailFragmentListener mListener;
+    private HabitDetailListener mListener;
     private int mHabitId;
 
     /**
@@ -28,10 +30,9 @@ public class HabitDetailFragment extends Fragment {
     }
 
 
-    public static HabitDetailFragment newInstance(HabitDetailFragmentListener listener, int habitID) {
+    public static HabitDetailFragment newInstance( int habitId ) {
         HabitDetailFragment habitDetailFragment = new HabitDetailFragment();
-        habitDetailFragment.mListener = listener;
-        habitDetailFragment.mHabitId = habitID;
+        habitDetailFragment.mHabitId = habitId;
         return habitDetailFragment;
     }
 
@@ -44,16 +45,17 @@ public class HabitDetailFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu( true );
+        mListener = ViewModelProviders.of( this ).get( HabitDetailViewModel.class );
     }
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater ) {
         inflater.inflate( R.menu.habit_detail_toolbar, menu );
         menu.findItem( R.id.habit_detail_toolbar_add_button )
-                .setOnMenuItemClickListener( menuItem -> {
-                    mListener.onDetailToolbarButton( mHabitId );
-                    return true;
-                } );
+            .setOnMenuItemClickListener( menuItem -> {
+                mListener.onDetailToolbarButton( mHabitId );
+                return true;
+            } );
     }
 
     @Override
@@ -69,11 +71,7 @@ public class HabitDetailFragment extends Fragment {
 
             HabitDetailRecyclerViewAdapter adapter = new HabitDetailRecyclerViewAdapter();
             recyclerView.setAdapter( adapter );
-            mListener.getDaysForDetailAsync( mHabitId ).observe( this, liveData -> {
-                if ( liveData != null ) {
-                    liveData.observe( this, adapter::setData );
-                }
-            } );
+            mListener.getDaysForDetail( mHabitId ).observe( this, adapter::setData );
         }
         return view;
     }

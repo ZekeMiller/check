@@ -1,5 +1,6 @@
 package zekem.check.habits;
 
+import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -15,6 +16,7 @@ import android.view.ViewGroup;
 
 import zekem.check.R;
 import zekem.check.habits.listeners.HabitFragmentListener;
+import zekem.check.habits.viewmodel.HabitViewModel;
 
 /**
  * A fragment representing a list of Habits
@@ -67,6 +69,8 @@ public class HabitPageFragment extends Fragment {
         super.onCreate( savedInstanceState );
         setHasOptionsMenu( true );
 
+        mListener = ViewModelProviders.of( this ).get( HabitViewModel.class );
+
     }
 
     /**
@@ -96,12 +100,7 @@ public class HabitPageFragment extends Fragment {
             final HabitPageRecyclerViewAdapter adapter = new HabitPageRecyclerViewAdapter( mListener );
 
             recyclerView.setAdapter( adapter );
-//            mListener.register( this, adapter::setData );
-            mListener.getHabitsWithDaysWhenReady().observe( this, liveData -> {
-                if ( liveData != null ) {
-                    liveData.observe( this, adapter::setData );
-                }
-            } );
+            mListener.getHabitsWithDays().observe( this, adapter::setData );
 
         }
         return view;
@@ -113,7 +112,6 @@ public class HabitPageFragment extends Fragment {
      */
     @Override
     public void onDetach() {
-
         super.onDetach();
         mListener = null;
     }
@@ -134,9 +132,5 @@ public class HabitPageFragment extends Fragment {
             default:
                 return false;
         }
-    }
-
-    public void setListener( HabitFragmentListener listener ) {
-        mListener = listener;
     }
 }

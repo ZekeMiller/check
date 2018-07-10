@@ -2,18 +2,25 @@ package zekem.check.habits;
 
 import android.arch.persistence.room.Entity;
 import android.arch.persistence.room.PrimaryKey;
+import android.arch.persistence.room.TypeConverters;
+
+import org.joda.time.LocalDate;
+
+import zekem.check.habits.database.DateConverters;
 
 /**
  * @author Zeke Miller
  */
 @Entity
+@TypeConverters( DateConverters.class )
 public class Habit {
 
     @PrimaryKey(autoGenerate = true)
     private int id;
 
-    private String title;
+    private LocalDate createdDate;
 
+    private String title;
     private int totalPlus;
     private int totalMinus;
 
@@ -21,6 +28,7 @@ public class Habit {
     public Habit( String title ) {
 
         this.title = title;
+        createdDate = LocalDate.now();
         totalMinus = 0;
         totalPlus = 0;
     }
@@ -28,13 +36,11 @@ public class Habit {
 
 
     public int getId() {
-
         return id;
     }
 
-    public void setId( int id ) {
-
-        this.id = id;
+    public LocalDate getCreatedDate() {
+        return createdDate;
     }
 
     public String getTitle() {
@@ -50,7 +56,15 @@ public class Habit {
     }
 
 
-    public void setTitle(String title ) {
+    public void setId( int id ) {
+        this.id = id;
+    }
+
+    public void setCreatedDate( LocalDate createdDate ) {
+        this.createdDate = createdDate;
+    }
+
+    public void setTitle( String title ) {
         this.title = title;
     }
 

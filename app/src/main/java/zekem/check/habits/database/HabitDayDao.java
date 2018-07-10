@@ -24,6 +24,9 @@ public interface HabitDayDao {
     @Update
     void update( HabitDay... habitDays );
 
+    @Update
+    void update( List< HabitDay > habitDays );
+
 
     @Delete
     void delete( HabitDay... habitDays );

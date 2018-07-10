@@ -29,6 +29,6 @@ public interface HabitFragmentListener {
 
     void onMissingDay( Habit habit, LocalDate date );
 
-    LiveData< LiveData< List< HabitWithDays > > > getHabitsWithDaysWhenReady();
+    LiveData< List< HabitWithDays > > getHabitsWithDays();
 
 }

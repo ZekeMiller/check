@@ -1,5 +1,6 @@
 package zekem.check.habits;
 
+import android.arch.lifecycle.ViewModelProviders;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -12,6 +13,7 @@ import android.widget.EditText;
 
 import zekem.check.R;
 import zekem.check.habits.listeners.NewHabitPageListener;
+import zekem.check.habits.viewmodel.NewHabitViewModel;
 
 /**
  * @author Zeke Miller
@@ -25,13 +27,18 @@ public class NewHabitFragment extends Fragment {
 
     }
 
-    public static NewHabitFragment newInstance( NewHabitPageListener listener ) {
+    public static NewHabitFragment newInstance() {
 
         NewHabitFragment newHabitFragment;
         newHabitFragment = new NewHabitFragment();
-        newHabitFragment.mListener = listener;
         return newHabitFragment;
 
+    }
+
+    @Override
+    public void onCreate( @Nullable Bundle savedInstanceState ) {
+        super.onCreate( savedInstanceState );
+        mListener = ViewModelProviders.of( this ).get( NewHabitViewModel.class );
     }
 
     @Nullable

@@ -24,8 +24,9 @@ import zekem.check.datas.Data;
 import zekem.check.datas.DataPageFragment;
 import zekem.check.habits.DeleteHabitDialogFragment;
 import zekem.check.habits.HabitDetailFragment;
+import zekem.check.habits.HabitObservables;
 import zekem.check.habits.HabitPageFragment;
-import zekem.check.habits.HabitViewModel;
+import zekem.check.habits.viewmodel.HabitViewModel;
 import zekem.check.habits.NewHabitFragment;
 
 /**
@@ -36,13 +37,18 @@ public class Main extends AppCompatActivity implements
                 DataPageFragment.OnListFragmentInteractionListener,
                 AnalyticsPageFragment.OnFragmentInteractionListener {
 
-    private HabitViewModel mHabitViewModel;
-    private HabitPageFragment habitsFragment;
-    private DailyPageFragment dailiesFragment;
-    private DataPageFragment dataFragment;
-    private AnalyticsPageFragment analyticsPageFragment;
+//    private HabitViewModel mHabitViewModel;
+    private MainViewModel mMainViewModel;
+
+    private HabitObservables mHabitObservables;
+    private HabitPageFragment mHabitFragment;
+    private DailyPageFragment mDailiesFragment;
+    private DataPageFragment mDataFragment;
+    private AnalyticsPageFragment mAnalyticPageFragment;
 
     private BottomNavigationView mBottomNavigationView;
+
+    private boolean firstRun;
 
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
             = new BottomNavigationView.OnNavigationItemSelectedListener() {
@@ -66,20 +72,19 @@ public class Main extends AppCompatActivity implements
 
             switch ( item.getItemId() ) {
                 case R.id.navigation_habits:
-                    fragment = habitsFragment;
-                    habitsFragment.setListener( mHabitViewModel );
+                    fragment = mHabitFragment;
                     title = getString( R.string.title_habits );
                     break;
                 case R.id.navigation_dailies:
-                    fragment = dailiesFragment;
+                    fragment = mDailiesFragment;
                     title = getString( R.string.title_dailies );
                     break;
                 case R.id.navigation_datas:
-                    fragment = dataFragment;
+                    fragment = mDataFragment;
                     title = getString( R.string.title_datas );
                     break;
                 case R.id.navigation_analytics:
-                    fragment = analyticsPageFragment;
+                    fragment = mAnalyticPageFragment;
                     title = getString( R.string.title_analytics );
                     break;
                 default:
@@ -113,58 +118,74 @@ public class Main extends AppCompatActivity implements
 
         mBottomNavigationView = findViewById( R.id.navigation );
         removeShiftMode( mBottomNavigationView );
+
         mBottomNavigationView.setOnNavigationItemSelectedListener( mOnNavigationItemSelectedListener );
 
-        mHabitViewModel = ViewModelProviders.of( this ).get( HabitViewModel.class );
+        mHabitObservables = HabitObservables.getInstance();
 
-        mHabitViewModel.getShowHabitDetailListener().observe( this, this::showDetailFragment );
-        mHabitViewModel.getNewHabitPageListener().observe( this, v -> this.showNewHabitFragment() );
-        mHabitViewModel.getDetailDeleteListener().observe( this, this::showDeleteDialog );
-        mHabitViewModel.getShowHabitPageListener().observe( this, v -> this.showHabitPage() );
+//        mHabitViewModel = ViewModelProviders.of( this ).get( HabitViewModel.class );
+        mMainViewModel = ViewModelProviders.of( this ).get( MainViewModel.class );
 
-        habitsFragment = HabitPageFragment.newInstance();
-        dailiesFragment = DailyPageFragment.newInstance( 1 );
-        dataFragment = DataPageFragment.newInstance( 1 );
-        analyticsPageFragment = AnalyticsPageFragment.newInstance();
+//        mHabitViewModel.getShowHabitDetailListener().observe( this, this::showDetailFragment );
+//        mHabitViewModel.getNewHabitPageListener().observe( this, v -> this.showNewHabitFragment() );
+//        mHabitViewModel.getDetailDeleteListener().observe( this, this::showDeleteDialog );
+//        mHabitViewModel.getShowHabitPageListener().observe( this, v -> this.showHabitPage() );
+
+        mHabitObservables.getShowHabitDetailListener().observe( this, this::showDetailFragment );
+        mHabitObservables.getNewHabitPageListener().observe( this, v -> this.showNewHabitFragment() );
+        mHabitObservables.getDetailDeleteListener().observe( this, this::showDeleteDialog );
+        mHabitObservables.getShowHabitPageListener().observe( this, v -> this.showHabitPage() );
+
+
+
+        mHabitFragment = HabitPageFragment.newInstance();
+        mDailiesFragment = DailyPageFragment.newInstance( 1 );
+        mDataFragment = DataPageFragment.newInstance( 1 );
+        mAnalyticPageFragment = AnalyticsPageFragment.newInstance();
 
         Toolbar toolbar = findViewById( R.id.toolbar );
         setSupportActionBar( toolbar );
+
+        firstRun = true;
     }
 
 
     @Override
-    public void onAttachedToWindow() {
+    protected void onResume() {
 
-        super.onAttachedToWindow();
-        mBottomNavigationView.setSelectedItemId( R.id.navigation_dailies );
+        super.onResume();
 
+        if ( firstRun ) {
+            mBottomNavigationView.setSelectedItemId( R.id.navigation_dailies );
+        }
+        firstRun = false;
     }
-
 
     private void showDetailFragment( int habitID ) {
 
-        HabitDetailFragment habitDetailFragment =
-                HabitDetailFragment.newInstance( mHabitViewModel, habitID );
+        HabitDetailFragment habitDetailFragment = HabitDetailFragment.newInstance( habitID );
 
         getSupportFragmentManager().beginTransaction()
             .replace( R.id.main_fragment_container, habitDetailFragment )
             .addToBackStack( null )
             .commit();
 
-        mHabitViewModel.getHabitAsync( habitID ).observe( habitDetailFragment, habit -> {
-            if ( habit == null ) {
-                setTitle( getString( R.string.title_habits ) );
-            }
-            else {
-                setTitle( habit.getTitle() );
-            }
-        } );
+
+        // TODO
+//        mHabitViewModel.getHabitAsync( habitID ).observe( mHabitDetailFragment, habit -> {
+//            if ( habit == null ) {
+//                setTitle( getString( R.string.title_habits ) );
+//            }
+//            else {
+//                setTitle( habit.getTitle() );
+//            }
+//        } );
 
     }
 
     private void showNewHabitFragment() {
 
-        NewHabitFragment newHabitFragment = NewHabitFragment.newInstance( mHabitViewModel );
+        NewHabitFragment newHabitFragment = NewHabitFragment.newInstance();
 
         getSupportFragmentManager().beginTransaction()
                 .replace( R.id.main_fragment_container, newHabitFragment )
@@ -178,7 +199,7 @@ public class Main extends AppCompatActivity implements
     private void showDeleteDialog( int habitId ) {
 
         DeleteHabitDialogFragment deleteDialog =
-                DeleteHabitDialogFragment.newInstance( mHabitViewModel, habitId );
+                DeleteHabitDialogFragment.newInstance( habitId );
 
         deleteDialog.show( getSupportFragmentManager(), null );
 

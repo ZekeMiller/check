@@ -22,8 +22,8 @@ public class NewHabitViewModel extends AndroidViewModel implements NewHabitPageL
     }
 
     @Override
-    public void onSubmitPress( String name ) {
-        mHabitDatabase.addHabit( name );
+    public void onSubmitPress( String name, boolean minusActive, boolean plusActive ) {
+        mHabitDatabase.addHabit( name, minusActive, plusActive );
         mHabitObservables.showHabitPage();
     }
 }

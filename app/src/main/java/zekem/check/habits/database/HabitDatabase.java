@@ -71,7 +71,7 @@ public abstract class HabitDatabase extends RoomDatabase {
 
     // Instance methods
 
-    private void fillAllMissing() {
+    public void fillAllMissing() {
         mDatabaseExecutor.execute( () -> {
 
             List<HabitWithDays> habitsWithDays = mHabitDao.getAllWithDaysSync();
@@ -92,17 +92,14 @@ public abstract class HabitDatabase extends RoomDatabase {
 
         for ( LocalDate date = startDate ; !date.equals( endDate ) ; date = date.plusDays( 1 ) ) {
             if ( habitWithDays.getForDate( date ) == null ) {
-//                habitWithDays.addDate( date, new HabitDay( habit, date ) );
                 addDay( habit, new LocalDate( date ) );
             }
         }
-//        mDatabaseExecutor.execute( () -> mHabitDayDao.update( habitWithDays.getHabitDays() ) );
-//        mDatabaseExecutor.execute( () -> mHabitDatabase.habitDayDao().update( habitWithDays.getHabitDays() ) );
     }
 
 
-    public void addHabit( String name ) {
-        Habit habit = new Habit( name );
+    public void addHabit( String name, boolean minusActive, boolean plusActive ) {
+        Habit habit = new Habit( name, minusActive, plusActive );
         insertHabit( habit );
     }
 

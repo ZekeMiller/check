@@ -4,23 +4,30 @@
     <color name="colorPrimaryDark">#303F9F</color>
     <color name="colorAccent">#FF1C6A</color>
     <color name="colorAccentOld">#FF4081</color>
+
     <color name="colorBlack">#000</color>
-
     <color name="colorTransparent">#0000</color>
+    <color name="colorGray">#888</color>
 
-    <color name="colorRed">#F00</color>
-    <color name="colorOrange">#F80</color>
-    <color name="colorYellow">#FF0</color>
-    <color name="colorLightGreen">#8F0</color>
-    <color name="colorGreen">#0F0</color>
+    <color name="colorBrown">#522</color>
+    <color name="colorRed">#A00</color>
+    <color name="colorOrange">#A50</color>
+    <color name="colorYellow">#AA0</color>
+    <color name="colorGreen">#0A0</color>
+    <color name="colorLightBlue">#07F</color>
+    <color name="colorLightPurple">#72C</color>
 
-    <color name="colorHabitPlus">@color/colorGreen</color>
-    <color name="colorHabitMinus">@color/colorRed</color>
+
+    <color name="colorHabitPlusButton">@color/colorGreen</color>
+    <color name="colorHabitMinusButton">@color/colorRed</color>
+    <color name="colorHabitButtonInactive">@color/colorGray</color>
     
-    <color name="colorHabitOne">@color/colorRed</color>
-    <color name="colorHabitTwo">@color/colorOrange</color>
-    <color name="colorHabitThree">@color/colorYellow</color>
-    <color name="colorHabitFour">@color/colorLightGreen</color>
-    <color name="colorHabitFive">@color/colorGreen</color>
+    <color name="colorHabitMinusThree">@color/colorBrown</color>
+    <color name="colorHabitMinusTwo">@color/colorRed</color>
+    <color name="colorHabitMinusOne">@color/colorOrange</color>
+    <color name="colorHabitZero">@color/colorYellow</color>
+    <color name="colorHabitPlusOne">@color/colorGreen</color>
+    <color name="colorHabitPlusTwo">@color/colorLightBlue</color>
+    <color name="colorHabitPlusThree">@color/colorLightPurple</color>
     
 </resources>

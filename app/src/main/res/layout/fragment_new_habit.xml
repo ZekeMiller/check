@@ -11,27 +11,73 @@
         android:id="@+id/new_habit_name"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginLeft="16dp"
-        android:layout_marginTop="16dp"
+        android:layout_margin="@dimen/text_margin"
         android:ems="10"
         android:hint="@string/new_habit_name_ghost_text"
         android:inputType="textPersonName"
-        app:layout_constraintEnd_toStartOf="@id/submit_new_habit"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/plusActiveText"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/text_margin"
+        app:layout_constraintTop_toBottomOf="@id/new_habit_name"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/plusActiveCheckBox"
+        android:text="@string/new_habit_plus_active_text"
+        android:textSize="18sp"
+
+        />
+
+    <CheckBox
+        android:id="@+id/plusActiveCheckBox"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBaseline_toBaselineOf="@id/plusActiveText"
+        android:layout_margin="@dimen/text_margin"
+
+        />
+
+    <TextView
+        android:id="@+id/minusActiveText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/text_margin"
+        app:layout_constraintTop_toBottomOf="@id/plusActiveText"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/minusActiveCheckBox"
+        android:text="@string/new_habit_minus_active_text"
+        android:textSize="18sp"
+
+        />
+
+    <CheckBox
+        android:id="@+id/minusActiveCheckBox"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBaseline_toBaselineOf="@id/minusActiveText"
+        android:layout_margin="@dimen/text_margin"
+
+        />
 
     <Button
         android:id="@+id/submit_new_habit"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="16dp"
-        android:layout_marginStart="16dp"
+        android:layout_marginRight="16dp"
+        android:layout_marginBottom="16dp"
         android:text="@string/submit_button"
-        app:layout_constraintBaseline_toBaselineOf="@id/new_habit_name"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toEndOf="@id/new_habit_name" />
+        />
 
 </android.support.constraint.ConstraintLayout>
+
+<!-- TODO dimens instead of values -->

@@ -26,13 +26,18 @@ public class Habit {
     private int totalPlus;
     private int totalMinus;
 
+    private boolean mMinusActive;
+    private boolean mPlusActive;
 
-    public Habit( String title ) {
+
+    public Habit(String title, boolean minusActive, boolean plusActive ) {
 
         this.title = title;
         createdDate = LocalDate.now();
         totalMinus = 0;
         totalPlus = 0;
+        this.mMinusActive = minusActive;
+        this.mPlusActive = plusActive;
     }
 
 
@@ -57,8 +62,15 @@ public class Habit {
         return totalPlus;
     }
 
+    public boolean isMinusActive() {
+        return mMinusActive;
+    }
 
-    public void setId( int id ) {
+    public boolean isPlusActive() {
+        return mPlusActive;
+    }
+
+    public void setId(int id ) {
         this.id = id;
     }
 
@@ -78,6 +90,13 @@ public class Habit {
         this.totalPlus = totalPlus;
     }
 
+    public void setMinusActive( boolean minusActive ) {
+        this.mMinusActive = minusActive;
+    }
+
+    public void setPlusActive( boolean plusActive ) {
+        this.mPlusActive = plusActive;
+    }
 
     public void increment() {
         totalPlus++;
@@ -86,16 +105,6 @@ public class Habit {
     public void decrement() {
         totalMinus++;
     }
-
-    public int getRank() {
-//        return NUM_RANKS * ( totalPlus / ( totalPlus + totalMinus ) ) + 1;
-        double total = totalMinus + totalPlus;
-        double ratio = totalPlus / total;
-        int scaledRounded = (int) ( ratio * NUM_RANKS );
-        int adjust = scaledRounded + 1;
-        return adjust;
-    }
-
 
 
     public boolean sameContents( Habit habit ) {

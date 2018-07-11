@@ -30,9 +30,11 @@ public class HabitViewModel extends AndroidViewModel implements  HabitFragmentLi
     // Constructor
 
     public HabitViewModel( Application application ) {
+
         super( application );
 
         mHabitDatabase = HabitDatabase.getHabitDatabase( getApplication() );
+        mHabitDatabase.fillAllMissing();
         mHabitObservables = HabitObservables.getInstance();
 
     }
@@ -76,7 +78,6 @@ public class HabitViewModel extends AndroidViewModel implements  HabitFragmentLi
 
     @Override
     public void onMissingDay( Habit habit, LocalDate date ) {
-//        addDay( habit, date );
         mHabitDatabase.addDay( habit, date );
     }
 

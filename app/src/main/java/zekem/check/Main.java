@@ -36,7 +36,7 @@ public class Main extends AppCompatActivity implements
                 DataPageFragment.OnListFragmentInteractionListener,
                 AnalyticsPageFragment.OnFragmentInteractionListener {
 
-//    private HabitViewModel mHabitViewModel;
+
     private MainViewModel mMainViewModel;
 
     private HabitObservables mHabitObservables;
@@ -44,6 +44,12 @@ public class Main extends AppCompatActivity implements
 //    private DailyPageFragment mDailiesFragment;
 //    private DataPageFragment mDataFragment;
 //    private AnalyticsPageFragment mAnalyticPageFragment;
+
+    private final HabitObservables.Observer< Integer > mDeleteObserver = this::showDeleteDialog;
+    private final HabitObservables.Observer< Integer > mDetailObserver = this::showDetailFragment;
+    private final HabitObservables.Observer< Void > mNewHabitObserver = v -> this.showNewHabitFragment();
+    private final HabitObservables.Observer< Void > mShowHabitPageObserver = v -> this.showHabitPage();
+
 
     private BottomNavigationView mBottomNavigationView;
 
@@ -134,10 +140,15 @@ public class Main extends AppCompatActivity implements
 //        mHabitViewModel.getDetailDeleteListener().observe( this, this::showDeleteDialog );
 //        mHabitViewModel.getShowHabitPageListener().observe( this, v -> this.showHabitPage() );
 
-        mHabitObservables.getShowHabitDetailListener().observe( this, this::showDetailFragment );
-        mHabitObservables.getNewHabitPageListener().observe( this, v -> this.showNewHabitFragment() );
-        mHabitObservables.getDetailDeleteListener().observe( this, this::showDeleteDialog );
-        mHabitObservables.getShowHabitPageListener().observe( this, v -> this.showHabitPage() );
+//        mHabitObservables.getShowHabitDetailListener().observe( this, this::showDetailFragment );
+//        mHabitObservables.getNewHabitPageListener().observe( this, v -> this.showNewHabitFragment() );
+//        mHabitObservables.getDetailDeleteListener().observe( this, this::showDeleteDialog );
+//        mHabitObservables.getShowHabitPageListener().observe( this, v -> this.showHabitPage() );
+
+        mHabitObservables.registerDelete( mDeleteObserver );
+        mHabitObservables.registerDetail( mDetailObserver );
+        mHabitObservables.registerNewHabit( mNewHabitObserver );
+        mHabitObservables.registerShowHabitPage( mShowHabitPageObserver );
 
 
 
@@ -162,6 +173,17 @@ public class Main extends AppCompatActivity implements
             mBottomNavigationView.setSelectedItemId( R.id.navigation_dailies );
         }
         firstRun = false;
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+
+        mHabitObservables.unregisterDelete( mDeleteObserver );
+        mHabitObservables.unRegisterDetail( mDetailObserver );
+        mHabitObservables.unregisterNewHabit( mNewHabitObserver );
+        mHabitObservables.unregisterShowHabitPage( mShowHabitPageObserver );
+
     }
 
     private void showDetailFragment( int habitID ) {
@@ -201,10 +223,12 @@ public class Main extends AppCompatActivity implements
 
     private void showDeleteDialog( int habitId ) {
 
-        DeleteHabitDialogFragment deleteDialog =
-                DeleteHabitDialogFragment.newInstance( habitId );
+        if ( habitId != 0 ) {
+            DeleteHabitDialogFragment deleteDialog =
+                    DeleteHabitDialogFragment.newInstance( habitId );
 
-        deleteDialog.show( getSupportFragmentManager(), null );
+            deleteDialog.show( getSupportFragmentManager(), null );
+        }
 
     }
 

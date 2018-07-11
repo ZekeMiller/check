@@ -8,6 +8,8 @@
 
     <string name="title_new_habit_page">Create New Habit</string>
     <string name="new_habit_name_ghost_text">Enter Habit Name…</string>
+    <string name="new_habit_plus_active_text">Plus Button Active?</string>
+    <string name="new_habit_minus_active_text">Minus Button Active?</string>
     <string name="submit_button">Submit</string>
 
     <string name="delete_habit_dialog_title">Delete Habit?</string>

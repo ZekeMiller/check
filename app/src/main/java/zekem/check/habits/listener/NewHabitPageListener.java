@@ -5,6 +5,6 @@ package zekem.check.habits.listener;
  */
 public interface NewHabitPageListener {
 
-    void onSubmitPress( String name );
+    void onSubmitPress( String name, boolean plusActive, boolean minusActive );
 
 }

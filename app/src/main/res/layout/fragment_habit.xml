@@ -6,25 +6,28 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_marginTop="@dimen/habit_list_item_top_margin"
+    android:background="@color/cardview_dark_background"
     >
 
     <android.support.constraint.ConstraintLayout
         android:id="@+id/habitLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_margin="@dimen/habit_card_stroke_width"
+        android:background="@color/cardview_dark_background"
         >
 
         <ImageView
-            android:id="@+id/plusButton"
+            android:id="@+id/minusButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:contentDescription="@string/habit_plus_button"
-            app:srcCompat="@drawable/ic_habit_add_circle_24dp"
-            app:layout_constraintEnd_toStartOf="@id/content"
+            android:contentDescription="@string/habit_minus_button"
+            app:srcCompat="@drawable/ic_habit_minus_circle_24dp"
             app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/content"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
-            android:padding="@dimen/habit_plus_button_padding"
+            android:padding="@dimen/habit_minus_button_padding"
             />
 
         <TextView
@@ -35,22 +38,23 @@
             android:textAppearance="?attr/textAppearanceListItem"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@id/minusButton"
-            app:layout_constraintStart_toEndOf="@id/plusButton"
+            app:layout_constraintStart_toEndOf="@id/minusButton"
+            app:layout_constraintEnd_toStartOf="@id/plusButton"
             tools:text="sample text"
             />
 
+
         <ImageView
-            android:id="@+id/minusButton"
+            android:id="@+id/plusButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:contentDescription="@string/habit_minus_button"
-            app:srcCompat="@drawable/ic_habit_minus_circle_24dp"
-            app:layout_constraintStart_toEndOf="@id/content"
+            android:contentDescription="@string/habit_plus_button"
+            app:srcCompat="@drawable/ic_habit_plus_circle_24dp"
             app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/content"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
-            android:padding="@dimen/habit_minus_button_padding"
+            android:padding="@dimen/habit_plus_button_padding"
             />
 
     </android.support.constraint.ConstraintLayout>

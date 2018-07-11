@@ -1,9 +1,5 @@
 package zekem.check.habits.ui;
 
-import android.content.res.Resources;
-import android.graphics.Color;
-import android.graphics.drawable.Drawable;
-import android.graphics.drawable.GradientDrawable;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
@@ -31,6 +27,8 @@ import zekem.check.habits.listener.HabitFragmentListener;
  * specified {@link HabitFragmentListener}.
  */
 public class HabitPageRecyclerViewAdapter extends RecyclerView.Adapter< HabitPageRecyclerViewAdapter.ViewHolder > {
+
+
 
     private final HabitFragmentListener mListener;
     private List<HabitWithDays> habitsWithDays;
@@ -88,57 +86,71 @@ public class HabitPageRecyclerViewAdapter extends RecyclerView.Adapter< HabitPag
     public void onBindViewHolder( @NonNull final ViewHolder holder, final int position ) {
 
         HabitWithDays habitWithDays = habitsWithDays.get( position );
-        holder.mHabit = habitWithDays.getHabit();
+        holder.mHabitWithDays = habitWithDays;
         holder.mHabitDay = habitWithDays.getForDate( date );
 
         int plusCount = 0;
         int minusCount = 0;
 
         if ( holder.mHabitDay == null ) {
-            mListener.onMissingDay( holder.mHabit, date );
+            mListener.onMissingDay( holder.mHabitWithDays.getHabit(), date );
         }
         else {
             plusCount = holder.mHabitDay.getPlusCount();
             minusCount = holder.mHabitDay.getMinusCount();
         }
-        holder.mContentView.setText( String.format( Locale.getDefault(), "(%d) %s (%d)",
+        holder.mContentView.setText( String.format( Locale.getDefault(), "(%d) (%d) %s (%d) (%d)",
+                holder.mHabitWithDays.getHabit().getTotalPlus(),
                 plusCount,
-                holder.mHabit.getTitle(),
-                minusCount ) );
+                holder.mHabitWithDays.getHabit().getTitle(),
+                minusCount,
+                holder.mHabitWithDays.getHabit().getTotalMinus()
+        ) );
 
-        int colorId = 0;
-        // TODO change to if-chain with static thresholds
-        switch ( holder.mHabit.getRank() ) {
+        int colorId;
+
+        switch ( holder.mHabitWithDays.getValue() ) {
+            case -3:
+                colorId = R.color.colorHabitMinusThree;
+                break;
+            case -2:
+                colorId = R.color.colorHabitMinusTwo;
+                break;
+            case -1:
+                colorId = R.color.colorHabitMinusOne;
+                break;
+            case 0:
+                colorId = R.color.colorHabitZero;
+                break;
             case 1:
-                colorId = R.color.colorHabitOne;
+                colorId = R.color.colorHabitPlusOne;
                 break;
             case 2:
-                colorId = R.color.colorHabitTwo;
+                colorId = R.color.colorHabitPlusTwo;
                 break;
             case 3:
-                colorId = R.color.colorHabitThree;
+                colorId = R.color.colorHabitPlusThree;
                 break;
-            case 4:
-                colorId = R.color.colorHabitFour;
-                break;
-            case 5:
-                colorId = R.color.colorHabitFive;
+            default:
+                colorId = R.color.cardview_dark_background;
                 break;
         }
-        if ( colorId != 0 ) {
 
-            int color = ContextCompat.getColor( holder.mView.getContext(), colorId );
+        int color = ContextCompat.getColor( holder.mView.getContext(), colorId );
+        View view = holder.mView.findViewById( R.id.cardView );
+        view.setBackgroundColor( color );
 
-            View view = holder.mView.findViewById( R.id.habitLayout );
 
-            GradientDrawable gradientDrawable = new GradientDrawable();
-            gradientDrawable.setColor( Color.BLACK );
-            gradientDrawable.setCornerRadius( 0 );
-            gradientDrawable.setStroke( R.dimen.habit_card_stroke_width, R.color.colorAccent );
+        if ( ! holder.mHabitWithDays.getHabit().isPlusActive() ) {
+            holder.mPlus.setImageDrawable(
+                    ContextCompat.getDrawable( holder.mView.getContext(),
+                            R.drawable.ic_habit_plus_circle_inactive_24dp ) );
+        }
 
-            Drawable drawable = ContextCompat.getDrawable( holder.mView.getContext(), R.drawable.habit_list_card_border );
-//            Drawable drawable = gradientDrawable;
-            view.setBackgroundDrawable( drawable );
+        if ( ! holder.mHabitWithDays.getHabit().isMinusActive() ) {
+            holder.mMinus.setImageDrawable(
+                    ContextCompat.getDrawable( holder.mView.getContext(),
+                            R.drawable.ic_habit_minus_circle_inactive_24dp ) );
         }
 
     }
@@ -158,9 +170,9 @@ public class HabitPageRecyclerViewAdapter extends RecyclerView.Adapter< HabitPag
         private final TextView mContentView;
         private final ImageView mPlus;
         private final ImageView mMinus;
-        private Habit mHabit;
-        @Nullable
-        private HabitDay mHabitDay;
+
+        private HabitWithDays mHabitWithDays;
+        @Nullable private HabitDay mHabitDay;
 
         private ViewHolder( final View view ) {
 
@@ -175,14 +187,29 @@ public class HabitPageRecyclerViewAdapter extends RecyclerView.Adapter< HabitPag
                         habitsWithDays.get( getAdapterPosition() ).getHabit().getId() )
             );
 
-            mContentView.setOnLongClickListener( v -> {
-                mListener.onContentLongPress( mHabitDay );
-                return true;
-            } );
+            mContentView.setOnLongClickListener( this::onContentLongPress );
 
-            mPlus.setOnClickListener( v -> mListener.onPlusPress( mHabitDay ) );
+            mPlus.setOnClickListener( this::onPlusPress);
 
-            mMinus.setOnClickListener( v -> mListener.onMinusPress( mHabitDay ) );
+            mMinus.setOnClickListener( this::onMinusPress );
+
+        }
+
+        private void onPlusPress( View v ) {
+            if ( mHabitWithDays != null && mHabitWithDays.getHabit().isPlusActive() ) {
+                mListener.onPlusPress(mHabitDay);
+            }
+        }
+
+        private void onMinusPress( View v ) {
+            if ( mHabitWithDays != null && mHabitWithDays.getHabit().isMinusActive() ) {
+                mListener.onMinusPress(mHabitDay);
+            }
+        }
+
+        private boolean onContentLongPress( View v ) {
+            mListener.onContentLongPress( mHabitDay );
+            return true;
         }
 
 

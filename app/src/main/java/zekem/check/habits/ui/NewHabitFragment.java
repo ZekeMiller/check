@@ -9,6 +9,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.EditText;
 
 import zekem.check.R;
@@ -20,6 +21,7 @@ import zekem.check.habits.viewmodel.NewHabitViewModel;
  */
 public class NewHabitFragment extends Fragment {
 
+    private View view;
 
     private NewHabitPageListener mListener;
 
@@ -48,8 +50,9 @@ public class NewHabitFragment extends Fragment {
         View view = inflater.inflate( R.layout.fragment_new_habit, container, false );
 
         Button button = view.findViewById( R.id.submit_new_habit );
-        EditText habitName = view.findViewById( R.id.new_habit_name );
-        button.setOnClickListener( v -> mListener.onSubmitPress( habitName.getText().toString() ) );
+        button.setOnClickListener( this::onSubmitPress );
+
+        this.view = view;
 
         return view;
     }
@@ -59,5 +62,19 @@ public class NewHabitFragment extends Fragment {
 
         super.onDetach();
         mListener = null;
+    }
+
+    private void onSubmitPress( View v ) {
+
+        EditText habitName = view.findViewById( R.id.new_habit_name );
+        String name = habitName.getText().toString();
+
+        CheckBox minusActiveCheckBox = view.findViewById( R.id.minusActiveCheckBox );
+        boolean minusActive = minusActiveCheckBox.isChecked();
+
+        CheckBox plusActiveCheckBox = view.findViewById( R.id.plusActiveCheckBox );
+        boolean plusActive = plusActiveCheckBox.isChecked();
+
+        mListener.onSubmitPress( name, minusActive, plusActive );
     }
 }

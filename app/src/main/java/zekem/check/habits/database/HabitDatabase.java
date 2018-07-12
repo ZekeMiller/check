@@ -24,27 +24,29 @@ public abstract class HabitDatabase extends RoomDatabase {
 
     // Singleton class variables
 
-    private static HabitDatabase INSTANCE;
     private static final String DB_NAME = "habit_db";
+
+    private static HabitDatabase sInstance;
+
 
     // Singleton methods
 
     public static HabitDatabase getHabitDatabase( Context context ) {
-        if ( INSTANCE == null ) {
-            INSTANCE = Room.databaseBuilder( context.getApplicationContext(), HabitDatabase.class, DB_NAME ).build();
-            INSTANCE.mDatabaseExecutor = Executors.newSingleThreadExecutor();
-            INSTANCE.mHabitDao = INSTANCE.habitDao();
-            INSTANCE.mHabitDayDao = INSTANCE.habitDayDao();
-            INSTANCE.fillAllMissing();
+        if ( sInstance == null ) {
+            sInstance = Room.databaseBuilder( context.getApplicationContext(), HabitDatabase.class, DB_NAME ).build();
+            sInstance.mDatabaseExecutor = Executors.newSingleThreadExecutor();
+            sInstance.mHabitDao = sInstance.habitDao();
+            sInstance.mHabitDayDao = sInstance.habitDayDao();
+            sInstance.fillAllMissing();
         }
-        return INSTANCE;
+        return sInstance;
     }
 
     public static void destroyInstance() {
-        INSTANCE.mHabitDayDao = null;
-        INSTANCE.mHabitDao = null;
-        INSTANCE.mDatabaseExecutor = null;
-        INSTANCE = null;
+        sInstance.mHabitDayDao = null;
+        sInstance.mHabitDao = null;
+        sInstance.mDatabaseExecutor = null;
+        sInstance = null;
     }
 
 
@@ -87,8 +89,8 @@ public abstract class HabitDatabase extends RoomDatabase {
     private void fillMissingDates( HabitWithDays habitWithDays ) {
 
         Habit habit = habitWithDays.getHabit();
-        LocalDate startDate = habitWithDays.getHabit().getCreatedDate();
-        LocalDate endDate = LocalDate.now().plusWeeks( 1 );
+        LocalDate startDate = habitWithDays.getHabit().getCreatedDate().minusDays( 7 );
+        LocalDate endDate = LocalDate.now();
 
         for ( LocalDate date = startDate ; !date.equals( endDate ) ; date = date.plusDays( 1 ) ) {
             if ( habitWithDays.getForDate( date ) == null ) {
@@ -150,14 +152,14 @@ public abstract class HabitDatabase extends RoomDatabase {
     }
 
     public void plusHabitDay( HabitDay habitDay ) {
-        plusHabitDay( habitDay.getDayID() );
+        plusHabitDay( habitDay.getDayId() );
     }
 
     public void plusHabitDay( int habitDayId ) {
         mDatabaseExecutor.execute( () -> {
             HabitDay habitDay = mHabitDayDao.getDay( habitDayId );
             if ( habitDay != null ) {
-                incrementHabit( habitDay.getHabitID() );
+                incrementHabit( habitDay.getHabitId() );
                 habitDay.incrementPlus();
                 updateHabitDayInDB( habitDay );
             }
@@ -165,14 +167,14 @@ public abstract class HabitDatabase extends RoomDatabase {
     }
 
     public void minusHabitDay( HabitDay habitDay ) {
-        minusHabitDay( habitDay.getDayID() );
+        minusHabitDay( habitDay.getDayId() );
     }
 
     public void minusHabitDay( int habitDayId ) {
         mDatabaseExecutor.execute( () -> {
             HabitDay habitDay = mHabitDayDao.getDay( habitDayId );
             if ( habitDay != null ) {
-                decrementHabit( habitDay.getHabitID() );
+                decrementHabit( habitDay.getHabitId() );
                 habitDay.incrementMinus();
                 updateHabitDayInDB( habitDay );
             }

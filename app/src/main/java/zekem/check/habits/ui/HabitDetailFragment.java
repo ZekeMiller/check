@@ -14,6 +14,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import zekem.check.R;
+import zekem.check.habits.HabitDetailRecyclerViewAdapter;
 import zekem.check.habits.listener.HabitDetailListener;
 import zekem.check.habits.viewmodel.HabitDetailViewModel;
 
@@ -70,7 +71,7 @@ public class HabitDetailFragment extends Fragment {
             RecyclerView recyclerView = (RecyclerView) view;
             recyclerView.setLayoutManager(new LinearLayoutManager(context));
 
-            HabitDetailRecyclerViewAdapter adapter = new HabitDetailRecyclerViewAdapter();
+            HabitDetailRecyclerViewAdapter adapter = new HabitDetailRecyclerViewAdapter( mListener );
             recyclerView.setAdapter( adapter );
             mListener.getDaysForDetail( mHabitId ).observe( this, adapter::setData );
         }

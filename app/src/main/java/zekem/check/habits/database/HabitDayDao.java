@@ -32,19 +32,19 @@ public interface HabitDayDao {
     void delete( HabitDay... habitDays );
 
 
-    @Query( "SELECT * FROM habitDay WHERE habitID=:habitID" )
+    @Query( "SELECT * FROM habitDay WHERE mHabitId=:habitID ORDER BY mDate" )
     LiveData< List< HabitDay > > getDaysForHabit(int habitID );
 
-    @Query( "SELECT * FROM habitDay WHERE date=:date")
+    @Query( "SELECT * FROM habitDay WHERE mDate=:date")
     LiveData< List< HabitDay > > getHabitsForDay( String date );
 
-    @Query( "SELECT * FROM habitDay WHERE date=:date AND habitID=:habitID" )
+    @Query( "SELECT * FROM habitDay WHERE mDate=:date AND mHabitId=:habitID" )
     HabitDay getDay( String date, int habitID );
 
-    @Query( "SELECT * FROM habitDay WHERE dayID=:dayID" )
+    @Query( "SELECT * FROM habitDay WHERE mDayId=:dayID" )
     HabitDay getDay( int dayID );
 
-    @Query( "SELECT * FROM habitDay" )
+    @Query( "SELECT * FROM habitDay ORDER BY mDate" )
     List< HabitDay > getAll();
 
 }

@@ -8,6 +8,8 @@ import org.joda.time.LocalDate;
 
 import zekem.check.habits.database.DateConverters;
 
+// TODO order by column
+
 /**
  * @author Zeke Miller
  */
@@ -15,16 +17,21 @@ import zekem.check.habits.database.DateConverters;
 @TypeConverters( DateConverters.class )
 public class Habit {
 
-    private static final int NUM_RANKS = 5;
-
     @PrimaryKey(autoGenerate = true)
-    private int id;
+    private int mId;
 
-    private LocalDate createdDate;
+    private LocalDate mCreatedDate;
 
-    private String title;
-    private int totalPlus;
-    private int totalMinus;
+    private String mTitle;
+
+    private int mTotalPlus;
+    private int mTotalMinus;
+
+//    private int mMinusStreak;
+//    private int mPlusStreak;
+//
+//    private LocalDate mLastMinusDate;
+//    private LocalDate mLastPlusDate;
 
     private boolean mMinusActive;
     private boolean mPlusActive;
@@ -32,35 +39,58 @@ public class Habit {
 
     public Habit(String title, boolean minusActive, boolean plusActive ) {
 
-        this.title = title;
-        createdDate = LocalDate.now();
-        totalMinus = 0;
-        totalPlus = 0;
+        this.mTitle = title;
+
         this.mMinusActive = minusActive;
         this.mPlusActive = plusActive;
+
+        mCreatedDate = LocalDate.now();
+
+        mTotalMinus = 0;
+        mTotalPlus = 0;
+
+//        mMinusStreak = 0;
+//        mPlusStreak = 0;
+
     }
 
 
 
     public int getId() {
-        return id;
+        return mId;
     }
 
     public LocalDate getCreatedDate() {
-        return createdDate;
+        return mCreatedDate;
     }
 
     public String getTitle() {
-        return title;
+        return mTitle;
     }
 
     public int getTotalMinus() {
-        return totalMinus;
+        return mTotalMinus;
     }
 
     public int getTotalPlus() {
-        return totalPlus;
+        return mTotalPlus;
     }
+
+//    public int getMinusStreak() {
+//        return mMinusStreak;
+//    }
+//
+//    public int getPlusStreak() {
+//        return mPlusStreak;
+//    }
+//
+//    public LocalDate getLastMinusDate() {
+//        return mLastMinusDate;
+//    }
+//
+//    public LocalDate getLastPlusDate() {
+//        return mLastPlusDate;
+//    }
 
     public boolean isMinusActive() {
         return mMinusActive;
@@ -70,25 +100,43 @@ public class Habit {
         return mPlusActive;
     }
 
+
+
     public void setId(int id ) {
-        this.id = id;
+        this.mId = id;
     }
 
     public void setCreatedDate( LocalDate createdDate ) {
-        this.createdDate = createdDate;
+        this.mCreatedDate = createdDate;
     }
 
     public void setTitle( String title ) {
-        this.title = title;
+        this.mTitle = title;
     }
 
     public void setTotalMinus(int totalMinus) {
-        this.totalMinus = totalMinus;
+        this.mTotalMinus = totalMinus;
     }
 
     public void setTotalPlus(int totalPlus) {
-        this.totalPlus = totalPlus;
+        this.mTotalPlus = totalPlus;
     }
+
+//    public void setMinusStreak( int minusStreak ) {
+//        this.mMinusStreak = minusStreak;
+//    }
+//
+//    public void setPlusStreak( int plusStreak ) {
+//        this.mPlusStreak = plusStreak;
+//    }
+//
+//    public void setLastMinusDate( LocalDate lastMinusDate ) {
+//        this.mLastMinusDate = lastMinusDate;
+//    }
+//
+//    public void setLastPlusDate( LocalDate lastPlusDate ) {
+//        this.mLastPlusDate = lastPlusDate;
+//    }
 
     public void setMinusActive( boolean minusActive ) {
         this.mMinusActive = minusActive;
@@ -99,25 +147,25 @@ public class Habit {
     }
 
     public void increment() {
-        totalPlus++;
+        mTotalPlus++;
     }
 
     public void decrement() {
-        totalMinus++;
+        mTotalMinus++;
     }
 
 
     public boolean sameContents( Habit habit ) {
-        return this.equals( habit ) && this.title.equals( habit.title ) &&
-                this.totalMinus == habit.totalMinus &&
-                this.totalPlus == habit.totalPlus;
+        return this.equals( habit ) && this.mTitle.equals( habit.mTitle ) &&
+                this.mTotalMinus == habit.mTotalMinus &&
+                this.mTotalPlus == habit.mTotalPlus;
     }
 
     @Override
     public boolean equals( Object other ) {
         if ( other instanceof Habit ) {
             Habit otherHabit = (Habit) other;
-            return this.id == otherHabit.id;
+            return this.mId == otherHabit.mId;
         }
         return false;
     }

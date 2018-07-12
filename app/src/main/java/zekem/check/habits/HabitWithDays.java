@@ -23,11 +23,11 @@ public class HabitWithDays {
     @Embedded
     private Habit mHabit;
 
-    @Relation( parentColumn = "id", entityColumn = "habitID" )
+    @Relation( parentColumn = "mId", entityColumn = "mHabitId" )
     private List< HabitDay > mHabitDays;
 
     @Ignore
-    private HashMap< LocalDate, HabitDay > habitDaysDateMap = null;
+    private HashMap< LocalDate, HabitDay > mHabitDaysDateMap = null;
 
 
     public Habit getHabit() {
@@ -47,19 +47,24 @@ public class HabitWithDays {
 
     public void setHabitDays(List<HabitDay> habitDays) {
         this.mHabitDays = habitDays;
-        habitDaysDateMap = new HashMap<>();
-        for ( HabitDay habitDay : habitDays ) {
-            habitDaysDateMap.put( habitDay.getDate(), habitDay );
+        mapUpdate();
+    }
+
+    private void mapUpdate() {
+
+        if ( mHabitDaysDateMap == null || ( mHabitDaysDateMap.size() < mHabitDays.size() ) ) {
+            mHabitDaysDateMap = new HashMap<>();
+            for ( HabitDay habitDay : mHabitDays ) {
+                mHabitDaysDateMap.put( habitDay.getDate(), habitDay );
+            }
         }
     }
 
 
     @Nullable
     public HabitDay getForDate( LocalDate date ) {
-        if ( habitDaysDateMap == null || ( habitDaysDateMap.size() < mHabitDays.size() ) ) {
-            setHabitDays(mHabitDays);
-        }
-        return habitDaysDateMap.get( date );
+        mapUpdate();
+        return mHabitDaysDateMap.get( date );
     }
 
 
@@ -94,6 +99,29 @@ public class HabitWithDays {
             }
         }
         return 0;
+    }
+
+
+    public int calculatePlusStreak() {
+        HabitDay today = mHabitDaysDateMap.get( LocalDate.now() );
+        int todayCount = ( today != null && today.getPlusCount() > 0 ) ? 1 : 0;
+        for ( int i = 1 ; ; i++ ) {
+            HabitDay day = mHabitDaysDateMap.get( LocalDate.now().minusDays( i ) );
+            if ( day == null || day.getPlusCount() == 0 ) {
+                return i + todayCount - 1;
+            }
+        }
+    }
+
+    public int calculateMinusStreak() {
+        HabitDay today = mHabitDaysDateMap.get( LocalDate.now() );
+        int todayCount = ( today != null && today.getMinusCount() > 0 ) ? 1 : 0;
+        for ( int i = 1 ; ; i++ ) {
+            HabitDay day = mHabitDaysDateMap.get( LocalDate.now().minusDays( i ) );
+            if ( day == null || day.getMinusCount() == 0 ) {
+                return i + todayCount - 1;
+            }
+        }
     }
 
 

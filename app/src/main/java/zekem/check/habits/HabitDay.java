@@ -16,96 +16,99 @@ import static android.arch.persistence.room.ForeignKey.CASCADE;
  * @author Zeke Miller
  */
 @Entity (   foreignKeys = @ForeignKey(  entity = Habit.class,
-                                        parentColumns = "id",
-                                        childColumns = "habitID",
+                                        parentColumns = "mId",
+                                        childColumns = "mHabitId",
                                         onDelete = CASCADE ),
-            indices = { @Index( "habitID" ) } )
+            indices = { @Index( "mHabitId" ) } )
 @TypeConverters( DateConverters.class )
 public class HabitDay {
 
     // these fields should never change after being created
     @PrimaryKey(autoGenerate = true)
-    private int dayID;
-    private int habitID;
-    private LocalDate date;
+    private int mDayId;
+    private int mHabitId;
+    private LocalDate mDate;
 
     // these fields can change
-    private int plusCount;
-    private int minusCount;
+    private int mPlusCount;
+    private int mMinusCount;
 
 
 
     public HabitDay() {}
 
     public HabitDay( Habit habit, LocalDate date ) {
-        this.habitID = habit.getId();
-        this.date = date;
-        plusCount = 0;
-        minusCount = 0;
+        this.mHabitId = habit.getId();
+        this.mDate = date;
+        mPlusCount = 0;
+        mMinusCount = 0;
     }
 
 
 
     public void incrementPlus() {
-        plusCount++;
+        mPlusCount++;
     }
 
     public void incrementMinus() {
-        minusCount++;
+        mMinusCount++;
     }
 
 
-    public int getDayID() {
-        return dayID;
+    public int getDayId() {
+        return mDayId;
     }
 
-    public int getHabitID() {
-        return habitID;
-    }
-
-    public int getMinusCount() {
-        return minusCount;
-    }
-
-    public int getPlusCount() {
-        return plusCount;
+    public int getHabitId() {
+        return mHabitId;
     }
 
     public LocalDate getDate() {
-        return date;
+        return mDate;
+    }
+
+    public int getMinusCount() {
+        return mMinusCount;
+    }
+
+    public int getPlusCount() {
+        return mPlusCount;
     }
 
 
-    public void setDayID( int dayID ) {
-        this.dayID = dayID;
+
+    public void setDayId( int dayID ) {
+        this.mDayId = dayID;
+    }
+
+    public void setHabitId( int habitID) {
+        this.mHabitId = habitID;
     }
 
     public void setDate( LocalDate date ) {
-        this.date = date;
-    }
-
-    public void setHabitID( int habitID) {
-        this.habitID = habitID;
+        this.mDate = date;
     }
 
     public void setPlusCount(int plusCount ) {
-        this.plusCount = plusCount;
+        this.mPlusCount = plusCount;
     }
 
     public void setMinusCount( int minusCount ) {
-        this.minusCount = minusCount;
+        this.mMinusCount = minusCount;
     }
+
+
 
     public boolean sameContents( HabitDay other ) {
         return
 //                this.equals( other ) &&
-//                this.habitID == other.habitID &&
-                this.plusCount == other.plusCount &&
-                this.minusCount == other.minusCount;
+//                this.mHabitId == other.mHabitId &&
+                this.mPlusCount == other.mPlusCount &&
+                this.mMinusCount == other.mMinusCount;
     }
 
     public boolean sameId( HabitDay other ) {
-        return this.dayID == other.dayID;
+        return this.mDayId == other.mDayId;
     }
 
     @Override

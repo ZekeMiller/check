@@ -1,6 +1,7 @@
 package zekem.check;
 
 import android.annotation.SuppressLint;
+import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
 import android.net.Uri;
 import android.support.design.internal.BottomNavigationItemView;
@@ -40,15 +41,11 @@ public class Main extends AppCompatActivity implements
     private MainViewModel mMainViewModel;
 
     private HabitObservables mHabitObservables;
-//    private HabitPageFragment mHabitFragment;
-//    private DailyPageFragment mDailiesFragment;
-//    private DataPageFragment mDataFragment;
-//    private AnalyticsPageFragment mAnalyticPageFragment;
 
-    private final HabitObservables.Observer< Integer > mDeleteObserver = this::showDeleteDialog;
-    private final HabitObservables.Observer< Integer > mDetailObserver = this::showDetailFragment;
-    private final HabitObservables.Observer< Void > mNewHabitObserver = v -> this.showNewHabitFragment();
-    private final HabitObservables.Observer< Void > mShowHabitPageObserver = v -> this.showHabitPage();
+    private final Observer< Integer > mDeleteObserver = this::showDeleteDialog;
+    private final Observer< Integer > mDetailObserver = this::showDetailFragment;
+    private final Observer< Void > mNewHabitObserver = v -> this.showNewHabitFragment();
+    private final Observer< Void > mShowHabitPageObserver = v -> this.showHabitPage();
 
 
     private BottomNavigationView mBottomNavigationView;
@@ -77,22 +74,18 @@ public class Main extends AppCompatActivity implements
 
             switch ( item.getItemId() ) {
                 case R.id.navigation_habits:
-//                    fragment = mHabitFragment;
                     fragment = HabitPageFragment.newInstance();
                     title = getString( R.string.title_habits );
                     break;
                 case R.id.navigation_dailies:
-//                    fragment = mDailiesFragment;
                     fragment = DailyPageFragment.newInstance();
                     title = getString( R.string.title_dailies );
                     break;
                 case R.id.navigation_datas:
-//                    fragment = mDataFragment;
                     fragment = DataPageFragment.newInstance();
                     title = getString( R.string.title_datas );
                     break;
                 case R.id.navigation_analytics:
-//                    fragment = mAnalyticPageFragment;
                     fragment = AnalyticsPageFragment.newInstance();
                     title = getString( R.string.title_analytics );
                     break;
@@ -109,8 +102,13 @@ public class Main extends AppCompatActivity implements
     @Override
     public void onBackPressed() {
 
+        int prePopCount = getSupportFragmentManager().getBackStackEntryCount();
+
         super.onBackPressed();
-        mBottomNavigationView.setSelectedItemId( mBottomNavigationView.getSelectedItemId() );
+
+        if ( prePopCount == 1 ) {
+            resetBottomNavigation();
+        }
     }
 
 
@@ -132,30 +130,12 @@ public class Main extends AppCompatActivity implements
 
         mHabitObservables = HabitObservables.getInstance();
 
-//        mHabitViewModel = ViewModelProviders.of( this ).get( HabitViewModel.class );
         mMainViewModel = ViewModelProviders.of( this ).get( MainViewModel.class );
-
-//        mHabitViewModel.getShowHabitDetailListener().observe( this, this::showDetailFragment );
-//        mHabitViewModel.getNewHabitPageListener().observe( this, v -> this.showNewHabitFragment() );
-//        mHabitViewModel.getDetailDeleteListener().observe( this, this::showDeleteDialog );
-//        mHabitViewModel.getShowHabitPageListener().observe( this, v -> this.showHabitPage() );
-
-//        mHabitObservables.getShowHabitDetailListener().observe( this, this::showDetailFragment );
-//        mHabitObservables.getNewHabitPageListener().observe( this, v -> this.showNewHabitFragment() );
-//        mHabitObservables.getDetailDeleteListener().observe( this, this::showDeleteDialog );
-//        mHabitObservables.getShowHabitPageListener().observe( this, v -> this.showHabitPage() );
 
         mHabitObservables.registerDelete( mDeleteObserver );
         mHabitObservables.registerDetail( mDetailObserver );
         mHabitObservables.registerNewHabit( mNewHabitObserver );
         mHabitObservables.registerShowHabitPage( mShowHabitPageObserver );
-
-
-
-//        mHabitFragment = HabitPageFragment.newInstance();
-//        mDailiesFragment = DailyPageFragment.newInstance();
-//        mDataFragment = DataPageFragment.newInstance();
-//        mAnalyticPageFragment = AnalyticsPageFragment.newInstance();
 
         Toolbar toolbar = findViewById( R.id.toolbar );
         setSupportActionBar( toolbar );
@@ -170,7 +150,7 @@ public class Main extends AppCompatActivity implements
         super.onResume();
 
         if ( firstRun ) {
-            mBottomNavigationView.setSelectedItemId( R.id.navigation_dailies );
+            showHabitPage();
         }
         firstRun = false;
     }

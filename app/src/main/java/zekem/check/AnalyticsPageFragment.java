@@ -38,7 +38,7 @@ public class AnalyticsPageFragment extends Fragment {
         return fragment;
     }
 
-    // TODO: Rename method, update argument and hook method into UI event
+    // TODO: Rename method, onChanged argument and hook method into UI event
     public void onButtonPressed( Uri uri ) {
 
         if ( mListener != null ) {

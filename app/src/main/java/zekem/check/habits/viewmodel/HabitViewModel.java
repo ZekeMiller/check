@@ -52,7 +52,7 @@ public class HabitViewModel extends AndroidViewModel implements  HabitFragmentLi
 
     @Override
     public void onContentLongPress( HabitDay habitDay ) {
-        triggerDeleteDialog( habitDay.getHabitID() );
+        triggerDeleteDialog( habitDay.getHabitId() );
     }
 
     @Override
@@ -65,7 +65,7 @@ public class HabitViewModel extends AndroidViewModel implements  HabitFragmentLi
         if ( habitDay == null ) {
             return;
         }
-        mHabitDatabase.plusHabitDay( habitDay.getDayID() );
+        mHabitDatabase.plusHabitDay( habitDay.getDayId() );
     }
 
     @Override
@@ -73,7 +73,7 @@ public class HabitViewModel extends AndroidViewModel implements  HabitFragmentLi
         if ( habitDay == null ) {
             return;
         }
-        mHabitDatabase.minusHabitDay( habitDay.getDayID() );
+        mHabitDatabase.minusHabitDay( habitDay.getDayId() );
     }
 
     @Override

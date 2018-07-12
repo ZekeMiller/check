@@ -35,19 +35,19 @@ public interface HabitDao {
     @Delete
     void delete( List< Habit >  habit );
 
-    @Query( "DELETE FROM habit WHERE id=:id" )
+    @Query( "DELETE FROM habit WHERE mId=:id" )
     void delete( int id );
 
     @Query( "SELECT * FROM habit" )
     LiveData< List< Habit > > getAll();
 
-    @Query( "SELECT * FROM habit WHERE id=:id" )
+    @Query( "SELECT * FROM habit WHERE mId=:id" )
     Habit getHabitSync( int id );
 
-    @Query( "SELECT * FROM habit WHERE id=:id" )
+    @Query( "SELECT * FROM habit WHERE mId=:id" )
     LiveData< Habit > getHabit( int id );
 
-    @Query( "SELECT id FROM habit" )
+    @Query( "SELECT mId FROM habit" )
     List< Integer > getHabitIDs();
 
     @Query( "DELETE FROM habit" )
@@ -62,7 +62,7 @@ public interface HabitDao {
     List< HabitWithDays > getAllWithDaysSync();
 
     @Transaction
-    @Query( "SELECT * FROM habit WHERE id=:id" )
+    @Query( "SELECT * FROM habit WHERE mId=:id" )
     HabitWithDays getHabitWithDays( int id );
 
 }

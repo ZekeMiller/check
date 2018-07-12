@@ -1,4 +1,4 @@
-package zekem.check.habits.ui;
+package zekem.check.habits;
 
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -17,9 +17,6 @@ import java.util.List;
 import java.util.Locale;
 
 import zekem.check.R;
-import zekem.check.habits.Habit;
-import zekem.check.habits.HabitDay;
-import zekem.check.habits.HabitWithDays;
 import zekem.check.habits.listener.HabitFragmentListener;
 
 /**
@@ -27,7 +24,6 @@ import zekem.check.habits.listener.HabitFragmentListener;
  * specified {@link HabitFragmentListener}.
  */
 public class HabitPageRecyclerViewAdapter extends RecyclerView.Adapter< HabitPageRecyclerViewAdapter.ViewHolder > {
-
 
 
     private final HabitFragmentListener mListener;
@@ -73,6 +69,16 @@ public class HabitPageRecyclerViewAdapter extends RecyclerView.Adapter< HabitPag
     }
 
 
+    @Override
+    public int getItemCount() {
+
+        if ( habitsWithDays == null ) {
+            return 0;
+        }
+        return habitsWithDays.size();
+    }
+
+
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType ) {
@@ -82,6 +88,7 @@ public class HabitPageRecyclerViewAdapter extends RecyclerView.Adapter< HabitPag
         return new ViewHolder( view );
     }
 
+
     @Override
     public void onBindViewHolder( @NonNull final ViewHolder holder, final int position ) {
 
@@ -89,23 +96,39 @@ public class HabitPageRecyclerViewAdapter extends RecyclerView.Adapter< HabitPag
         holder.mHabitWithDays = habitWithDays;
         holder.mHabitDay = habitWithDays.getForDate( date );
 
-        int plusCount = 0;
-        int minusCount = 0;
+//        int plusCount = 0;
+//        int minusCount = 0;
 
         if ( holder.mHabitDay == null ) {
             mListener.onMissingDay( holder.mHabitWithDays.getHabit(), date );
         }
-        else {
-            plusCount = holder.mHabitDay.getPlusCount();
-            minusCount = holder.mHabitDay.getMinusCount();
-        }
-        holder.mContentView.setText( String.format( Locale.getDefault(), "(%d) (%d) %s (%d) (%d)",
-                holder.mHabitWithDays.getHabit().getTotalPlus(),
-                plusCount,
-                holder.mHabitWithDays.getHabit().getTitle(),
-                minusCount,
-                holder.mHabitWithDays.getHabit().getTotalMinus()
+
+//        else {
+//            plusCount = holder.mHabitDay.getPlusCount();
+//            minusCount = holder.mHabitDay.getMinusCount();
+//        }
+//        holder.mContentView.setText( String.format( Locale.getDefault(), "(%d) (%d) %s (%d) (%d)",
+//                holder.mHabitWithDays.getHabit().getTotalPlus(),
+//                plusCount,
+//                holder.mHabitWithDays.getHabit().getTitle(),
+//                minusCount,
+//                holder.mHabitWithDays.getHabit().getTotalMinus()
+//        ) );
+
+        holder.mContentView.setText( holder.mHabitWithDays.getHabit().getTitle() );
+
+        holder.mMinusStreak.setText( String.format( Locale.getDefault(), "%d %s",
+                                                    holder.mHabitWithDays.calculateMinusStreak(),
+                                                    R.string.fire_emoji
+//                                                    ""
         ) );
+
+        holder.mPlusStreak.setText( String.format( Locale.getDefault(), "%d %s",
+                                                    holder.mHabitWithDays.calculatePlusStreak(),
+                                                     R.string.fire_emoji
+//                                                   ""
+        ) );
+
 
         int colorId;
 
@@ -155,21 +178,14 @@ public class HabitPageRecyclerViewAdapter extends RecyclerView.Adapter< HabitPag
 
     }
 
-    @Override
-    public int getItemCount() {
-
-        if ( habitsWithDays == null ) {
-            return 0;
-        }
-        return habitsWithDays.size();
-    }
-
     public class ViewHolder extends RecyclerView.ViewHolder  {
 
         private final View mView;
         private final TextView mContentView;
-        private final ImageView mPlus;
         private final ImageView mMinus;
+        private final ImageView mPlus;
+        private final TextView mMinusStreak;
+        private final TextView mPlusStreak;
 
         private HabitWithDays mHabitWithDays;
         @Nullable private HabitDay mHabitDay;
@@ -179,13 +195,13 @@ public class HabitPageRecyclerViewAdapter extends RecyclerView.Adapter< HabitPag
             super( view );
             mView = view;
             mContentView = view.findViewById( R.id.content );
-            mPlus = view.findViewById( R.id.plusButton );
             mMinus = view.findViewById( R.id.minusButton );
+            mPlus = view.findViewById( R.id.plusButton );
+            mMinusStreak = view.findViewById( R.id.minusStreak );
+            mPlusStreak = view.findViewById( R.id.plusStreak );
 
-            mContentView.setOnClickListener( v ->
-                mListener.onContentShortPress(
-                        habitsWithDays.get( getAdapterPosition() ).getHabit().getId() )
-            );
+
+            mContentView.setOnClickListener( this::onContentPress );
 
             mContentView.setOnLongClickListener( this::onContentLongPress );
 
@@ -205,6 +221,11 @@ public class HabitPageRecyclerViewAdapter extends RecyclerView.Adapter< HabitPag
             if ( mHabitWithDays != null && mHabitWithDays.getHabit().isMinusActive() ) {
                 mListener.onMinusPress(mHabitDay);
             }
+        }
+
+        private void onContentPress( View v ) {
+            mListener.onContentShortPress(
+                    habitsWithDays.get( getAdapterPosition() ).getHabit().getId() );
         }
 
         private boolean onContentLongPress( View v ) {

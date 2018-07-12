@@ -20,13 +20,13 @@ public class HabitDetailViewModel extends AndroidViewModel implements HabitDetai
 
 
     private final HabitObservables mHabitObservables;
-    private final HabitDayDao mHabitDayDao;
+    private final HabitDatabase mHabitDatabase;
 
 
     public HabitDetailViewModel( Application application ) {
         super( application );
         mHabitObservables = HabitObservables.getInstance();
-        mHabitDayDao = HabitDatabase.getHabitDatabase( getApplication() ).getHabitDayDao();
+        mHabitDatabase = HabitDatabase.getHabitDatabase( getApplication() );
     }
 
 
@@ -38,11 +38,21 @@ public class HabitDetailViewModel extends AndroidViewModel implements HabitDetai
     @NonNull
     @Override
     public LiveData< List< HabitDay > > getDaysForDetail( int habitId ) {
-        return mHabitDayDao.getDaysForHabit( habitId );
+        return mHabitDatabase.getHabitDayDao().getDaysForHabit( habitId );
     }
 
 
     private void triggerDeleteDialog( int habitId ) {
         mHabitObservables.triggerDeleteDialog( habitId );
+    }
+
+    @Override
+    public void press( HabitDay habitDay ) {
+        mHabitDatabase.plusHabitDay( habitDay );
+    }
+
+    @Override
+    public void longPress( HabitDay habitDay ) {
+        mHabitDatabase.minusHabitDay( habitDay );
     }
 }

@@ -15,6 +15,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import zekem.check.R;
+import zekem.check.habits.HabitPageRecyclerViewAdapter;
 import zekem.check.habits.listener.HabitFragmentListener;
 import zekem.check.habits.viewmodel.HabitViewModel;
 

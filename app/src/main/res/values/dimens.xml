@@ -2,10 +2,14 @@
     <!-- Default screen margins, per the Android Design guidelines. -->
     <dimen name="activity_horizontal_margin">16dp</dimen>
     <dimen name="activity_vertical_margin">16dp</dimen>
-    <dimen name="text_margin">16dp</dimen>
-    <dimen name="habit_button_padding">8dp</dimen>
-    <dimen name="habit_plus_button_padding">@dimen/habit_button_padding</dimen>
+    <dimen name="text_padding">16dp</dimen>
+    <dimen name="habit_button_padding">4dp</dimen>
     <dimen name="habit_minus_button_padding">@dimen/habit_button_padding</dimen>
+    <dimen name="habit_plus_button_padding">@dimen/habit_button_padding</dimen>
+    <dimen name="habit_streak_padding">2dp</dimen>
+    <dimen name="habit_minus_streak_padding">@dimen/habit_streak_padding</dimen>
+    <dimen name="habit_plus_streak_padding">@dimen/habit_streak_padding</dimen>
+
     <dimen name="habit_list_item_top_margin">8dp</dimen>
     
     <dimen name="habit_card_stroke_width">5dp</dimen>

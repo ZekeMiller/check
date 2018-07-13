@@ -73,7 +73,7 @@ public class HabitDetailFragment extends Fragment {
 
             HabitDetailRecyclerViewAdapter adapter = new HabitDetailRecyclerViewAdapter( mListener );
             recyclerView.setAdapter( adapter );
-            mListener.getDaysForDetail( mHabitId ).observe( this, adapter::setData );
+            mListener.getDaysForDetail( mHabitId ).observe( this, adapter.getSetDataListener() );
         }
         return view;
     }

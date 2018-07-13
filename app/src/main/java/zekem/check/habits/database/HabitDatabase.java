@@ -159,7 +159,7 @@ public abstract class HabitDatabase extends RoomDatabase {
         mDatabaseExecutor.execute( () -> {
             HabitDay habitDay = mHabitDayDao.getDay( habitDayId );
             if ( habitDay != null ) {
-                incrementHabit( habitDay.getHabitId() );
+//                incrementHabit( habitDay.getHabitId() );
                 habitDay.incrementPlus();
                 updateHabitDayInDB( habitDay );
             }
@@ -174,40 +174,40 @@ public abstract class HabitDatabase extends RoomDatabase {
         mDatabaseExecutor.execute( () -> {
             HabitDay habitDay = mHabitDayDao.getDay( habitDayId );
             if ( habitDay != null ) {
-                decrementHabit( habitDay.getHabitId() );
+//                decrementHabit( habitDay.getHabitId() );
                 habitDay.incrementMinus();
                 updateHabitDayInDB( habitDay );
             }
         } );
     }
 
-    public void incrementHabit( int id ) {
-        mDatabaseExecutor.execute( () -> {
-            Habit habit = mHabitDao.getHabitSync( id );
-            if ( habit != null ) {
-                incrementHabit( habit );
-            }
-        } );
-    }
+//    public void incrementHabit( int id ) {
+//        mDatabaseExecutor.execute( () -> {
+//            Habit habit = mHabitDao.getHabitSync( id );
+//            if ( habit != null ) {
+//                incrementHabit( habit );
+//            }
+//        } );
+//    }
 
-    public void incrementHabit( Habit habit ) {
-        habit.increment();
-        updateHabitInDB( habit );
-    }
+//    public void incrementHabit( Habit habit ) {
+//        habit.increment();
+//        updateHabitInDB( habit );
+//    }
 
-    public void decrementHabit( int id ) {
-        mDatabaseExecutor.execute( () -> {
-            Habit habit = mHabitDao.getHabitSync( id );
-            if ( habit != null ) {
-                decrementHabit( habit );
-            }
-        } );
-    }
+//    public void decrementHabit( int id ) {
+//        mDatabaseExecutor.execute( () -> {
+//            Habit habit = mHabitDao.getHabitSync( id );
+//            if ( habit != null ) {
+//                decrementHabit( habit );
+//            }
+//        } );
+//    }
 
-    public void decrementHabit( Habit habit ) {
-        habit.decrement();
-        updateHabitInDB( habit );
-    }
+//    public void decrementHabit( Habit habit ) {
+//        habit.decrement();
+//        updateHabitInDB( habit );
+//    }
 
     public void updateHabitInDB( Habit habit ) {
         mDatabaseExecutor.execute( () -> mHabitDao.update( habit ) );

@@ -4,6 +4,7 @@ import android.app.Application;
 import android.arch.lifecycle.AndroidViewModel;
 import android.arch.lifecycle.LiveData;
 import android.support.annotation.NonNull;
+import android.util.Log;
 
 import org.joda.time.LocalDate;
 
@@ -15,6 +16,8 @@ import zekem.check.habits.HabitObservables;
 import zekem.check.habits.HabitWithDays;
 import zekem.check.habits.database.HabitDatabase;
 import zekem.check.habits.listener.HabitFragmentListener;
+
+import static zekem.check.habits.HabitObservables.TAG;
 
 /**
  * @author Zeke Miller
@@ -52,27 +55,35 @@ public class HabitViewModel extends AndroidViewModel implements  HabitFragmentLi
 
     @Override
     public void onContentLongPress( HabitDay habitDay ) {
+        Log.d( TAG, "HabitViewModel::onContentLongPress" );
         triggerDeleteDialog( habitDay.getHabitId() );
     }
 
     @Override
     public void onContentShortPress( int habitId ) {
+        Log.d( TAG, "HabitViewModel::onContentShortPress" );
         viewHabitDetail( habitId );
     }
 
     @Override
     public void onPlusPress( HabitDay habitDay ) {
+        Log.d( TAG, "HabitViewModel::onPlusPress" );
         if ( habitDay == null ) {
+            Log.d( TAG, "HabitViewModel::onPlusPress null" );
             return;
         }
+        Log.d( TAG, "HabitViewModel::onPlusPress non-null" );
         mHabitDatabase.plusHabitDay( habitDay.getDayId() );
     }
 
     @Override
     public void onMinusPress( HabitDay habitDay ) {
+        Log.d( TAG, "HabitViewModel::onMinusPress" );
         if ( habitDay == null ) {
+            Log.d( TAG, "HabitViewModel::onMinusPress null" );
             return;
         }
+        Log.d( TAG, "HabitViewModel::onMinusPress non-null" );
         mHabitDatabase.minusHabitDay( habitDay.getDayId() );
     }
 

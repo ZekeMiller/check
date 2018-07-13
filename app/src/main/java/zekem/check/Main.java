@@ -23,6 +23,7 @@ import zekem.check.dailies.DailyPageFragment;
 import zekem.check.dailies.Daily;
 import zekem.check.datas.Data;
 import zekem.check.datas.DataPageFragment;
+import zekem.check.habits.Habit;
 import zekem.check.habits.ui.DeleteHabitDialogFragment;
 import zekem.check.habits.ui.HabitDetailFragment;
 import zekem.check.habits.HabitObservables;
@@ -46,6 +47,8 @@ public class Main extends AppCompatActivity implements
     private final Observer< Integer > mDetailObserver = this::showDetailFragment;
     private final Observer< Void > mNewHabitObserver = v -> this.showNewHabitFragment();
     private final Observer< Void > mShowHabitPageObserver = v -> this.showHabitPage();
+
+    private final Observer< Habit > mSetTitleObserver = this::setTitle;
 
 
     private BottomNavigationView mBottomNavigationView;
@@ -157,7 +160,14 @@ public class Main extends AppCompatActivity implements
 
     @Override
     protected void onStop() {
+
         super.onStop();
+    }
+
+    @Override
+    protected void onDestroy() {
+
+        super.onDestroy();
 
         mHabitObservables.unregisterDelete( mDeleteObserver );
         mHabitObservables.unRegisterDetail( mDetailObserver );
@@ -176,14 +186,7 @@ public class Main extends AppCompatActivity implements
             .commit();
 
 
-        mMainViewModel.getHabit( habitID ).observe( habitDetailFragment, habit -> {
-            if ( habit == null ) {
-                setTitle( getString( R.string.title_habits ) );
-            }
-            else {
-                setTitle( habit.getTitle() );
-            }
-        });
+        mMainViewModel.getHabit( habitID ).observe( habitDetailFragment, mSetTitleObserver );
 
 
     }
@@ -218,6 +221,12 @@ public class Main extends AppCompatActivity implements
 
     private void showHabitPage() {
         mBottomNavigationView.setSelectedItemId( R.id.navigation_habits );
+    }
+
+    private void setTitle( Habit habit ) {
+        if ( habit != null ) {
+            setTitle( habit.getTitle() );
+        }
     }
 
     private void setTitle( String title ) {

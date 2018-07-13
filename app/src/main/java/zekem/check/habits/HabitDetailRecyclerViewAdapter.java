@@ -1,5 +1,6 @@
 package zekem.check.habits;
 
+import android.arch.lifecycle.Observer;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -15,6 +16,8 @@ import zekem.check.habits.listener.HabitDetailListener;
 public class HabitDetailRecyclerViewAdapter extends RecyclerView.Adapter<HabitDetailRecyclerViewAdapter.ViewHolder> {
 
     private final HabitDetailListener mListener;
+    private final Observer< List< HabitDay > > mSetDataListener = this::setData;
+
     private List<HabitDay> mValues;
 
     public HabitDetailRecyclerViewAdapter( HabitDetailListener listener ) {
@@ -63,6 +66,10 @@ public class HabitDetailRecyclerViewAdapter extends RecyclerView.Adapter<HabitDe
             return 0;
         }
         return mValues.size();
+    }
+
+    public Observer< List< HabitDay > > getSetDataListener() {
+        return mSetDataListener;
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {

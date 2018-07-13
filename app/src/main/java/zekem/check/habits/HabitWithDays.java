@@ -72,9 +72,25 @@ public class HabitWithDays {
         return this.mHabit.getId() == other.mHabit.getId();
     }
 
+    public int getTotalMinus() {
+        int count = 0;
+        for ( HabitDay habitDay : mHabitDays ) {
+            count += habitDay.getMinusCount();
+        }
+        return count;
+    }
+
+    public int getTotalPlus() {
+        int count = 0;
+        for ( HabitDay habitDay : mHabitDays ) {
+            count += habitDay.getPlusCount();
+        }
+        return count;
+    }
+
 
     public int getValue() {
-        int value = mHabit.getTotalPlus() - mHabit.getTotalMinus();
+        int value = getTotalPlus() - getTotalMinus();
 
         if ( value > 0 ) {
             if ( value >= THRESHOLD_PLUS_THREE ) {

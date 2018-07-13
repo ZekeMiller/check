@@ -1,5 +1,6 @@
 package zekem.check.habits.ui;
 
+import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
 import android.os.Bundle;
@@ -14,8 +15,11 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
+import java.util.List;
+
 import zekem.check.R;
 import zekem.check.habits.HabitPageRecyclerViewAdapter;
+import zekem.check.habits.HabitWithDays;
 import zekem.check.habits.listener.HabitFragmentListener;
 import zekem.check.habits.viewmodel.HabitViewModel;
 
@@ -101,7 +105,7 @@ public class HabitPageFragment extends Fragment {
             final HabitPageRecyclerViewAdapter adapter = new HabitPageRecyclerViewAdapter( mListener );
 
             recyclerView.setAdapter( adapter );
-            mListener.getHabitsWithDays().observe( this, adapter::setData );
+            mListener.getHabitsWithDays().observe( this, adapter.getSetDataListener() );
 
         }
         return view;

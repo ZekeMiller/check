@@ -24,8 +24,8 @@ public class Habit {
 
     private String mTitle;
 
-    private int mTotalPlus;
-    private int mTotalMinus;
+//    private int mTotalPlus;
+//    private int mTotalMinus;
 
 //    private int mMinusStreak;
 //    private int mPlusStreak;
@@ -46,8 +46,8 @@ public class Habit {
 
         mCreatedDate = LocalDate.now();
 
-        mTotalMinus = 0;
-        mTotalPlus = 0;
+//        mTotalMinus = 0;
+//        mTotalPlus = 0;
 
 //        mMinusStreak = 0;
 //        mPlusStreak = 0;
@@ -68,13 +68,13 @@ public class Habit {
         return mTitle;
     }
 
-    public int getTotalMinus() {
-        return mTotalMinus;
-    }
+//    public int getTotalMinus() {
+//        return mTotalMinus;
+//    }
 
-    public int getTotalPlus() {
-        return mTotalPlus;
-    }
+//    public int getTotalPlus() {
+//        return mTotalPlus;
+//    }
 
 //    public int getMinusStreak() {
 //        return mMinusStreak;
@@ -114,13 +114,13 @@ public class Habit {
         this.mTitle = title;
     }
 
-    public void setTotalMinus(int totalMinus) {
-        this.mTotalMinus = totalMinus;
-    }
+//    public void setTotalMinus(int totalMinus) {
+//        this.mTotalMinus = totalMinus;
+//    }
 
-    public void setTotalPlus(int totalPlus) {
-        this.mTotalPlus = totalPlus;
-    }
+//    public void setTotalPlus(int totalPlus) {
+//        this.mTotalPlus = totalPlus;
+//    }
 
 //    public void setMinusStreak( int minusStreak ) {
 //        this.mMinusStreak = minusStreak;
@@ -146,19 +146,20 @@ public class Habit {
         this.mPlusActive = plusActive;
     }
 
-    public void increment() {
-        mTotalPlus++;
-    }
+//    public void increment() {
+//        mTotalPlus++;
+//    }
 
-    public void decrement() {
-        mTotalMinus++;
-    }
+//    public void decrement() {
+//        mTotalMinus++;
+//    }
 
 
     public boolean sameContents( Habit habit ) {
-        return this.equals( habit ) && this.mTitle.equals( habit.mTitle ) &&
-                this.mTotalMinus == habit.mTotalMinus &&
-                this.mTotalPlus == habit.mTotalPlus;
+        return this.equals( habit ) && this.mTitle.equals( habit.mTitle )
+//                && this.mTotalMinus == habit.mTotalMinus
+//                && this.mTotalPlus == habit.mTotalPlus
+                ;
     }
 
     @Override

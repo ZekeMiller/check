@@ -17,65 +17,96 @@
         android:background="@color/cardview_dark_background"
         >
 
-        <ImageView
-            android:id="@+id/minusButton"
+        <android.support.constraint.ConstraintLayout
+            android:id="@+id/minusLayout"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:contentDescription="@string/habit_minus_button"
-            app:srcCompat="@drawable/ic_habit_minus_circle_24dp"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toStartOf="@id/content"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintBottom_toTopOf="@id/minusStreak"
-            android:padding="@dimen/habit_minus_button_padding"
-            />
+            >
 
-        <TextView
-            android:id="@+id/minusStreak"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:layout_constraintStart_toStartOf="@id/minusButton"
-            app:layout_constraintEnd_toEndOf="@id/minusButton"
-            app:layout_constraintTop_toBottomOf="@id/minusButton"
-            tools:text="3"
-            />
+            <ImageView
+                android:id="@+id/minusButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:contentDescription="@string/habit_minus_button"
+                app:srcCompat="@drawable/ic_habit_minus_circle_24dp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toTopOf="@id/minusStreak"
+                android:padding="@dimen/habit_minus_button_padding"
+
+                />
+
+            <TextView
+                android:id="@+id/minusStreak"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/minusButton"
+                android:paddingBottom="@dimen/habit_minus_streak_padding"
+                tools:text="3"
+                />
+
+        </android.support.constraint.ConstraintLayout>
+
+
 
         <TextView
             android:id="@+id/content"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:padding="@dimen/text_margin"
+            android:padding="@dimen/text_padding"
             android:textAppearance="?attr/textAppearanceListItem"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toEndOf="@id/minusButton"
-            app:layout_constraintEnd_toStartOf="@id/plusButton"
-            tools:text="sample text"
+            app:layout_constraintStart_toEndOf="@id/minusLayout"
+            app:layout_constraintEnd_toStartOf="@id/plusLayout"
             />
 
 
-        <ImageView
-            android:id="@+id/plusButton"
+        <android.support.constraint.ConstraintLayout
+            android:id="@+id/plusLayout"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:contentDescription="@string/habit_plus_button"
-            app:srcCompat="@drawable/ic_habit_plus_circle_24dp"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@id/content"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintBottom_toTopOf="@id/plusStreak"
-            android:padding="@dimen/habit_plus_button_padding"
-            />
+            >
 
-        <TextView
-            android:id="@+id/plusStreak"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:layout_constraintStart_toStartOf="@id/plusButton"
-            app:layout_constraintEnd_toEndOf="@id/plusButton"
-            app:layout_constraintTop_toBottomOf="@id/plusButton"
-            tools:text="3"
-            />
+            <ImageView
+                android:id="@+id/plusButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:contentDescription="@string/habit_plus_button"
+                app:srcCompat="@drawable/ic_habit_plus_circle_24dp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toTopOf="@id/plusStreak"
+                android:padding="@dimen/habit_plus_button_padding"
+                />
+
+            <TextView
+                android:id="@+id/plusStreak"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/plusButton"
+                android:padding="@dimen/habit_plus_streak_padding"
+                tools:text="3"
+                />
+
+        </android.support.constraint.ConstraintLayout>
 
     </android.support.constraint.ConstraintLayout>
+
 </android.support.v7.widget.CardView>

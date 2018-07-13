@@ -1,6 +1,7 @@
 package zekem.check.habits;
 
 import android.arch.lifecycle.Observer;
+import android.util.Log;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -11,6 +12,8 @@ import java.util.List;
  * @author Zeke Miller
  */
 public class HabitObservables {
+
+    public static final String TAG = "check_log";
 
     private static HabitObservables sInstance;
 
@@ -69,24 +72,29 @@ public class HabitObservables {
 
 
     public void triggerDeleteDialog( int habitId ) {
+
+        Log.d( TAG, "HabitObservables::triggerDeleteDialog" );
         for ( Observer< Integer > observer : mDeleteObservers ) {
             observer.onChanged( habitId );
         }
     }
 
     public void viewHabitDetail( int habitId ) {
+        Log.d( TAG, "HabitObservables::viewHabitDetail" );
         for ( Observer< Integer > observer : mDetailObservers ) {
             observer.onChanged( habitId );
         }
     }
 
     public void showHabitPage() {
+        Log.d( TAG, "HabitObservables::showHabitPage" );
         for ( Observer< Void > observer : mShowHabitPageObservers ) {
             observer.onChanged( null );
         }
     }
 
     public void showNewHabitPage() {
+        Log.d( TAG, "HabitObservables::showNewHabitPage" );
         for ( Observer< Void > observer : mNewHabitObservers ) {
             observer.onChanged( null );
         }

@@ -11,10 +11,10 @@
         android:id="@+id/new_habit_name"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_margin="@dimen/text_margin"
+        android:layout_margin="@dimen/text_padding"
         android:ems="10"
         android:hint="@string/new_habit_name_ghost_text"
-        android:inputType="textPersonName"
+        android:inputType="textShortMessage"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
@@ -24,7 +24,7 @@
         android:id="@+id/plusActiveText"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_margin="@dimen/text_margin"
+        android:layout_margin="@dimen/text_padding"
         app:layout_constraintTop_toBottomOf="@id/new_habit_name"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toStartOf="@id/plusActiveCheckBox"
@@ -39,7 +39,7 @@
         android:layout_height="wrap_content"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintBaseline_toBaselineOf="@id/plusActiveText"
-        android:layout_margin="@dimen/text_margin"
+        android:layout_margin="@dimen/text_padding"
 
         />
 
@@ -47,7 +47,7 @@
         android:id="@+id/minusActiveText"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="@dimen/text_margin"
+        android:layout_margin="@dimen/text_padding"
         app:layout_constraintTop_toBottomOf="@id/plusActiveText"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toStartOf="@id/minusActiveCheckBox"
@@ -62,7 +62,7 @@
         android:layout_height="wrap_content"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintBaseline_toBaselineOf="@id/minusActiveText"
-        android:layout_margin="@dimen/text_margin"
+        android:layout_margin="@dimen/text_padding"
 
         />
 

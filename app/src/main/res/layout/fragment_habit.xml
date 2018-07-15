@@ -50,6 +50,7 @@
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/minusButton"
                 android:paddingBottom="@dimen/habit_minus_streak_padding"
+                android:textSize="@dimen/habit_minus_streak_text_size"
                 tools:text="3"
                 />
 
@@ -102,6 +103,7 @@
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/plusButton"
                 android:padding="@dimen/habit_plus_streak_padding"
+                android:textSize="@dimen/habit_plus_streak_text_size"
                 tools:text="3"
                 />
 

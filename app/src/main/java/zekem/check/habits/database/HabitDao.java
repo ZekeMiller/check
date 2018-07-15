@@ -5,14 +5,11 @@ import android.arch.persistence.room.Dao;
 import android.arch.persistence.room.Delete;
 import android.arch.persistence.room.Insert;
 import android.arch.persistence.room.Query;
-import android.arch.persistence.room.Transaction;
 import android.arch.persistence.room.Update;
-import android.support.annotation.NonNull;
 
 import java.util.List;
 
 import zekem.check.habits.Habit;
-import zekem.check.habits.HabitWithDays;
 
 /**
  * @author Zeke Miller
@@ -41,28 +38,32 @@ public interface HabitDao {
     @Query( "SELECT * FROM habit" )
     LiveData< List< Habit > > getAll();
 
-    @Query( "SELECT * FROM habit WHERE mId=:id" )
-    Habit getHabitSync( int id );
+    @Query( "SELECT * FROM habit" )
+    List< Habit > getAllSync();
 
     @Query( "SELECT * FROM habit WHERE mId=:id" )
     LiveData< Habit > getHabit( int id );
 
-    @Query( "SELECT mId FROM habit" )
-    List< Integer > getHabitIDs();
+    @Query( "SELECT * FROM habit WHERE mId=:id" )
+    Habit getHabitSync( int id );
 
     @Query( "DELETE FROM habit" )
     void nukeTable();
 
-    @Transaction
-    @Query( "SELECT * FROM habit" )
-    LiveData< List< HabitWithDays > > getAllWithDays();
 
-    @Transaction
-    @Query( "SELECT * FROM habit" )
-    List< HabitWithDays > getAllWithDaysSync();
+//    @Query( "SELECT mId FROM habit" )
+//    List< Integer > getHabitIDs();
 
-    @Transaction
-    @Query( "SELECT * FROM habit WHERE mId=:id" )
-    HabitWithDays getHabitWithDays( int id );
+//    @Transaction
+//    @Query( "SELECT * FROM habit" )
+//    LiveData< List< HabitWithDays > > getAllWithDays();
+
+//    @Transaction
+//    @Query( "SELECT * FROM habit" )
+//    List< HabitWithDays > getAllWithDaysSync();
+
+//    @Transaction
+//    @Query( "SELECT * FROM habit WHERE mId=:id" )
+//    HabitWithDays getHabitWithDays( int id );
 
 }

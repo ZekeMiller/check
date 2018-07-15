@@ -8,7 +8,6 @@ import java.util.List;
 
 import zekem.check.habits.Habit;
 import zekem.check.habits.HabitDay;
-import zekem.check.habits.HabitWithDays;
 
 /**
  * Interface for the ViewModel to listen to interactions with a habit
@@ -29,6 +28,6 @@ public interface HabitFragmentListener {
 
     void onMissingDay( Habit habit, LocalDate date );
 
-    LiveData< List< HabitWithDays > > getHabitsWithDays();
+    LiveData< List< Habit > > getHabits();
 
 }

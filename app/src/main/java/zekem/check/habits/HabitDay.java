@@ -1,31 +1,18 @@
 package zekem.check.habits;
 
-import android.arch.persistence.room.Entity;
-import android.arch.persistence.room.ForeignKey;
-import android.arch.persistence.room.Index;
-import android.arch.persistence.room.PrimaryKey;
 import android.arch.persistence.room.TypeConverters;
 
 import org.joda.time.LocalDate;
 
-import zekem.check.habits.database.DateConverters;
-
-import static android.arch.persistence.room.ForeignKey.CASCADE;
+import zekem.check.habits.database.Converters;
 
 /**
  * @author Zeke Miller
  */
-@Entity (   foreignKeys = @ForeignKey(  entity = Habit.class,
-                                        parentColumns = "mId",
-                                        childColumns = "mHabitId",
-                                        onDelete = CASCADE ),
-            indices = { @Index( "mHabitId" ) } )
-@TypeConverters( DateConverters.class )
+@TypeConverters( Converters.class )
 public class HabitDay {
 
     // these fields should never change after being created
-    @PrimaryKey(autoGenerate = true)
-    private int mDayId;
     private int mHabitId;
     private LocalDate mDate;
 
@@ -35,10 +22,9 @@ public class HabitDay {
 
 
 
-    public HabitDay() {}
+    public HabitDay( int habitId, LocalDate date ) {
 
-    public HabitDay( Habit habit, LocalDate date ) {
-        this.mHabitId = habit.getId();
+        this.mHabitId = habitId;
         this.mDate = date;
         mPlusCount = 0;
         mMinusCount = 0;
@@ -54,10 +40,6 @@ public class HabitDay {
         mMinusCount++;
     }
 
-
-    public int getDayId() {
-        return mDayId;
-    }
 
     public int getHabitId() {
         return mHabitId;
@@ -77,10 +59,6 @@ public class HabitDay {
 
 
 
-    public void setDayId( int dayID ) {
-        this.mDayId = dayID;
-    }
-
     public void setHabitId( int habitID) {
         this.mHabitId = habitID;
     }
@@ -98,24 +76,16 @@ public class HabitDay {
     }
 
 
-
     public boolean sameContents( HabitDay other ) {
-        return
-//                this.equals( other ) &&
-//                this.mHabitId == other.mHabitId &&
-                this.mPlusCount == other.mPlusCount &&
-                this.mMinusCount == other.mMinusCount;
-    }
-
-    public boolean sameId( HabitDay other ) {
-        return this.mDayId == other.mDayId;
+        return other != null &&
+                this.mPlusCount == other.mPlusCount && this.mMinusCount == other.mMinusCount;
     }
 
     @Override
     public boolean equals( Object other ) {
-        if ( other instanceof HabitDay ) {
+        if ( other != null && other instanceof HabitDay ) {
             HabitDay otherDay = (HabitDay) other;
-            return this.sameId( otherDay ) && this.sameContents( otherDay );
+            return this.sameContents( otherDay );
         }
         return false;
     }

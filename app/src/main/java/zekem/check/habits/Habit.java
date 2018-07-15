@@ -1,12 +1,21 @@
 package zekem.check.habits;
 
 import android.arch.persistence.room.Entity;
+import android.arch.persistence.room.Ignore;
 import android.arch.persistence.room.PrimaryKey;
 import android.arch.persistence.room.TypeConverters;
+import android.support.annotation.NonNull;
 
 import org.joda.time.LocalDate;
 
-import zekem.check.habits.database.DateConverters;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import zekem.check.habits.database.Converters;
 
 // TODO order by column
 
@@ -14,8 +23,16 @@ import zekem.check.habits.database.DateConverters;
  * @author Zeke Miller
  */
 @Entity
-@TypeConverters( DateConverters.class )
+@TypeConverters( Converters.class )
 public class Habit {
+
+    @Ignore private static final int THRESHOLD_MINUS_THREE = -20;
+    @Ignore private static final int THRESHOLD_MINUS_TWO = -10;
+    @Ignore private static final int THRESHOLD_MINUS_ONE = -2;
+    @Ignore private static final int THRESHOLD_PLUS_ONE = 1;
+    @Ignore private static final int THRESHOLD_PLUS_TWO = 8;
+    @Ignore private static final int THRESHOLD_PLUS_THREE = 15;
+    @Ignore private static final int BAD_VALUE = Integer.MAX_VALUE;
 
     @PrimaryKey(autoGenerate = true)
     private int mId;
@@ -24,18 +41,12 @@ public class Habit {
 
     private String mTitle;
 
-//    private int mTotalPlus;
-//    private int mTotalMinus;
-
-//    private int mMinusStreak;
-//    private int mPlusStreak;
-//
-//    private LocalDate mLastMinusDate;
-//    private LocalDate mLastPlusDate;
-
     private boolean mMinusActive;
     private boolean mPlusActive;
 
+    private Map< LocalDate, HabitDay > mDayMap;
+    @Ignore private List< HabitDay > mHabitDays;
+    @Ignore private Comparator< HabitDay > sort;
 
     public Habit(String title, boolean minusActive, boolean plusActive ) {
 
@@ -45,12 +56,9 @@ public class Habit {
         this.mPlusActive = plusActive;
 
         mCreatedDate = LocalDate.now();
-
-//        mTotalMinus = 0;
-//        mTotalPlus = 0;
-
-//        mMinusStreak = 0;
-//        mPlusStreak = 0;
+        mDayMap = new HashMap<>();
+        mHabitDays = new ArrayList<>();
+        sort = ( o1, o2 ) -> o1.getDate().compareTo( o2.getDate() );
 
     }
 
@@ -68,30 +76,6 @@ public class Habit {
         return mTitle;
     }
 
-//    public int getTotalMinus() {
-//        return mTotalMinus;
-//    }
-
-//    public int getTotalPlus() {
-//        return mTotalPlus;
-//    }
-
-//    public int getMinusStreak() {
-//        return mMinusStreak;
-//    }
-//
-//    public int getPlusStreak() {
-//        return mPlusStreak;
-//    }
-//
-//    public LocalDate getLastMinusDate() {
-//        return mLastMinusDate;
-//    }
-//
-//    public LocalDate getLastPlusDate() {
-//        return mLastPlusDate;
-//    }
-
     public boolean isMinusActive() {
         return mMinusActive;
     }
@@ -100,9 +84,15 @@ public class Habit {
         return mPlusActive;
     }
 
+    public Map< LocalDate, HabitDay > getDayMap() {
+        return mDayMap;
+    }
 
+    public List< HabitDay > getHabitDays() {
+        return mHabitDays;
+    }
 
-    public void setId(int id ) {
+    public void setId( int id ) {
         this.mId = id;
     }
 
@@ -114,30 +104,6 @@ public class Habit {
         this.mTitle = title;
     }
 
-//    public void setTotalMinus(int totalMinus) {
-//        this.mTotalMinus = totalMinus;
-//    }
-
-//    public void setTotalPlus(int totalPlus) {
-//        this.mTotalPlus = totalPlus;
-//    }
-
-//    public void setMinusStreak( int minusStreak ) {
-//        this.mMinusStreak = minusStreak;
-//    }
-//
-//    public void setPlusStreak( int plusStreak ) {
-//        this.mPlusStreak = plusStreak;
-//    }
-//
-//    public void setLastMinusDate( LocalDate lastMinusDate ) {
-//        this.mLastMinusDate = lastMinusDate;
-//    }
-//
-//    public void setLastPlusDate( LocalDate lastPlusDate ) {
-//        this.mLastPlusDate = lastPlusDate;
-//    }
-
     public void setMinusActive( boolean minusActive ) {
         this.mMinusActive = minusActive;
     }
@@ -146,20 +112,141 @@ public class Habit {
         this.mPlusActive = plusActive;
     }
 
-//    public void increment() {
-//        mTotalPlus++;
-//    }
+    public void setDayMap( Map< LocalDate, HabitDay > dayMap ) {
+        this.mDayMap = dayMap;
+        updateList();
+    }
 
-//    public void decrement() {
-//        mTotalMinus++;
-//    }
+    public void setSort( Comparator<HabitDay> sort ) {
+        this.sort = sort;
+    }
+
+
+    public void addDay( LocalDate date ) {
+        if ( mDayMap.get( date ) == null ) {
+            mDayMap.put( date, new HabitDay( mId, date ) );
+            updateList();
+        }
+    }
+
+    public boolean hasDay( LocalDate date ) {
+        return mDayMap.containsKey( date );
+    }
+
+    public HabitDay getDay( LocalDate date ) {
+        return mDayMap.get( date );
+    }
+
+    private void updateList() {
+        this.mHabitDays = new ArrayList<>( mDayMap.values() );
+        Collections.sort( this.mHabitDays, sort );
+    }
+
+    public void minusDay( LocalDate date ) {
+        HabitDay habitDay = mDayMap.get( date );
+        if ( habitDay != null ) {
+            habitDay.incrementMinus();
+        }
+    }
+
+    public int getTotalMinus() {
+        int count = 0;
+        for ( HabitDay habitDay : mDayMap.values() ) {
+            count += habitDay.getMinusCount();
+        }
+        return count;
+    }
+
+
+    public void plusDay( LocalDate date ) {
+        HabitDay habitDay = mDayMap.get( date );
+        if ( habitDay != null ) {
+            habitDay.incrementPlus();
+        }
+    }
+
+    public int getTotalPlus() {
+        int count = 0;
+        for ( HabitDay habitDay : mDayMap.values() ) {
+            count += habitDay.getPlusCount();
+        }
+        return count;
+    }
+
+    public int getGrade() {
+        return getGrade( getTotalPlus(), getTotalMinus() );
+    }
+
+    public int getGrade( @NonNull LocalDate date ) {
+        if ( mDayMap.get( date ) != null ) {
+            return getGrade( mDayMap.get( date ) );
+        }
+        else {
+            return BAD_VALUE;
+        }
+    }
+
+    public int getGrade( @NonNull HabitDay habitDay ) {
+
+        return getGrade( habitDay.getPlusCount(), habitDay.getMinusCount() );
+    }
+
+
+    @SuppressWarnings( "ConstantConditions" )
+    private int getGrade( int plus, int minus) {
+        int value = plus - minus;
+
+        if ( value > 0 ) {
+            if ( value >= THRESHOLD_PLUS_THREE ) {
+                return 3;
+            }
+            else if ( value >= THRESHOLD_PLUS_TWO ) {
+                return 2;
+            }
+            else if ( value >= THRESHOLD_PLUS_ONE ) {
+                return 1;
+            }
+        }
+        else if ( value < 0 ) {
+            if ( value <= THRESHOLD_MINUS_THREE ) {
+                return -3;
+            }
+            else if ( value <= THRESHOLD_MINUS_TWO ) {
+                return -2;
+            }
+            else if ( value <= THRESHOLD_MINUS_ONE ) {
+                return -1;
+            }
+        }
+        return 0;
+    }
+
+
+    public int calculatePlusStreak() {
+        HabitDay today = mDayMap.get( LocalDate.now() );
+        int todayCount = ( today != null && today.getPlusCount() > 0 ) ? 1 : 0;
+        for ( int i = 1 ; ; i++ ) {
+            HabitDay day = mDayMap.get( LocalDate.now().minusDays( i ) );
+            if ( day == null || day.getPlusCount() == 0 ) {
+                return i + todayCount - 1;
+            }
+        }
+    }
+
+    public int calculateMinusStreak() {
+        HabitDay today = mDayMap.get( LocalDate.now() );
+        int todayCount = ( today != null && today.getMinusCount() > 0 ) ? 1 : 0;
+        for ( int i = 1 ; ; i++ ) {
+            HabitDay day = mDayMap.get( LocalDate.now().minusDays( i ) );
+            if ( day == null || day.getMinusCount() == 0 ) {
+                return i + todayCount - 1;
+            }
+        }
+    }
 
 
     public boolean sameContents( Habit habit ) {
-        return this.equals( habit ) && this.mTitle.equals( habit.mTitle )
-//                && this.mTotalMinus == habit.mTotalMinus
-//                && this.mTotalPlus == habit.mTotalPlus
-                ;
+        return this.equals( habit ) && this.mTitle.equals( habit.mTitle );
     }
 
     @Override

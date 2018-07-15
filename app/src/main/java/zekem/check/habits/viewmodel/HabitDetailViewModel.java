@@ -3,14 +3,11 @@ package zekem.check.habits.viewmodel;
 import android.app.Application;
 import android.arch.lifecycle.AndroidViewModel;
 import android.arch.lifecycle.LiveData;
-import android.support.annotation.NonNull;
 
-import java.util.List;
-
+import zekem.check.habits.Habit;
 import zekem.check.habits.HabitDay;
 import zekem.check.habits.HabitObservables;
 import zekem.check.habits.database.HabitDatabase;
-import zekem.check.habits.database.HabitDayDao;
 import zekem.check.habits.listener.HabitDetailListener;
 
 /**
@@ -35,12 +32,11 @@ public class HabitDetailViewModel extends AndroidViewModel implements HabitDetai
         triggerDeleteDialog( habitId );
     }
 
-    @NonNull
-    @Override
-    public LiveData< List< HabitDay > > getDaysForDetail( int habitId ) {
-        return mHabitDatabase.getHabitDayDao().getDaysForHabit( habitId );
-    }
 
+    @Override
+    public LiveData< Habit > getHabit( int habitId ) {
+        return mHabitDatabase.getHabitDao().getHabit( habitId );
+    }
 
     private void triggerDeleteDialog( int habitId ) {
         mHabitObservables.triggerDeleteDialog( habitId );
@@ -48,11 +44,13 @@ public class HabitDetailViewModel extends AndroidViewModel implements HabitDetai
 
     @Override
     public void press( HabitDay habitDay ) {
-        mHabitDatabase.plusHabitDay( habitDay );
+//        mHabitDatabase.plusHabitDay( habitDay );
+        mHabitDatabase.plusHabitDay( habitDay.getHabitId(), habitDay.getDate() );
     }
 
     @Override
     public void longPress( HabitDay habitDay ) {
-        mHabitDatabase.minusHabitDay( habitDay );
+//        mHabitDatabase.minusHabitDay( habitDay );
+        mHabitDatabase.minusHabitDay( habitDay.getHabitId(), habitDay.getDate() );
     }
 }

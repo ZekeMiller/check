@@ -50,7 +50,7 @@ public class NewHabitFragment extends Fragment {
         View view = inflater.inflate( R.layout.fragment_new_habit, container, false );
 
         Button button = view.findViewById( R.id.submit_new_habit );
-        button.setOnClickListener( this::onSubmitPress );
+        button.setOnClickListener( v -> onSubmitPress() );
 
         this.view = view;
 
@@ -64,7 +64,8 @@ public class NewHabitFragment extends Fragment {
         mListener = null;
     }
 
-    private void onSubmitPress( View v ) {
+
+    private void onSubmitPress() {
 
         EditText habitName = view.findViewById( R.id.new_habit_name );
         String name = habitName.getText().toString();

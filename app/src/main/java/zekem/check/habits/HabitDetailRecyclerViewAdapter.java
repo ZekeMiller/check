@@ -16,17 +16,17 @@ import zekem.check.habits.listener.HabitDetailListener;
 public class HabitDetailRecyclerViewAdapter extends RecyclerView.Adapter<HabitDetailRecyclerViewAdapter.ViewHolder> {
 
     private final HabitDetailListener mListener;
-    private final Observer< List< HabitDay > > mSetDataListener = this::setData;
+    private final Observer< Habit > mSetDataListener = this::setData;
 
-    private List<HabitDay> mValues;
+    private List< HabitDay > mHabitDays;
 
     public HabitDetailRecyclerViewAdapter( HabitDetailListener listener ) {
         mListener = listener;
     }
 
-    public void setData( List< HabitDay > habitDays ) {
+    public void setData( Habit habit ) {
 
-        mValues = habitDays;
+        mHabitDays = habit.getHabitDays();
 
         notifyDataSetChanged();
 
@@ -44,14 +44,13 @@ public class HabitDetailRecyclerViewAdapter extends RecyclerView.Adapter<HabitDe
 
     @Override
     public void onBindViewHolder( @NonNull final ViewHolder holder, int position) {
-        holder.mHabitDay = mValues.get(position);
-        holder.mPlusCount.setText( String.valueOf( mValues.get(position).getPlusCount()) );
-        holder.mMinusCount.setText( String.valueOf( mValues.get(position).getMinusCount()) );
-        holder.mDate.setText( mValues.get( position ).getDate().toString() );
+        holder.mHabitDay = mHabitDays.get( position );
 
-        holder.mView.setOnClickListener(v -> {
-            mListener.press( holder.mHabitDay );
-        });
+        holder.mPlusCount.setText( String.valueOf( holder.mHabitDay.getPlusCount() ) );
+        holder.mMinusCount.setText( String.valueOf( holder.mHabitDay.getMinusCount() ) );
+        holder.mDateView.setText( holder.mHabitDay.getDate().toString() );
+
+        holder.mView.setOnClickListener(v -> mListener.press( holder.mHabitDay ) );
 
         holder.mView.setOnLongClickListener( v -> {
             mListener.longPress( holder.mHabitDay );
@@ -62,13 +61,14 @@ public class HabitDetailRecyclerViewAdapter extends RecyclerView.Adapter<HabitDe
     @Override
     public int getItemCount() {
 
-        if ( mValues == null ) {
+        if ( mHabitDays == null ) {
             return 0;
         }
-        return mValues.size();
+        return mHabitDays.size();
     }
 
-    public Observer< List< HabitDay > > getSetDataListener() {
+    public Observer< Habit > getSetDataListener() {
+//    public Observer< List< HabitDay > > getSetDataListener() {
         return mSetDataListener;
     }
 
@@ -77,7 +77,9 @@ public class HabitDetailRecyclerViewAdapter extends RecyclerView.Adapter<HabitDe
         private final View mView;
         private final TextView mPlusCount;
         private final TextView mMinusCount;
-        private final TextView mDate;
+        private final TextView mDateView;
+
+//        private LocalDate mDate;
         private HabitDay mHabitDay;
 
         private ViewHolder(View view) {
@@ -85,7 +87,7 @@ public class HabitDetailRecyclerViewAdapter extends RecyclerView.Adapter<HabitDe
             mView = view;
             mPlusCount = view.findViewById(R.id.plusCount);
             mMinusCount = view.findViewById(R.id.minusCount);
-            mDate = view.findViewById(R.id.date);
+            mDateView = view.findViewById(R.id.date);
         }
 
         @Override

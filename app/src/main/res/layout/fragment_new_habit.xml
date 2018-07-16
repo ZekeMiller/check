@@ -7,52 +7,29 @@
     android:layout_height="match_parent"
     tools:context="zekem.check.habits.ui.NewHabitFragment">
 
+
     <EditText
         android:id="@+id/new_habit_name"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_margin="@dimen/text_padding"
-        android:ems="10"
         android:hint="@string/new_habit_name_ghost_text"
         android:inputType="textShortMessage"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
+
     <TextView
-        android:id="@+id/plusActiveText"
+        android:id="@+id/minusActiveText"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_margin="@dimen/text_padding"
         app:layout_constraintTop_toBottomOf="@id/new_habit_name"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toStartOf="@id/plusActiveCheckBox"
-        android:text="@string/new_habit_plus_active_text"
-        android:textSize="18sp"
-
-        />
-
-    <CheckBox
-        android:id="@+id/plusActiveCheckBox"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintBaseline_toBaselineOf="@id/plusActiveText"
-        android:layout_margin="@dimen/text_padding"
-
-        />
-
-    <TextView
-        android:id="@+id/minusActiveText"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="@dimen/text_padding"
-        app:layout_constraintTop_toBottomOf="@id/plusActiveText"
-        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toStartOf="@id/minusActiveCheckBox"
         android:text="@string/new_habit_minus_active_text"
-        android:textSize="18sp"
+        android:textSize="@dimen/habit_new_page_minus_active_text_size"
 
         />
 
@@ -60,24 +37,49 @@
         android:id="@+id/minusActiveCheckBox"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        app:layout_constraintStart_toEndOf="@id/minusActiveText"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintBaseline_toBaselineOf="@id/minusActiveText"
         android:layout_margin="@dimen/text_padding"
 
         />
 
+
+    <TextView
+        android:id="@+id/plusActiveText"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/text_padding"
+        app:layout_constraintTop_toBottomOf="@id/minusActiveText"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/plusActiveCheckBox"
+        android:text="@string/new_habit_plus_active_text"
+        android:textSize="@dimen/habit_new_page_plus_active_text_size"
+
+        />
+
+    <CheckBox
+        android:id="@+id/plusActiveCheckBox"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toEndOf="@id/plusActiveText"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBaseline_toBaselineOf="@id/plusActiveText"
+        android:layout_margin="@dimen/text_padding"
+
+        />
+
+
     <Button
         android:id="@+id/submit_new_habit"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="16dp"
-        android:layout_marginRight="16dp"
-        android:layout_marginBottom="16dp"
+        android:layout_marginEnd="@dimen/habit_new_submit_right_margin"
+        android:layout_marginRight="@dimen/habit_new_submit_bottom_margin"
+        android:layout_marginBottom="@dimen/habit_new_submit_bottom_margin"
         android:text="@string/submit_button"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         />
 
 </android.support.constraint.ConstraintLayout>
-
-<!-- TODO dimens instead of values -->

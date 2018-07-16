@@ -33,10 +33,7 @@ import zekem.check.habits.ui.NewHabitFragment;
 /**
  * The main Activity, has a bottom navigation and holds other Fragments
  */
-public class Main extends AppCompatActivity implements
-                DailyPageFragment.OnListFragmentInteractionListener,
-                DataPageFragment.OnListFragmentInteractionListener,
-                AnalyticsPageFragment.OnFragmentInteractionListener {
+public class Main extends AppCompatActivity {
 
 
     private MainViewModel mMainViewModel;
@@ -87,10 +84,6 @@ public class Main extends AppCompatActivity implements
                 case R.id.navigation_datas:
                     fragment = DataPageFragment.newInstance();
                     title = getString( R.string.title_datas );
-                    break;
-                case R.id.navigation_analytics:
-                    fragment = AnalyticsPageFragment.newInstance();
-                    title = getString( R.string.title_analytics );
                     break;
                 default:
                     return false;
@@ -234,21 +227,6 @@ public class Main extends AppCompatActivity implements
         toolbar.setTitle( title );
     }
 
-
-    @Override
-    public void onFragmentInteraction( Uri uri ) {
-
-    }
-
-    @Override
-    public void onListFragmentInteraction( Daily daily ) {
-
-    }
-
-    @Override
-    public void onListFragmentInteraction( Data data ) {
-
-    }
 
     /**
      * I found this code online and it gets rid of the weird shifting bottom nav mode

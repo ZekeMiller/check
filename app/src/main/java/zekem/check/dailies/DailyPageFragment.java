@@ -13,14 +13,9 @@ import android.view.ViewGroup;
 import zekem.check.R;
 
 /**
- * A fragment representing a list of Items.
- * <p/>
- * Activities containing this fragment MUST implement the {@link OnListFragmentInteractionListener}
- * interface.
+ * Fragment to display the the list of dailies
  */
 public class DailyPageFragment extends Fragment {
-
-    private OnListFragmentInteractionListener mListener;
 
     /**
      * Mandatory empty constructor for the fragment manager to instantiate the
@@ -30,26 +25,12 @@ public class DailyPageFragment extends Fragment {
 
     }
 
-    // TODO: Customize parameter initialization
     @SuppressWarnings( "unused" )
     public static DailyPageFragment newInstance() {
 
         DailyPageFragment fragment;
         fragment = new DailyPageFragment();
         return fragment;
-    }
-
-    @Override
-    public void onAttach( Context context ) {
-
-        super.onAttach( context );
-        if ( context instanceof OnListFragmentInteractionListener ) {
-            mListener = (OnListFragmentInteractionListener) context;
-        }
-        else {
-            throw new RuntimeException( context.toString()
-                    + " must implement HabitFragmentListener" );
-        }
     }
 
     @Override
@@ -63,7 +44,7 @@ public class DailyPageFragment extends Fragment {
             Context context = view.getContext();
             RecyclerView recyclerView = (RecyclerView) view;
             recyclerView.setLayoutManager( new LinearLayoutManager( context ) );
-            recyclerView.setAdapter( new DailyRecyclerViewAdapter( Daily.DailyDummy.DAILIES, mListener ) );
+            recyclerView.setAdapter( new DailyRecyclerViewAdapter( Daily.DailyDummy.DAILIES ) );
         }
         return view;
     }
@@ -72,22 +53,5 @@ public class DailyPageFragment extends Fragment {
     public void onDetach() {
 
         super.onDetach();
-        mListener = null;
-    }
-
-    /**
-     * This interface must be implemented by activities that contain this
-     * fragment to allow an interaction in this fragment to be communicated
-     * to the activity and potentially other fragments contained in that
-     * activity.
-     * <p/>
-     * See the Android Training lesson <a href=
-     * "http://developer.android.com/training/basics/fragments/communicating.html"
-     * >Communicating with Other Fragments</a> for more information.
-     */
-    public interface OnListFragmentInteractionListener {
-
-        // TODO: Update argument type and name
-        void onListFragmentInteraction( Daily item );
     }
 }

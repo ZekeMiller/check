@@ -20,5 +20,11 @@
     
     <dimen name="habit_card_stroke_width">5dp</dimen>
 
+    <dimen name="habit_new_page_text_size">18sp</dimen>
+    <dimen name="habit_new_page_minus_active_text_size">@dimen/habit_new_page_text_size</dimen>
+    <dimen name="habit_new_page_plus_active_text_size">@dimen/habit_new_page_text_size</dimen>
+    <dimen name="habit_new_submit_bottom_margin">16dp</dimen>
+    <dimen name="habit_new_submit_right_margin">16dp</dimen>
+
 
 </resources>

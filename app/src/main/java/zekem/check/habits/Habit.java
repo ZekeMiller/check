@@ -26,6 +26,7 @@ import zekem.check.habits.database.Converters;
 @TypeConverters( Converters.class )
 public class Habit {
 
+    // static variables
     @Ignore private static final int THRESHOLD_MINUS_THREE = -20;
     @Ignore private static final int THRESHOLD_MINUS_TWO = -10;
     @Ignore private static final int THRESHOLD_MINUS_ONE = -2;
@@ -34,24 +35,26 @@ public class Habit {
     @Ignore private static final int THRESHOLD_PLUS_THREE = 15;
     @Ignore private static final int BAD_VALUE = Integer.MAX_VALUE;
 
+    // constant fields (can't label final due to room, but these should never change, ever)
     @PrimaryKey(autoGenerate = true)
     private int mId;
-
     private LocalDate mCreatedDate;
-
-    private String mTitle;
-
     private boolean mMinusActive;
     private boolean mPlusActive;
 
+
+    // fields that can change
+    private String mTitle;
     private Map< LocalDate, HabitDay > mDayMap;
+
+    // sorting fields
     @Ignore private List< HabitDay > mHabitDays;
     @Ignore private Comparator< HabitDay > sort;
 
-    public Habit(String title, boolean minusActive, boolean plusActive ) {
+
+    public Habit( String title, boolean minusActive, boolean plusActive ) {
 
         this.mTitle = title;
-
         this.mMinusActive = minusActive;
         this.mPlusActive = plusActive;
 
@@ -92,6 +95,8 @@ public class Habit {
         return mHabitDays;
     }
 
+
+
     public void setId( int id ) {
         this.mId = id;
     }
@@ -122,6 +127,7 @@ public class Habit {
     }
 
 
+
     public void addDay( LocalDate date ) {
         if ( mDayMap.get( date ) == null ) {
             mDayMap.put( date, new HabitDay( mId, date ) );
@@ -141,6 +147,7 @@ public class Habit {
         this.mHabitDays = new ArrayList<>( mDayMap.values() );
         Collections.sort( this.mHabitDays, sort );
     }
+
 
     public void minusDay( LocalDate date ) {
         HabitDay habitDay = mDayMap.get( date );
@@ -173,6 +180,7 @@ public class Habit {
         return count;
     }
 
+
     public int getGrade() {
         return getGrade( getTotalPlus(), getTotalMinus() );
     }
@@ -187,7 +195,6 @@ public class Habit {
     }
 
     public int getGrade( @NonNull HabitDay habitDay ) {
-
         return getGrade( habitDay.getPlusCount(), habitDay.getMinusCount() );
     }
 
@@ -222,17 +229,6 @@ public class Habit {
     }
 
 
-    public int calculatePlusStreak() {
-        HabitDay today = mDayMap.get( LocalDate.now() );
-        int todayCount = ( today != null && today.getPlusCount() > 0 ) ? 1 : 0;
-        for ( int i = 1 ; ; i++ ) {
-            HabitDay day = mDayMap.get( LocalDate.now().minusDays( i ) );
-            if ( day == null || day.getPlusCount() == 0 ) {
-                return i + todayCount - 1;
-            }
-        }
-    }
-
     public int calculateMinusStreak() {
         HabitDay today = mDayMap.get( LocalDate.now() );
         int todayCount = ( today != null && today.getMinusCount() > 0 ) ? 1 : 0;
@@ -245,13 +241,27 @@ public class Habit {
     }
 
 
+    public int calculatePlusStreak() {
+        HabitDay today = mDayMap.get( LocalDate.now() );
+        int todayCount = ( today != null && today.getPlusCount() > 0 ) ? 1 : 0;
+        for ( int i = 1 ; ; i++ ) {
+            HabitDay day = mDayMap.get( LocalDate.now().minusDays( i ) );
+            if ( day == null || day.getPlusCount() == 0 ) {
+                return i + todayCount - 1;
+            }
+        }
+    }
+
+
     public boolean sameContents( Habit habit ) {
-        return this.equals( habit ) && this.mTitle.equals( habit.mTitle );
+        return this.equals( habit )
+                && this.mTitle.equals( habit.mTitle )
+                && this.mDayMap.equals( habit.mDayMap );
     }
 
     @Override
     public boolean equals( Object other ) {
-        if ( other instanceof Habit ) {
+        if ( other != null && other instanceof Habit ) {
             Habit otherHabit = (Habit) other;
             return this.mId == otherHabit.mId;
         }

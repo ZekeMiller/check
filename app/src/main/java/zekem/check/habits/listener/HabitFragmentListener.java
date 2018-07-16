@@ -18,9 +18,9 @@ public interface HabitFragmentListener {
 
     void onToolbarAddButtonPress();
 
-    void onContentLongPress( HabitDay habitDay );
-
     void onContentShortPress( int habitId );
+
+    void onContentLongPress( HabitDay habitDay );
 
     void onPlusPress( HabitDay habitDay );
 

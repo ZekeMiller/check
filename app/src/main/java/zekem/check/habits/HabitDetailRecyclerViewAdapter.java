@@ -2,6 +2,7 @@ package zekem.check.habits;
 
 import android.arch.lifecycle.Observer;
 import android.support.annotation.NonNull;
+import android.support.v7.util.DiffUtil;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -20,17 +21,58 @@ public class HabitDetailRecyclerViewAdapter extends RecyclerView.Adapter<HabitDe
 
     private List< HabitDay > mHabitDays;
 
+
+
     public HabitDetailRecyclerViewAdapter( HabitDetailListener listener ) {
         mListener = listener;
     }
 
-    public void setData( Habit habit ) {
 
+
+    public void setData( final Habit habit ) {
+
+        if ( habit == null ) {
+            return;
+        }
+
+        final List< HabitDay > oldList = mHabitDays;
         mHabitDays = habit.getHabitDays();
 
-        notifyDataSetChanged();
+        if ( oldList == null || oldList.size() == 0
+                || mHabitDays == null || mHabitDays.size() == 0 ) {
+            notifyDataSetChanged();
+            return;
+        }
 
-        // TODO DiffUtil
+
+
+        DiffUtil.DiffResult result = DiffUtil.calculateDiff( new DiffUtil.Callback() {
+
+            @Override
+            public int getOldListSize() {
+                return oldList.size();
+            }
+
+            @Override
+            public int getNewListSize() {
+                return mHabitDays.size();
+            }
+
+            @Override
+            public boolean areItemsTheSame( int oldItemPosition, int newItemPosition ) {
+                return oldList.get( oldItemPosition ).equals( mHabitDays.get( newItemPosition ) );
+            }
+
+            @Override
+            public boolean areContentsTheSame( int oldItemPosition, int newItemPosition ) {
+                HabitDay oldDay = oldList.get( oldItemPosition );
+                HabitDay newDay = mHabitDays.get( newItemPosition );
+                return oldDay != null && oldDay.sameContents( newDay );
+            }
+
+        }, true );
+
+        result.dispatchUpdatesTo( this );
 
     }
 
@@ -68,7 +110,6 @@ public class HabitDetailRecyclerViewAdapter extends RecyclerView.Adapter<HabitDe
     }
 
     public Observer< Habit > getSetDataListener() {
-//    public Observer< List< HabitDay > > getSetDataListener() {
         return mSetDataListener;
     }
 
@@ -79,7 +120,6 @@ public class HabitDetailRecyclerViewAdapter extends RecyclerView.Adapter<HabitDe
         private final TextView mMinusCount;
         private final TextView mDateView;
 
-//        private LocalDate mDate;
         private HabitDay mHabitDay;
 
         private ViewHolder(View view) {

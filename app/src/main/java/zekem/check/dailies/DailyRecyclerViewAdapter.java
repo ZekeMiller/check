@@ -10,22 +10,17 @@ import java.util.List;
 import java.util.Locale;
 
 import zekem.check.R;
-import zekem.check.dailies.DailyPageFragment.OnListFragmentInteractionListener;
 
 /**
- * {@link RecyclerView.Adapter} that can display a {@link Daily} and makes a call to the
- * specified {@link OnListFragmentInteractionListener}.
- * TODO: Replace the implementation with code for your data type.
+ *
  */
 public class DailyRecyclerViewAdapter extends RecyclerView.Adapter< DailyRecyclerViewAdapter.ViewHolder > {
 
     private final List< Daily > mValues;
-    private final DailyPageFragment.OnListFragmentInteractionListener mListener;
 
-    public DailyRecyclerViewAdapter( List< Daily > items, OnListFragmentInteractionListener listener ) {
+    public DailyRecyclerViewAdapter( List< Daily > items ) {
 
         mValues = items;
-        mListener = listener;
     }
 
     @Override
@@ -43,18 +38,6 @@ public class DailyRecyclerViewAdapter extends RecyclerView.Adapter< DailyRecycle
         holder.mIdView.setText( String.format( Locale.getDefault(),
                 "%d", mValues.get( position ).getId() ) );
         holder.mContentView.setText( mValues.get( position ).getTitle() );
-
-        holder.mView.setOnClickListener( new View.OnClickListener() {
-            @Override
-            public void onClick( View v ) {
-
-                if ( null != mListener ) {
-                    // Notify the active callbacks interface (the activity, if the
-                    // fragment is attached to one) that an item has been selected.
-                    mListener.onListFragmentInteraction( holder.mItem );
-                }
-            }
-        } );
     }
 
     @Override

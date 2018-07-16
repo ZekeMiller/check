@@ -10,22 +10,14 @@ import java.util.List;
 import java.util.Locale;
 
 import zekem.check.R;
-import zekem.check.datas.DataPageFragment.OnListFragmentInteractionListener;
 
-/**
- * {@link RecyclerView.Adapter} that can display a {@link Data} and makes a call to the
- * specified {@link OnListFragmentInteractionListener}.
- * TODO: Replace the implementation with code for your data type.
- */
 public class DataRecyclerViewAdapter extends RecyclerView.Adapter< DataRecyclerViewAdapter.ViewHolder > {
 
     private final List< Data > mValues;
-    private final OnListFragmentInteractionListener mListener;
 
-    public DataRecyclerViewAdapter( List< Data > items, OnListFragmentInteractionListener listener ) {
+    public DataRecyclerViewAdapter( List< Data > items ) {
 
         mValues = items;
-        mListener = listener;
     }
 
     @Override
@@ -44,17 +36,6 @@ public class DataRecyclerViewAdapter extends RecyclerView.Adapter< DataRecyclerV
                 "%d", mValues.get( position ).getId() ) );
         holder.mContentView.setText( mValues.get( position ).getTitle() );
 
-        holder.mView.setOnClickListener( new View.OnClickListener() {
-            @Override
-            public void onClick( View v ) {
-
-                if ( null != mListener ) {
-                    // Notify the active callbacks interface (the activity, if the
-                    // fragment is attached to one) that an item has been selected.
-                    mListener.onListFragmentInteraction( holder.mItem );
-                }
-            }
-        } );
     }
 
     @Override
@@ -74,8 +55,8 @@ public class DataRecyclerViewAdapter extends RecyclerView.Adapter< DataRecyclerV
 
             super( view );
             mView = view;
-            mIdView = (TextView) view.findViewById( R.id.item_number );
-            mContentView = (TextView) view.findViewById( R.id.content );
+            mIdView = view.findViewById( R.id.item_number );
+            mContentView = view.findViewById( R.id.content );
         }
 
         @Override

@@ -77,15 +77,17 @@ public class HabitDay {
 
 
     public boolean sameContents( HabitDay other ) {
-        return other != null &&
-                this.mPlusCount == other.mPlusCount && this.mMinusCount == other.mMinusCount;
+        return this.equals( other )
+                && this.mPlusCount == other.mPlusCount
+                && this.mMinusCount == other.mMinusCount;
     }
 
     @Override
     public boolean equals( Object other ) {
         if ( other != null && other instanceof HabitDay ) {
             HabitDay otherDay = (HabitDay) other;
-            return this.sameContents( otherDay );
+            return this.mHabitId == otherDay.mHabitId
+                    && this.mDate == otherDay.mDate;
         }
         return false;
     }

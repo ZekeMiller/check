@@ -1,4 +1,4 @@
-package zekem.check.habits.database;
+package zekem.check.habits.model.database;
 
 import android.arch.lifecycle.LiveData;
 import android.arch.persistence.room.Dao;
@@ -9,7 +9,7 @@ import android.arch.persistence.room.Update;
 
 import java.util.List;
 
-import zekem.check.habits.Habit;
+import zekem.check.habits.model.Habit;
 
 /**
  * @author Zeke Miller

@@ -1,4 +1,4 @@
-package zekem.check.habits.database;
+package zekem.check.habits.model.database;
 
 import android.arch.persistence.room.Database;
 import android.arch.persistence.room.Room;
@@ -12,8 +12,8 @@ import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-import zekem.check.habits.Habit;
-import zekem.check.habits.HabitDay;
+import zekem.check.habits.model.Habit;
+import zekem.check.habits.model.HabitDay;
 
 /**
  * @author Zeke Miller

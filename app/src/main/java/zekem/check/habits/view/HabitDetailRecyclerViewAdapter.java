@@ -1,4 +1,4 @@
-package zekem.check.habits;
+package zekem.check.habits.view;
 
 import android.arch.lifecycle.Observer;
 import android.support.annotation.NonNull;
@@ -12,14 +12,16 @@ import android.widget.TextView;
 import java.util.List;
 
 import zekem.check.R;
-import zekem.check.habits.listener.HabitDetailListener;
+import zekem.check.habits.viewmodel.listener.HabitDetailListener;
+import zekem.check.habits.model.Habit;
+import zekem.check.habits.model.HabitDay;
 
 public class HabitDetailRecyclerViewAdapter extends RecyclerView.Adapter<HabitDetailRecyclerViewAdapter.ViewHolder> {
 
     private final HabitDetailListener mListener;
     private final Observer< Habit > mSetDataListener = this::setData;
 
-    private List< HabitDay > mHabitDays;
+    private List<HabitDay> mHabitDays;
 
 
 

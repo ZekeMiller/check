@@ -1,4 +1,4 @@
-package zekem.check.habits.listener;
+package zekem.check.habits.viewmodel.listener;
 
 import android.arch.lifecycle.LiveData;
 
@@ -6,8 +6,8 @@ import org.joda.time.LocalDate;
 
 import java.util.List;
 
-import zekem.check.habits.Habit;
-import zekem.check.habits.HabitDay;
+import zekem.check.habits.model.Habit;
+import zekem.check.habits.model.HabitDay;
 
 /**
  * Interface for the ViewModel to listen to interactions with a habit

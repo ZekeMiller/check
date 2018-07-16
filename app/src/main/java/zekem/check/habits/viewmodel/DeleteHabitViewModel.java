@@ -4,8 +4,8 @@ import android.app.Application;
 import android.arch.lifecycle.AndroidViewModel;
 
 import zekem.check.habits.HabitObservables;
-import zekem.check.habits.database.HabitDatabase;
-import zekem.check.habits.listener.HabitDeleteDialogListener;
+import zekem.check.habits.model.database.HabitDatabase;
+import zekem.check.habits.viewmodel.listener.HabitDeleteDialogListener;
 
 /**
  * @author Zeke Miller

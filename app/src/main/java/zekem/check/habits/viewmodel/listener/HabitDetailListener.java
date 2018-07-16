@@ -1,9 +1,9 @@
-package zekem.check.habits.listener;
+package zekem.check.habits.viewmodel.listener;
 
 import android.arch.lifecycle.LiveData;
 
-import zekem.check.habits.Habit;
-import zekem.check.habits.HabitDay;
+import zekem.check.habits.model.Habit;
+import zekem.check.habits.model.HabitDay;
 
 /**
  * @author Zeke Miller

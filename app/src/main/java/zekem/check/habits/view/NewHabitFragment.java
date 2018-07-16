@@ -1,4 +1,4 @@
-package zekem.check.habits.ui;
+package zekem.check.habits.view;
 
 import android.arch.lifecycle.ViewModelProviders;
 import android.os.Bundle;
@@ -13,7 +13,7 @@ import android.widget.CheckBox;
 import android.widget.EditText;
 
 import zekem.check.R;
-import zekem.check.habits.listener.NewHabitPageListener;
+import zekem.check.habits.viewmodel.listener.NewHabitPageListener;
 import zekem.check.habits.viewmodel.NewHabitViewModel;
 
 /**

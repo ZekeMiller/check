@@ -3,7 +3,6 @@ package zekem.check;
 import android.annotation.SuppressLint;
 import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
-import android.net.Uri;
 import android.support.design.internal.BottomNavigationItemView;
 import android.support.design.internal.BottomNavigationMenuView;
 import android.support.v4.app.Fragment;
@@ -20,15 +19,13 @@ import android.view.MenuItem;
 import java.lang.reflect.Field;
 
 import zekem.check.dailies.DailyPageFragment;
-import zekem.check.dailies.Daily;
-import zekem.check.datas.Data;
 import zekem.check.datas.DataPageFragment;
-import zekem.check.habits.Habit;
-import zekem.check.habits.ui.DeleteHabitDialogFragment;
-import zekem.check.habits.ui.HabitDetailFragment;
+import zekem.check.habits.model.Habit;
+import zekem.check.habits.view.DeleteHabitDialogFragment;
+import zekem.check.habits.view.HabitDetailFragment;
 import zekem.check.habits.HabitObservables;
-import zekem.check.habits.ui.HabitPageFragment;
-import zekem.check.habits.ui.NewHabitFragment;
+import zekem.check.habits.view.HabitPageFragment;
+import zekem.check.habits.view.NewHabitFragment;
 
 /**
  * The main Activity, has a bottom navigation and holds other Fragments
@@ -36,80 +33,28 @@ import zekem.check.habits.ui.NewHabitFragment;
 public class Main extends AppCompatActivity {
 
 
-    private MainViewModel mMainViewModel;
+    // fields
 
-    private HabitObservables mHabitObservables;
-
+    // observers for convenience
     private final Observer< Integer > mDeleteObserver = this::showDeleteDialog;
     private final Observer< Integer > mDetailObserver = this::showDetailFragment;
     private final Observer< Void > mNewHabitObserver = v -> this.showNewHabitFragment();
     private final Observer< Void > mShowHabitPageObserver = v -> this.showHabitPage();
-
     private final Observer< Habit > mSetTitleObserver = this::setTitle;
+    private final BottomNavigationView.OnNavigationItemSelectedListener
+            mOnNavigationItemSelectedListener = this::onNavigationItemSelected;
 
 
+    private MainViewModel mMainViewModel;
+    private HabitObservables mHabitObservables;
     private BottomNavigationView mBottomNavigationView;
-
     private boolean firstRun;
 
-    private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
-            = new BottomNavigationView.OnNavigationItemSelectedListener() {
 
-        /**
-         * Switch listener for bottom nav
-         * @param item  the bottom nav button pressed
-         * @return  true if handled (should always be unless something goes aggressively wrong)
-         */
-        @Override
-        public boolean onNavigationItemSelected( @NonNull MenuItem item ) {
-
-            FragmentManager fragmentManager = getSupportFragmentManager();
-            int count = fragmentManager.getBackStackEntryCount();
-            for ( int i = 0 ; i < count ; i++ ) {
-                fragmentManager.popBackStack();
-            }
-            FragmentTransaction transaction = fragmentManager.beginTransaction();
-            Fragment fragment;
-            String title;
-
-            switch ( item.getItemId() ) {
-                case R.id.navigation_habits:
-                    fragment = HabitPageFragment.newInstance();
-                    title = getString( R.string.title_habits );
-                    break;
-                case R.id.navigation_dailies:
-                    fragment = DailyPageFragment.newInstance();
-                    title = getString( R.string.title_dailies );
-                    break;
-                case R.id.navigation_datas:
-                    fragment = DataPageFragment.newInstance();
-                    title = getString( R.string.title_datas );
-                    break;
-                default:
-                    return false;
-            }
-            transaction.replace( R.id.main_fragment_container, fragment );
-            transaction.commit();
-            setTitle( title );
-            return true;
-        }
-    };
-
-    @Override
-    public void onBackPressed() {
-
-        int prePopCount = getSupportFragmentManager().getBackStackEntryCount();
-
-        super.onBackPressed();
-
-        if ( prePopCount == 1 ) {
-            resetBottomNavigation();
-        }
-    }
-
+    // lifecycle methods
 
     /**
-     * called when created
+     * called when created, initializes fields and sets up view
      * @param savedInstanceState can be used to restore instance state
      */
     @Override
@@ -140,6 +85,9 @@ public class Main extends AppCompatActivity {
     }
 
 
+    /**
+     * checks if the activity has just been opened, shows the habit page if so
+     */
     @Override
     protected void onResume() {
 
@@ -151,12 +99,9 @@ public class Main extends AppCompatActivity {
         firstRun = false;
     }
 
-    @Override
-    protected void onStop() {
-
-        super.onStop();
-    }
-
+    /**
+     * cleans up references for garbage collection and unregisters observation
+     */
     @Override
     protected void onDestroy() {
 
@@ -167,23 +112,49 @@ public class Main extends AppCompatActivity {
         mHabitObservables.unregisterNewHabit( mNewHabitObserver );
         mHabitObservables.unregisterShowHabitPage( mShowHabitPageObserver );
 
+        mHabitObservables = null;
+        mMainViewModel = null;
+        mBottomNavigationView = null;
     }
 
+
+    /**
+     * normal on back press action, but if after the back press the base fragment is the only thing
+     * left, resets bottom navigation
+     */
+    @Override
+    public void onBackPressed() {
+
+        int prePopCount = getSupportFragmentManager().getBackStackEntryCount();
+
+        super.onBackPressed();
+
+        if ( prePopCount == 1 ) {
+            resetBottomNavigation();
+        }
+    }
+
+    /**
+     * shows the detail fragment for a given habitId
+     * @param habitID the id to view details of
+     */
     private void showDetailFragment( int habitID ) {
 
         HabitDetailFragment habitDetailFragment = HabitDetailFragment.newInstance( habitID );
 
+        // replace fragment and add to back stack
         getSupportFragmentManager().beginTransaction()
             .replace( R.id.main_fragment_container, habitDetailFragment )
             .addToBackStack( null )
             .commit();
 
-
+        // set title when ready
         mMainViewModel.getHabit( habitID ).observe( habitDetailFragment, mSetTitleObserver );
-
-
     }
 
+    /**
+     * shows the fragment for adding a new habit
+     */
     private void showNewHabitFragment() {
 
         NewHabitFragment newHabitFragment = NewHabitFragment.newInstance();
@@ -197,6 +168,10 @@ public class Main extends AppCompatActivity {
 
     }
 
+    /**
+     * shows a delete dialog for a given habitId
+     * @param habitId the id to potentially delete
+     */
     private void showDeleteDialog( int habitId ) {
 
         if ( habitId != 0 ) {
@@ -208,20 +183,74 @@ public class Main extends AppCompatActivity {
 
     }
 
+
+    /**
+     * Switch listener for bottom nav
+     * @param item  the bottom nav button pressed
+     * @return  true if handled (should always be unless something goes aggressively wrong)
+     */
+    private boolean onNavigationItemSelected( @NonNull MenuItem item ) {
+
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        int count = fragmentManager.getBackStackEntryCount();
+        for ( int i = 0 ; i < count ; i++ ) {
+            fragmentManager.popBackStack();
+        }
+        FragmentTransaction transaction = fragmentManager.beginTransaction();
+        Fragment fragment;
+        String title;
+
+        switch ( item.getItemId() ) {
+            case R.id.navigation_habits:
+                fragment = HabitPageFragment.newInstance();
+                title = getString( R.string.title_habits );
+                break;
+            case R.id.navigation_dailies:
+                fragment = DailyPageFragment.newInstance();
+                title = getString( R.string.title_dailies );
+                break;
+            case R.id.navigation_datas:
+                fragment = DataPageFragment.newInstance();
+                title = getString( R.string.title_datas );
+                break;
+            default:
+                return false;
+        }
+        transaction.replace( R.id.main_fragment_container, fragment );
+        transaction.commit();
+        setTitle( title );
+        return true;
+    }
+
+    /**
+     * resets the bottom navigation (basically just triggers the bottom navigation listener to hard
+     * refresh)
+     */
     private void resetBottomNavigation() {
         mBottomNavigationView.setSelectedItemId( mBottomNavigationView.getSelectedItemId() );
     }
 
+    /**
+     * shows the habit page fragment
+     */
     private void showHabitPage() {
         mBottomNavigationView.setSelectedItemId( R.id.navigation_habits );
     }
 
+    /**
+     * set the title from a Habit (used for convenience in LiveData observer
+     * @param habit the habit to get title from
+     */
     private void setTitle( Habit habit ) {
         if ( habit != null ) {
             setTitle( habit.getTitle() );
         }
     }
 
+    /**
+     * sets the title of the toolbar to the given string
+     * @param title the string to set the title to
+     */
     private void setTitle( String title ) {
         Toolbar toolbar = findViewById( R.id.toolbar );
         toolbar.setTitle( title );

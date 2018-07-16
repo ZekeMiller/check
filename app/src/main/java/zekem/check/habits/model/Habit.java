@@ -1,4 +1,4 @@
-package zekem.check.habits;
+package zekem.check.habits.model;
 
 import android.arch.persistence.room.Entity;
 import android.arch.persistence.room.Ignore;
@@ -15,7 +15,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import zekem.check.habits.database.Converters;
+import zekem.check.habits.model.database.Converters;
 
 // TODO order by column
 
@@ -45,7 +45,7 @@ public class Habit {
 
     // fields that can change
     private String mTitle;
-    private Map< LocalDate, HabitDay > mDayMap;
+    private Map< LocalDate, HabitDay> mDayMap;
 
     // sorting fields
     @Ignore private List< HabitDay > mHabitDays;

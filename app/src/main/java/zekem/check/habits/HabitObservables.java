@@ -13,8 +13,6 @@ import java.util.List;
  */
 public class HabitObservables {
 
-    public static final String TAG = "check_log";
-
     private static HabitObservables sInstance;
 
     public static HabitObservables getInstance() {
@@ -72,29 +70,24 @@ public class HabitObservables {
 
 
     public void triggerDeleteDialog( int habitId ) {
-
-        Log.d( TAG, "HabitObservables::triggerDeleteDialog" );
         for ( Observer< Integer > observer : mDeleteObservers ) {
             observer.onChanged( habitId );
         }
     }
 
     public void viewHabitDetail( int habitId ) {
-        Log.d( TAG, "HabitObservables::viewHabitDetail" );
         for ( Observer< Integer > observer : mDetailObservers ) {
             observer.onChanged( habitId );
         }
     }
 
     public void showHabitPage() {
-        Log.d( TAG, "HabitObservables::showHabitPage" );
         for ( Observer< Void > observer : mShowHabitPageObservers ) {
             observer.onChanged( null );
         }
     }
 
     public void showNewHabitPage() {
-        Log.d( TAG, "HabitObservables::showNewHabitPage" );
         for ( Observer< Void > observer : mNewHabitObservers ) {
             observer.onChanged( null );
         }

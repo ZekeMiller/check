@@ -9,6 +9,6 @@
     android:layout_height="match_parent"
 
     app:layoutManager="android.support.v7.widget.LinearLayoutManager"
-    tools:context=".habits.ui.HabitPageFragment"
+    tools:context=".habits.view.HabitPageFragment"
     tools:listitem="@layout/fragment_habit"
     />

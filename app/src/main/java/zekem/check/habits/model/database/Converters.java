@@ -1,4 +1,4 @@
-package zekem.check.habits.database;
+package zekem.check.habits.model.database;
 
 import android.arch.persistence.room.TypeConverter;
 import android.support.annotation.Nullable;
@@ -17,7 +17,7 @@ import java.io.IOException;
 import java.lang.reflect.Type;
 import java.util.Map;
 
-import zekem.check.habits.HabitDay;
+import zekem.check.habits.model.HabitDay;
 
 /**
  * @author Zeke Miller

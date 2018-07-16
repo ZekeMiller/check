@@ -4,11 +4,11 @@ import android.app.Application;
 import android.arch.lifecycle.AndroidViewModel;
 import android.arch.lifecycle.LiveData;
 
-import zekem.check.habits.Habit;
-import zekem.check.habits.HabitDay;
+import zekem.check.habits.model.Habit;
+import zekem.check.habits.model.HabitDay;
 import zekem.check.habits.HabitObservables;
-import zekem.check.habits.database.HabitDatabase;
-import zekem.check.habits.listener.HabitDetailListener;
+import zekem.check.habits.model.database.HabitDatabase;
+import zekem.check.habits.viewmodel.listener.HabitDetailListener;
 
 /**
  * @author Zeke Miller

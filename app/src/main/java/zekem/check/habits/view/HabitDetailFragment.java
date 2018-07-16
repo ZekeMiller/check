@@ -1,4 +1,4 @@
-package zekem.check.habits.ui;
+package zekem.check.habits.view;
 
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
@@ -14,8 +14,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import zekem.check.R;
-import zekem.check.habits.HabitDetailRecyclerViewAdapter;
-import zekem.check.habits.listener.HabitDetailListener;
+import zekem.check.habits.viewmodel.listener.HabitDetailListener;
 import zekem.check.habits.viewmodel.HabitDetailViewModel;
 
 

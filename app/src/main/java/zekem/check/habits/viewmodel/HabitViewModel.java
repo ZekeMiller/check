@@ -9,11 +9,11 @@ import org.joda.time.LocalDate;
 
 import java.util.List;
 
-import zekem.check.habits.Habit;
-import zekem.check.habits.HabitDay;
+import zekem.check.habits.model.Habit;
+import zekem.check.habits.model.HabitDay;
 import zekem.check.habits.HabitObservables;
-import zekem.check.habits.database.HabitDatabase;
-import zekem.check.habits.listener.HabitFragmentListener;
+import zekem.check.habits.model.database.HabitDatabase;
+import zekem.check.habits.viewmodel.listener.HabitFragmentListener;
 
 /**
  * @author Zeke Miller

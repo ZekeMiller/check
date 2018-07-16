@@ -1,10 +1,10 @@
-package zekem.check.habits;
+package zekem.check.habits.model;
 
 import android.arch.persistence.room.TypeConverters;
 
 import org.joda.time.LocalDate;
 
-import zekem.check.habits.database.Converters;
+import zekem.check.habits.model.database.Converters;
 
 /**
  * @author Zeke Miller

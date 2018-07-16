@@ -1,4 +1,4 @@
-package zekem.check.habits;
+package zekem.check.habits.view;
 
 import android.arch.lifecycle.Observer;
 import android.graphics.drawable.Drawable;
@@ -18,7 +18,9 @@ import org.joda.time.LocalDate;
 import java.util.List;
 
 import zekem.check.R;
-import zekem.check.habits.listener.HabitFragmentListener;
+import zekem.check.habits.viewmodel.listener.HabitFragmentListener;
+import zekem.check.habits.model.Habit;
+import zekem.check.habits.model.HabitDay;
 
 /**
  * {@link RecyclerView.Adapter} that can display a {@link Habit} and makes a call to the
@@ -30,7 +32,7 @@ public class HabitPageRecyclerViewAdapter extends RecyclerView.Adapter< HabitPag
     private static final int MIN_PLUS_STREAK = 2;
 
     private final HabitFragmentListener mListener;
-    private final Observer< List< Habit > > mSetDataListener = this::setData;
+    private final Observer< List<Habit> > mSetDataListener = this::setData;
 
     private List< Habit > mHabits;
     private LocalDate mDate = LocalDate.now();

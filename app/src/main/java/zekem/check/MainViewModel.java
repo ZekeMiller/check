@@ -4,8 +4,8 @@ import android.app.Application;
 import android.arch.lifecycle.AndroidViewModel;
 import android.arch.lifecycle.LiveData;
 
-import zekem.check.habits.Habit;
-import zekem.check.habits.database.HabitDatabase;
+import zekem.check.habits.model.Habit;
+import zekem.check.habits.model.database.HabitDatabase;
 
 /**
  * @author Zeke Miller

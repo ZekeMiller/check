@@ -1,9 +1,8 @@
-package zekem.check.dailies;
+package zekem.check.dailies.view;
 
 import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -11,6 +10,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import zekem.check.R;
+import zekem.check.dailies.model.Daily;
 
 /**
  * Fragment to display the the list of dailies

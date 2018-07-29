@@ -9,5 +9,5 @@
     android:layout_marginLeft="16dp"
     android:layout_marginRight="16dp"
     app:layoutManager="android.support.v7.widget.LinearLayoutManager"
-    tools:context=".dailies.DailyPageFragment"
+    tools:context=".dailies.view.DailyPageFragment"
     tools:listitem="@layout/fragment_daily" />

@@ -22,7 +22,7 @@ import zekem.check.habits.model.HabitDay;
 /**
  * @author Zeke Miller
  */
-public class Converters {
+public class HabitConverters {
 
     @TypeConverter
     public static String dateToString( @Nullable LocalDate localDate ) {

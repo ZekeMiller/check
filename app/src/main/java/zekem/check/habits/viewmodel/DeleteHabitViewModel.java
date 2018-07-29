@@ -3,7 +3,6 @@ package zekem.check.habits.viewmodel;
 import android.app.Application;
 import android.arch.lifecycle.AndroidViewModel;
 
-import zekem.check.habits.HabitObservables;
 import zekem.check.habits.model.database.HabitDatabase;
 import zekem.check.habits.viewmodel.listener.HabitDeleteDialogListener;
 

@@ -1,7 +1,6 @@
-package zekem.check.habits;
+package zekem.check.habits.viewmodel;
 
 import android.arch.lifecycle.Observer;
-import android.util.Log;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -23,7 +22,7 @@ public class HabitObservables {
     }
 
 
-    private final List< Observer< Integer >> mDeleteObservers;
+    private final List< Observer< Integer > > mDeleteObservers;
     private final List< Observer< Integer > > mDetailObservers;
     private final List< Observer< Void > > mNewHabitObservers;
     private final List< Observer< Void > > mShowHabitPageObservers;
@@ -36,8 +35,13 @@ public class HabitObservables {
         mShowHabitPageObservers = new LinkedList<>();
     }
 
+
+    // register/unregister
+
     public void registerDelete( Observer< Integer > observer ) {
-        mDeleteObservers.add( observer );
+        if ( observer != null && !mDeleteObservers.contains( observer ) ) {
+            mDeleteObservers.add( observer );
+        }
     }
 
     public void unregisterDelete( Observer< Integer > observer ) {
@@ -45,7 +49,9 @@ public class HabitObservables {
     }
 
     public void registerDetail( Observer< Integer > observer ) {
-        mDetailObservers.add( observer );
+        if ( observer != null && !mDetailObservers.contains( observer ) ) {
+            mDetailObservers.add( observer );
+        }
     }
 
     public void unRegisterDetail( Observer< Integer > observer ) {
@@ -53,7 +59,9 @@ public class HabitObservables {
     }
 
     public void registerNewHabit( Observer< Void > observer ) {
-        mNewHabitObservers.add( observer );
+        if ( observer != null && !mNewHabitObservers.contains( observer ) ) {
+            mNewHabitObservers.add( observer );
+        }
     }
 
     public void unregisterNewHabit( Observer< Void > observer ) {
@@ -61,13 +69,17 @@ public class HabitObservables {
     }
 
     public void registerShowHabitPage( Observer< Void > observer ) {
-        mShowHabitPageObservers.add( observer );
+        if ( observer != null && !mShowHabitPageObservers.contains( observer ) ) {
+            mShowHabitPageObservers.add( observer );
+        }
     }
 
     public void unregisterShowHabitPage( Observer< Void > observer ) {
         mShowHabitPageObservers.remove( observer );
     }
 
+
+    // updates
 
     public void triggerDeleteDialog( int habitId ) {
         for ( Observer< Integer > observer : mDeleteObservers ) {

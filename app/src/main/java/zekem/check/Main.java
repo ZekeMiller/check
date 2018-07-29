@@ -18,12 +18,12 @@ import android.view.MenuItem;
 
 import java.lang.reflect.Field;
 
-import zekem.check.dailies.DailyPageFragment;
+import zekem.check.dailies.view.DailyPageFragment;
 import zekem.check.datas.DataPageFragment;
 import zekem.check.habits.model.Habit;
 import zekem.check.habits.view.DeleteHabitDialogFragment;
 import zekem.check.habits.view.HabitDetailFragment;
-import zekem.check.habits.HabitObservables;
+import zekem.check.habits.viewmodel.HabitObservables;
 import zekem.check.habits.view.HabitPageFragment;
 import zekem.check.habits.view.NewHabitFragment;
 

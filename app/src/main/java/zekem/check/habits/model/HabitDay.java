@@ -4,12 +4,12 @@ import android.arch.persistence.room.TypeConverters;
 
 import org.joda.time.LocalDate;
 
-import zekem.check.habits.model.database.Converters;
+import zekem.check.habits.model.database.HabitConverters;
 
 /**
  * @author Zeke Miller
  */
-@TypeConverters( Converters.class )
+@TypeConverters( HabitConverters.class )
 public class HabitDay {
 
     // these fields should never change after being created
@@ -87,7 +87,7 @@ public class HabitDay {
         if ( other != null && other instanceof HabitDay ) {
             HabitDay otherDay = (HabitDay) other;
             return this.mHabitId == otherDay.mHabitId
-                    && this.mDate == otherDay.mDate;
+                    && this.mDate.equals( otherDay.mDate );
         }
         return false;
     }

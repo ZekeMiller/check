@@ -1,4 +1,4 @@
-package zekem.check.dailies;
+package zekem.check.dailies.view;
 
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.Locale;
 
 import zekem.check.R;
+import zekem.check.dailies.model.Daily;
 
 /**
  *

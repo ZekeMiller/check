@@ -141,9 +141,9 @@ public class Habit {
         updateList();
     }
 
-//    public void setDaySort( Comparator<HabitDay> sort ) {
-//        this.mDaySort = sort;
-//    }
+    public void setDaySort( Comparator<HabitDay> sort ) {
+        this.mDaySort = sort;
+    }
 
 
     // methods to modify and check more complex things

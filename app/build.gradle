@@ -44,5 +44,6 @@ dependencies {
     implementation "android.arch.lifecycle:viewmodel:1.1.1"
 
     implementation 'com.google.code.gson:gson:2.8.5'
+    implementation 'org.danilopianini:gson-extras:0.1.0'
 
 }

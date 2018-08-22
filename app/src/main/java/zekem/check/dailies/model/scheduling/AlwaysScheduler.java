@@ -9,7 +9,6 @@ import org.joda.time.LocalDate;
  */
 public class AlwaysScheduler implements Scheduler {
 
-
     public AlwaysScheduler() {}
 
     @Override

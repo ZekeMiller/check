@@ -8,14 +8,14 @@ import org.joda.time.LocalDate;
 
 import java.util.Map;
 
+import zekem.check.dailies.model.database.DailyConverters;
 import zekem.check.dailies.model.scheduling.Scheduler;
-import zekem.check.habits.model.database.HabitConverters;
 
 /**
  * @author Zeke Miller
  */
 @Entity
-@TypeConverters( HabitConverters.class )
+@TypeConverters( DailyConverters.class )
 public class Daily {
 
     @PrimaryKey ( autoGenerate = true )

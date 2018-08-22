@@ -16,11 +16,12 @@ public class MainViewModel extends AndroidViewModel {
 
     public MainViewModel( Application application ) {
         super( application );
-        mHabitDatabase = HabitDatabase.getHabitDatabase( getApplication() );
+        mHabitDatabase = HabitDatabase.getDatabase( getApplication() );
 
     }
 
     public LiveData< Habit > getHabit( int habitId ) {
-        return mHabitDatabase.getHabitDao().getHabit( habitId );
+        return mHabitDatabase.getHabit( habitId );
     }
+
 }

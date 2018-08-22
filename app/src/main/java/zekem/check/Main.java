@@ -134,6 +134,8 @@ public class Main extends AppCompatActivity {
         }
     }
 
+
+
     /**
      * shows the detail fragment for a given habitId
      * @param habitID the id to view details of

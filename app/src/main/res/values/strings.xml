@@ -1,6 +1,7 @@
 <resources>
     <string name="app_name">Check</string>
 
+    <!-- HABITS -->
     <string name="title_habits">Habits</string>
     <string name="habit_plus_button">Plus Button</string>
     <string name="habit_minus_button">Minus Button</string>
@@ -18,7 +19,13 @@
     <string name="delete_habit_confirm">Delete</string>
     <string name="delete_habit_cancel">Cancel</string>
 
+
+    <!-- DAILIES -->
     <string name="title_dailies">Dailies</string>
+    <string name="daily_toolbar_add_button">Add Daily</string>
+
+
+
     <string name="title_datas">Datas</string>
     <string name="title_analytics">Analytics</string>
 

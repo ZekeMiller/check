@@ -32,14 +32,15 @@ public class HabitPageRecyclerViewAdapter extends RecyclerView.Adapter< HabitPag
     private static final int MIN_PLUS_STREAK = 2;
 
     private final HabitFragmentListener mListener;
-    private final Observer< List<Habit> > mSetDataListener = this::setData;
+    private final Observer< List<Habit> > mSetDataListener;
 
     private List< Habit > mHabits;
     private LocalDate mDate = LocalDate.now();
 
 
-    public HabitPageRecyclerViewAdapter(HabitFragmentListener listener ) {
+    public HabitPageRecyclerViewAdapter( HabitFragmentListener listener ) {
         mListener = listener;
+        mSetDataListener = this::setData;
     }
 
     public synchronized void setData( final List< Habit > habits ) {
@@ -99,12 +100,6 @@ public class HabitPageRecyclerViewAdapter extends RecyclerView.Adapter< HabitPag
         return new ViewHolder( view );
     }
 
-
-    public Observer< List< Habit > > getSetDataListener() {
-        return mSetDataListener;
-    }
-
-
     @Override
     public void onBindViewHolder( @NonNull final ViewHolder holder, final int position ) {
 
@@ -127,6 +122,13 @@ public class HabitPageRecyclerViewAdapter extends RecyclerView.Adapter< HabitPag
         setBorderColor( holder );
 
     }
+
+
+    @NonNull
+    public Observer< List< Habit > > getSetDataListener() {
+        return mSetDataListener;
+    }
+
 
     private void setBorderColor( final ViewHolder holder ) {
         int colorId;

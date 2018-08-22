@@ -1,5 +1,6 @@
 package zekem.check.habits.model.database;
 
+import android.arch.lifecycle.LiveData;
 import android.arch.persistence.room.Database;
 import android.arch.persistence.room.Room;
 import android.arch.persistence.room.RoomDatabase;
@@ -30,12 +31,13 @@ public abstract class HabitDatabase extends RoomDatabase {
 
     // Singleton methods
 
-    public static HabitDatabase getHabitDatabase( Context context ) {
+    public static HabitDatabase getDatabase( Context context ) {
         if ( sInstance == null ) {
             sInstance = Room.databaseBuilder( context.getApplicationContext(), HabitDatabase.class, DB_NAME ).build();
             sInstance.mDatabaseExecutor = Executors.newSingleThreadExecutor();
             sInstance.mHabitDao = sInstance.habitDao();
         }
+        sInstance.mDatabaseExecutor.execute( () -> sInstance.fillAllMissing() );
         return sInstance;
     }
 
@@ -57,11 +59,17 @@ public abstract class HabitDatabase extends RoomDatabase {
     private HabitDao mHabitDao;
 
 
-    public HabitDao getHabitDao() {
-        return mHabitDao;
+    // Instance methods
+
+    public LiveData< Habit > getHabit( int habitId ) {
+        fillMissingDates( habitId );
+        return mHabitDao.getHabit( habitId );
     }
 
-    // Instance methods
+    public LiveData< List< Habit > > getAll() {
+        fillAllMissing();
+        return mHabitDao.getAll();
+    }
 
     public void fillAllMissing() {
         mDatabaseExecutor.execute( () -> {
@@ -76,10 +84,14 @@ public abstract class HabitDatabase extends RoomDatabase {
         } );
     }
 
+    private void fillMissingDates( int habitId ) {
+        mDatabaseExecutor.execute( () -> fillMissingDates( mHabitDao.getHabitSync( habitId ) ) );
+    }
+
     private void fillMissingDates( Habit habit ) {
 
-        LocalDate startDate = habit.getCreatedDate().minusDays( 7 );
-        LocalDate endDate = LocalDate.now();
+        LocalDate startDate = habit.getCreatedDate();
+        LocalDate endDate = LocalDate.now().plusDays( 1 );  // add 1 so our loop exits after today
 
         for ( LocalDate date = startDate ; !date.equals( endDate ) ; date = date.plusDays( 1 ) ) {
             if ( !habit.hasDay( date ) ) {

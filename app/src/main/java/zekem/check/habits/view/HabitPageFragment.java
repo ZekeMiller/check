@@ -16,7 +16,7 @@ import android.view.ViewGroup;
 
 import zekem.check.R;
 import zekem.check.habits.viewmodel.listener.HabitFragmentListener;
-import zekem.check.habits.viewmodel.HabitViewModel;
+import zekem.check.habits.viewmodel.HabitPageViewModel;
 
 /**
  * A fragment representing a list of Habits
@@ -32,7 +32,7 @@ public class HabitPageFragment extends Fragment {
      * fragment (e.g. upon screen orientation changes).
      */
     public HabitPageFragment() {
-
+        // intentionally empty
     }
 
     /**
@@ -69,7 +69,7 @@ public class HabitPageFragment extends Fragment {
         super.onCreate( savedInstanceState );
         setHasOptionsMenu( true );
 
-        mListener = ViewModelProviders.of( this ).get( HabitViewModel.class );
+        mListener = ViewModelProviders.of( this ).get( HabitPageViewModel.class );
 
     }
 
@@ -90,6 +90,7 @@ public class HabitPageFragment extends Fragment {
 
         View view = inflater.inflate( R.layout.fragment_habit_list, container, false );
 
+        // TODO make static based on ID rather than context
         // Set the adapter
         if ( view instanceof RecyclerView ) {
 

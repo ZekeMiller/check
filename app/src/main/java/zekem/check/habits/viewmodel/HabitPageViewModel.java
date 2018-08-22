@@ -17,7 +17,7 @@ import zekem.check.habits.viewmodel.listener.HabitFragmentListener;
 /**
  * @author Zeke Miller
  */
-public class HabitViewModel extends AndroidViewModel implements  HabitFragmentListener {
+public class HabitPageViewModel extends AndroidViewModel implements HabitFragmentListener {
 
 
     // Fields
@@ -27,12 +27,11 @@ public class HabitViewModel extends AndroidViewModel implements  HabitFragmentLi
 
     // Constructor
 
-    public HabitViewModel( Application application ) {
+    public HabitPageViewModel( Application application ) {
 
         super( application );
 
-        mHabitDatabase = HabitDatabase.getHabitDatabase( getApplication() );
-        mHabitDatabase.fillAllMissing();
+        mHabitDatabase = HabitDatabase.getDatabase( getApplication() );
         mHabitObservables = HabitObservables.getInstance();
 
     }
@@ -79,7 +78,7 @@ public class HabitViewModel extends AndroidViewModel implements  HabitFragmentLi
 
     @Override
     public LiveData< List< Habit > > getHabits() {
-        return mHabitDatabase.getHabitDao().getAll();
+        return mHabitDatabase.getAll();
     }
 
 

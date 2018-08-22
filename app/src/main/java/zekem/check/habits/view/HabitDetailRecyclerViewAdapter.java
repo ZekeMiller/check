@@ -94,7 +94,7 @@ public class HabitDetailRecyclerViewAdapter extends RecyclerView.Adapter<HabitDe
         holder.mMinusCount.setText( String.valueOf( holder.mHabitDay.getMinusCount() ) );
         holder.mDateView.setText( holder.mHabitDay.getDate().toString() );
 
-        holder.mView.setOnClickListener(v -> mListener.press( holder.mHabitDay ) );
+        holder.mView.setOnClickListener( v -> mListener.press( holder.mHabitDay ) );
 
         holder.mView.setOnLongClickListener( v -> {
             mListener.longPress( holder.mHabitDay );

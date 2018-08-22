@@ -22,7 +22,7 @@ public class HabitDetailViewModel extends AndroidViewModel implements HabitDetai
     public HabitDetailViewModel( Application application ) {
         super( application );
         mHabitObservables = HabitObservables.getInstance();
-        mHabitDatabase = HabitDatabase.getHabitDatabase( getApplication() );
+        mHabitDatabase = HabitDatabase.getDatabase( getApplication() );
     }
 
 
@@ -34,7 +34,7 @@ public class HabitDetailViewModel extends AndroidViewModel implements HabitDetai
 
     @Override
     public LiveData< Habit > getHabit( int habitId ) {
-        return mHabitDatabase.getHabitDao().getHabit( habitId );
+        return mHabitDatabase.getHabit( habitId );
     }
 
     private void triggerDeleteDialog( int habitId ) {

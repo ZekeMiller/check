@@ -9,6 +9,8 @@ import android.support.annotation.NonNull;
 import org.joda.time.LocalDate;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -50,8 +52,9 @@ public class Habit {
     // sorting fields
     @Ignore private List< HabitDay > mHabitDays;
 
-//    @Ignore private Comparator< HabitDay > mDaySort;
+    @Ignore private Comparator< HabitDay > mDaySort;
 //    @Ignore private Comparator< Habit > mHabitSort;
+    // TODO habit sort should be somewhere else, probably HabitViewModel
 
     /**
      * basic constructor
@@ -70,7 +73,7 @@ public class Habit {
         mHabitDays = new ArrayList<>();
 
         // default daySort is just by date
-//        mDaySort = ( day1, day2 ) -> day1.getDate().compareTo( day2.getDate() );
+        mDaySort = ( day1, day2 ) -> day1.getDate().compareTo( day2.getDate() );
 
         // default habitSort is just by id
 //        mHabitSort = ( habit1, habit2 ) ->  Integer.compare( habit1.mId, habit2.mId );
@@ -180,8 +183,8 @@ public class Habit {
      */
     private void updateList() {
         // does nothing current since we don't sort
-//        this.mHabitDays = new ArrayList<>( mDayMap.values() );
-//        Collections.sort( this.mHabitDays, mDaySort );
+        this.mHabitDays = new ArrayList<>( mDayMap.values() );
+        Collections.sort( this.mHabitDays, mDaySort );
     }
 
 

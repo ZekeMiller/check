@@ -16,7 +16,7 @@ public class DeleteHabitViewModel extends AndroidViewModel implements HabitDelet
 
     public DeleteHabitViewModel( Application application ) {
         super( application );
-        mHabitDatabase = HabitDatabase.getHabitDatabase( getApplication() );
+        mHabitDatabase = HabitDatabase.getDatabase( getApplication() );
         mHabitObservables = HabitObservables.getInstance();
     }
 

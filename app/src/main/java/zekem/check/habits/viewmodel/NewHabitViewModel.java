@@ -16,7 +16,7 @@ public class NewHabitViewModel extends AndroidViewModel implements NewHabitPageL
 
     public NewHabitViewModel( Application application ) {
         super( application );
-        mHabitDatabase = HabitDatabase.getHabitDatabase( getApplication() );
+        mHabitDatabase = HabitDatabase.getDatabase( getApplication() );
         mHabitObservables = HabitObservables.getInstance();
     }
 

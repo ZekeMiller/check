@@ -16,27 +16,27 @@ import zekem.check.dailies.model.Daily;
  * @author Zeke Miller
  */
 @Dao
-public interface DailyDao {
+public abstract class DailyDao {
 
     @Insert
-    long insert( Daily daily );
+    abstract long insert( Daily daily );
 
     @Insert
-    void insert( Daily... daily );
+    abstract void insert( Daily... daily );
 
     @Insert
-    void insert( List< Daily > dailies );
+    abstract void insert( List< Daily > dailies );
 
     @Update
-    void update( Daily... daily );
+    abstract void update( Daily... daily );
 
     @Delete
-    void delete( Daily daily );
+    abstract void delete( Daily daily );
 
     @Query( "DELETE FROM daily WHERE mId=:id " )
-    void delete( int id );
+    abstract void delete( int id );
 
     @Query( "SELECT * FROM daily" )
-    LiveData< List< Daily > > getAll();
+    abstract LiveData< List< Daily > > getAll();
 
 }

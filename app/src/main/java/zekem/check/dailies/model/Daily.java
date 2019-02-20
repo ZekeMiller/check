@@ -9,6 +9,8 @@ import org.joda.time.LocalDate;
 import java.util.Map;
 
 import zekem.check.dailies.model.database.DailyConverters;
+import zekem.check.dailies.model.scheduling.AlwaysScheduler;
+import zekem.check.dailies.model.scheduling.DailyScheduler;
 import zekem.check.dailies.model.scheduling.Scheduler;
 
 /**
@@ -29,6 +31,12 @@ public class Daily {
     
     public Daily( String title ) {
         this.mTitle = title;
+        if ( Math.random() > 0.50 ) {
+            this.mScheduler = new DailyScheduler();
+        }
+        else {
+            this.mScheduler = new AlwaysScheduler();
+        }
     }
 
 

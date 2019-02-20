@@ -18,6 +18,7 @@ import java.lang.reflect.Type;
 import java.util.Map;
 
 import zekem.check.habits.model.HabitDay;
+import zekem.check.util.DateAdapter;
 
 /**
  * @author Zeke Miller
@@ -57,27 +58,5 @@ public class HabitConverters {
                 .registerTypeAdapter( LocalDate.class, new DateAdapter() )
                 .create();
         return gson.toJson( map );
-    }
-
-    private static class DateAdapter extends TypeAdapter< LocalDate > {
-
-        @Override
-        public void write( JsonWriter out, LocalDate value ) throws IOException {
-            if ( value == null ) {
-                out.nullValue();
-                return;
-            }
-            out.value( value.toString() );
-        }
-
-        @Override
-        public LocalDate read( JsonReader in ) throws IOException {
-
-            if ( in.peek() == JsonToken.NULL ) {
-                in.nextNull();
-                return null;
-            }
-            return LocalDate.parse( in.nextString() );
-        }
     }
 }

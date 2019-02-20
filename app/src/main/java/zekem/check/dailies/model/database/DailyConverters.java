@@ -2,6 +2,7 @@ package zekem.check.dailies.model.database;
 
 import android.arch.persistence.room.TypeConverter;
 import android.support.annotation.Nullable;
+import android.util.Log;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -14,19 +15,25 @@ import java.lang.reflect.Type;
 import java.util.Map;
 
 import zekem.check.dailies.model.scheduling.AlwaysScheduler;
+import zekem.check.dailies.model.scheduling.DailyScheduler;
 import zekem.check.dailies.model.scheduling.Scheduler;
+import zekem.check.util.DateAdapter;
 
 /**
  * @author Zeke Miller
  */
 public class DailyConverters {
 
-    private static final RuntimeTypeAdapterFactory typeFactory =
-            RuntimeTypeAdapterFactory.of( Scheduler.class )
-            .registerSubtype( AlwaysScheduler.class );
+    private static final RuntimeTypeAdapterFactory<Scheduler> typeFactory =
+            RuntimeTypeAdapterFactory.of( Scheduler.class, "type" )
+            .registerSubtype( AlwaysScheduler.class, AlwaysScheduler.class.getName() )
+            .registerSubtype( DailyScheduler.class, DailyScheduler.class.getName() );
 
     private static final Gson gson =
-            new GsonBuilder().registerTypeAdapterFactory( typeFactory ).create();
+            new GsonBuilder()
+                    .registerTypeAdapterFactory( typeFactory )
+                    .registerTypeAdapter( LocalDate.class, new DateAdapter() )
+                    .create();
 
 
     @TypeConverter
@@ -34,7 +41,9 @@ public class DailyConverters {
         if ( scheduler == null ) {
             return null;
         }
-        return gson.toJson( scheduler );
+        String json = gson.toJson( scheduler );
+        Log.d( "check_log", String.format( "Serialized %s", json ) );
+        return json;
     }
 
     @TypeConverter
@@ -42,6 +51,7 @@ public class DailyConverters {
         if ( json == null ) {
             return null;
         }
+        Log.d( "check_log", String.format( "Deserialized %s", json ) );
         return gson.fromJson( json, Scheduler.class );
     }
 

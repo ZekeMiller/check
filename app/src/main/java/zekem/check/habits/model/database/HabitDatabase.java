@@ -37,7 +37,7 @@ public abstract class HabitDatabase extends RoomDatabase {
             sInstance.mDatabaseExecutor = Executors.newSingleThreadExecutor();
             sInstance.mHabitDao = sInstance.habitDao();
         }
-        sInstance.mDatabaseExecutor.execute( () -> sInstance.fillAllMissing() );
+        // sInstance.mDatabaseExecutor.execute( () -> sInstance.fillAllMissing() );
         return sInstance;
     }
 

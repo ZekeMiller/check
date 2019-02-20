@@ -61,7 +61,7 @@ public class DailyPageRecyclerViewAdapter extends RecyclerView.Adapter< DailyPag
         Daily daily = mDailies.get( position );
         holder.mItem = daily;
         holder.mIdView.setText( String.format( Locale.getDefault(), "%d", daily.getId() ) );
-        holder.mContentView.setText( daily.getTitle() );
+        holder.mContentView.setText( daily.getScheduler().toString() );
     }
 
 

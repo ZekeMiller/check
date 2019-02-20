@@ -1,6 +1,7 @@
 package zekem.check.habits.model;
 
 import android.arch.persistence.room.TypeConverters;
+import android.util.Log;
 
 import org.joda.time.LocalDate;
 
@@ -28,6 +29,7 @@ public class HabitDay {
         this.mDate = date;
         mPlusCount = 0;
         mMinusCount = 0;
+        Log.d( "check_log", "new HabitDay: " + habitId + date.toString() );
     }
 
 
@@ -60,11 +62,13 @@ public class HabitDay {
 
 
     public void setHabitId( int habitID) {
-        this.mHabitId = habitID;
+//        this.mHabitId = habitID;
+        Log.d( "check_log", "setHabitId triggered" );
     }
 
     public void setDate( LocalDate date ) {
-        this.mDate = date;
+//        this.mDate = date;
+        Log.d( "check_log", "setDate triggered" );
     }
 
     public void setPlusCount(int plusCount ) {

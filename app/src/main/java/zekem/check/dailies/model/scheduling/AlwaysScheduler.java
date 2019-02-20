@@ -7,13 +7,27 @@ import org.joda.time.LocalDate;
  *
  * @author Zeke Miller
  */
-public class AlwaysScheduler implements Scheduler {
+public class AlwaysScheduler extends Scheduler {
 
     public AlwaysScheduler() {}
 
     @Override
-    public boolean isReady( LocalDate date ) {
+    public boolean isDue( LocalDate date ) {
         return true;
     }
 
+    @Override
+    public void completeDay( LocalDate date ) {
+        // Never changes scheduling
+    }
+
+    @Override
+    public void uncompleteDay( LocalDate date ) {
+        // Never changes scheduling
+    }
+
+    @Override
+    public String toString() {
+        return "AlwaysSched";
+    }
 }
